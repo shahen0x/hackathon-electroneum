@@ -9,6 +9,17 @@ module.exports = {
 		"./app/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	theme: {
+		container: {
+			center: true,
+			padding: {
+				DEFAULT: '0.5rem',
+				xs: '2rem',
+				sm: '2rem',
+				md: '2rem',
+				lg: '2rem',
+				xl: '4rem'
+			}
+		},
 		extend: {},
 	},
 	darkMode: "class",
