@@ -20,7 +20,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className="dark">
+		<html lang="en" className="dark bg-[#121214]">
 			<body className={inter.className}>
 				<Providers>
 					{children}
