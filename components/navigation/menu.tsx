@@ -1,13 +1,12 @@
+import { cn } from "@heroui/theme";
 import Link from "next/link";
-import { FC } from "react";
+import { FC, HTMLAttributes } from "react";
 
-interface NavbarMenuProps {
+interface NavbarMenuProps extends HTMLAttributes<HTMLDivElement> { }
 
-}
-
-const NavbarMenu: FC<NavbarMenuProps> = () => {
+const NavbarMenu: FC<NavbarMenuProps> = ({ className }) => {
 	return (
-		<div className="bg-zinc-900">
+		<div className={cn("flex gap-6", className)}>
 			<Link href="/">Home</Link>
 			<Link href="/about">Compete</Link>
 		</div>

@@ -6,9 +6,14 @@ import { Image } from "@heroui/image";
 import NextImage from "next/image";
 import Link from "next/link";
 import { PiUsersFourThin } from "react-icons/pi";
+// import { fontStart2P } from "@/config/fonts";
+// import { pressStart2P } from "@/config/fonts";
 export default function Home() {
 	return (
 		<div className="container space-y-8">
+
+			{/* <h1 className={`${fontStart2P.className}`}>Play Games - Compete for ETN</h1> */}
+			<h1 className={`font-start2p`}>Play Games - Compete for ETN</h1>
 
 			<div className="grid grid-cols-4 gap-6">
 
@@ -73,7 +78,7 @@ export default function Home() {
 							<div className="flex-1">
 								<div className="text-xs">Prize Pool</div>
 								<div className="">
-									<span className="text-5xl">1000</span>
+									<span className="text-4xl">125,563</span>
 									<span className="font-semibold"> ETN</span>
 								</div>
 								<div className="text-xs font-light opacity-30">Increases as more players join</div>

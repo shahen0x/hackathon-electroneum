@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Saira } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { appConfig } from "@/config/app";
+import { fontSans } from "@/config/fonts";
 
-const font = Saira({ subsets: ["latin"] });
+
 
 export const metadata: Metadata = {
 	title: {
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" className="dark bg-[#121214]">
-			<body className={font.className}>
+			<body className={fontSans.className}>
 				<Providers>
 					{children}
 				</Providers>

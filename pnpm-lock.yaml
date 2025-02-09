@@ -11,6 +11,9 @@ dependencies:
   '@heroui/image':
     specifier: ^2.2.6
     version: 2.2.6(@heroui/system@2.4.7)(@heroui/theme@2.4.6)(react-dom@18.3.0)(react@18.3.0)
+  '@heroui/link':
+    specifier: ^2.2.8
+    version: 2.2.8(@heroui/system@2.4.7)(@heroui/theme@2.4.6)(react-dom@18.3.0)(react@18.3.0)
   '@heroui/progress':
     specifier: ^2.2.7
     version: 2.2.7(@heroui/system@2.4.7)(@heroui/theme@2.4.6)(react-dom@18.3.0)(react@18.3.0)
@@ -3062,7 +3065,7 @@ packages:
       '@react-aria/focus': 3.19.1(react-dom@18.3.0)(react@18.3.0)
       '@react-aria/interactions': 3.23.0(react-dom@18.3.0)(react@18.3.0)
       '@react-aria/utils': 3.27.0(react-dom@18.3.0)(react@18.3.0)
-      '@react-types/link': 3.5.9(react@18.3.0)
+      '@react-types/link': 3.5.10(react@18.3.0)
       '@react-types/shared': 3.27.0(react@18.3.0)
       '@swc/helpers': 0.5.15
       react: 18.3.0

@@ -19,7 +19,13 @@ module.exports = {
 				xl: '4rem'
 			}
 		},
-		extend: {},
+		extend: {
+			fontFamily: {
+				sans: ["var(--font-sans)"],
+				mono: ["var(--font-mono)"],
+				start2p: ["var(--font-start2p)"]
+			},
+		},
 	},
 	darkMode: "class",
 	plugins: [heroui()],
