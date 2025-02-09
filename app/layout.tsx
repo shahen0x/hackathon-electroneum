@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
 import { appConfig } from "@/config/app";
-import { fontSans } from "@/config/fonts";
+import { fontSans, fontStart2P } from "@/config/fonts";
 
 
 
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" className="dark bg-[#121214]">
-			<body className={fontSans.className}>
+			<body className={`${fontSans.variable} ${fontStart2P.variable}`}>
 				<Providers>
 					{children}
 				</Providers>

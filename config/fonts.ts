@@ -14,6 +14,7 @@ export const fontSans = FontSans({
 export const fontMono = FontMono({
 	subsets: ["latin"],
 	variable: "--font-mono",
+	display: "swap",
 });
 
 export const fontStart2P = Press_Start_2P({
