@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Orbitron } from "next/font/google";
+import { Saira } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { appConfig } from "@/config/app";
 
-const font = Orbitron({ subsets: ["latin"] });
+const font = Saira({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
 	title: {

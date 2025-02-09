@@ -11,6 +11,9 @@ dependencies:
   '@heroui/image':
     specifier: ^2.2.6
     version: 2.2.6(@heroui/system@2.4.7)(@heroui/theme@2.4.6)(react-dom@18.3.0)(react@18.3.0)
+  '@heroui/progress':
+    specifier: ^2.2.7
+    version: 2.2.7(@heroui/system@2.4.7)(@heroui/theme@2.4.6)(react-dom@18.3.0)(react@18.3.0)
   '@heroui/react':
     specifier: ^2.6.14
     version: 2.6.14(@types/react@18.0.0)(framer-motion@12.4.1)(react-dom@18.3.0)(react@18.3.0)(tailwindcss@3.4.0)
@@ -61,6 +64,9 @@ devDependencies:
   postcss:
     specifier: ^8.4.21
     version: 8.4.21
+  react-icons:
+    specifier: ^5.4.0
+    version: 5.4.0(react@18.3.0)
   tailwindcss:
     specifier: ^3.4.0
     version: 3.4.0
@@ -8124,6 +8130,14 @@ packages:
       scheduler: 0.23.2
     dev: false
 
+  /react-icons@5.4.0(react@18.3.0):
+    resolution: {integrity: sha512-7eltJxgVt7X64oHh6wSWNwwbKTCtMfK35hcjvJS0yxEAhPM8oUKdS3+kqaW1vicIltw+kR2unHaa12S9pPALoQ==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.3.0
+    dev: true
+
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -8197,7 +8211,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /read-cache@1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}
