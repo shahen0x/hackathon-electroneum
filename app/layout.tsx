@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Orbitron } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { appConfig } from "@/config/app";
 
-const inter = Inter({ subsets: ["latin"] });
+const font = Orbitron({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
 	title: {
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" className="dark bg-[#121214]">
-			<body className={inter.className}>
+			<body className={font.className}>
 				<Providers>
 					{children}
 				</Providers>
