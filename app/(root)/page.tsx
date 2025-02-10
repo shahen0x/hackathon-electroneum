@@ -6,62 +6,18 @@ import { Image } from "@heroui/image";
 import NextImage from "next/image";
 import Link from "next/link";
 import { PiUsersFourThin } from "react-icons/pi";
+import ListGames from "@/components/list-games";
 export default function Home() {
 	return (
 		<div className="container space-y-8">
 
-			{/* <h1 className="font-start2p text-3xl uppercase">Play Games</h1> */}
 
-			<div className="grid grid-cols-4 gap-6">
-
-				<Link href={"/game/blitzer"}>
-					<Image
-						as={NextImage}
-						isBlurred
-						src={`/games/blitzer/media/poster.jpg`}
-						alt="Blitzer"
-						width={680}
-						height={200}
-						className="h-auto transition-all border-2 border-transparent hover:border-violet-500"
-					/>
-				</Link>
-				<Link href={"/game/ballsort"}>
-					<Image
-						as={NextImage}
-						isBlurred
-						src={`/poster-ballsort.jpg`}
-						alt="Blitzer"
-						width={680}
-						height={200}
-						className="h-auto transition-all border-2 border-transparent hover:border-violet-500"
-					/>
-				</Link>
-				<Link href={"/game/spacefarer"}>
-					<Image
-						as={NextImage}
-						isBlurred
-						src={`/games/spacefarer/media/poster.jpg`}
-						alt="Blitzer"
-						width={680}
-						height={200}
-						className="h-auto transition-all border-2 border-transparent hover:border-violet-500"
-					/>
-				</Link>
-				<Link href={"/game/matchtwo"}>
-					<Image
-						as={NextImage}
-						isBlurred
-						src={`/poster-matchtwo.jpg`}
-						alt="Blitzer"
-						width={680}
-						height={200}
-						className="h-auto transition-all border-2 border-transparent hover:border-violet-500"
-					/>
-				</Link>
+			<div className="space-y-4">
+				<h2 className="font-start2p text-xl uppercase">Play Games</h2>
+				<ListGames />
 			</div>
 
-
-			<div className="grid grid-cols-4 gap-6">
+			<div className="">
 				<Card>
 					<CardBody className="p-4">
 						<div className="w-full flex items-center gap-6">
