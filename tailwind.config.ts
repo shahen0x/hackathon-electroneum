@@ -1,3 +1,5 @@
+import { colors } from "@heroui/theme";
+
 const { heroui } = require("@heroui/react");
 
 /** @type {import('tailwindcss').Config} */
@@ -25,6 +27,10 @@ module.exports = {
 				mono: ["var(--font-mono)"],
 				start2p: ["var(--font-start2p)"]
 			},
+			colors: {
+				...colors,
+				etn: "var(--etn)",
+			}
 		},
 	},
 	darkMode: "class",

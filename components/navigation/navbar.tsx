@@ -17,17 +17,18 @@ const Navbar: FC<NavbarProps> = () => {
 			<div className="container">
 				<div className="relative flex items-center justify-between">
 
-					<Link href={"/"} className="w-52">
+					<Link href={"/"} className="flex items-center gap-3">
 						<Image
-							src="/logo2.svg"
+							src="/logo.svg"
 							alt="logo"
 							width={268}
 							height={40}
-							className="w-auto h-auto"
+							className="w-8 h-auto"
 						/>
+						<span className="mt-2 font-start2p">ElectroPlay</span>
 					</Link>
 
-					<NavbarMenu className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10" />
+					{/* <NavbarMenu className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10" /> */}
 
 					<div className="flex items-center gap-2">
 

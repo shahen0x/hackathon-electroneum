@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+	:root {
+		--etn: #2AB1F3;
+	}
+
+}
+
 body {
 	font-family: var(--font-sans);
 }

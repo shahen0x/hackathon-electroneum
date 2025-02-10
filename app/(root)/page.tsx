@@ -10,7 +10,7 @@ export default function Home() {
 	return (
 		<div className="container space-y-8">
 
-			<h1 className="font-start2p text-3xl uppercase">Play Games</h1>
+			{/* <h1 className="font-start2p text-3xl uppercase">Play Games</h1> */}
 
 			<div className="grid grid-cols-4 gap-6">
 
