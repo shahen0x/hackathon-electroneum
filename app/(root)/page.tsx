@@ -14,7 +14,7 @@ export default function Home() {
 
 			<div className="grid grid-cols-4 gap-6">
 
-				<Link href={"/game"}>
+				<Link href={"/game/blitzer"}>
 					<Image
 						as={NextImage}
 						isBlurred
@@ -25,7 +25,7 @@ export default function Home() {
 						className="h-auto transition-all border-2 border-transparent hover:border-violet-500"
 					/>
 				</Link>
-				<Link href={"/game"}>
+				<Link href={"/game/ballsort"}>
 					<Image
 						as={NextImage}
 						isBlurred
@@ -36,7 +36,7 @@ export default function Home() {
 						className="h-auto transition-all border-2 border-transparent hover:border-violet-500"
 					/>
 				</Link>
-				<Link href={"/game"}>
+				<Link href={"/game/spacefarer"}>
 					<Image
 						as={NextImage}
 						isBlurred
@@ -47,7 +47,7 @@ export default function Home() {
 						className="h-auto transition-all border-2 border-transparent hover:border-violet-500"
 					/>
 				</Link>
-				<Link href={"/game"}>
+				<Link href={"/game/matchtwo"}>
 					<Image
 						as={NextImage}
 						isBlurred
