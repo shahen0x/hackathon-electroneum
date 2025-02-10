@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import NavbarMenu from "./menu";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,8 +12,24 @@ import { Button } from "@heroui/button";
 interface NavbarProps { }
 
 const Navbar: FC<NavbarProps> = () => {
+
+	const [isScrolled, setIsScrolled] = useState(false);
+
+	// Detect scroll position and set isScrolled state
+	useEffect(() => {
+		const handleScroll = () => {
+			setIsScrolled(window.scrollY > 50);
+		};
+
+		window.addEventListener('scroll', handleScroll);
+		return () => window.removeEventListener('scroll', handleScroll);
+	}, []);
+
+
 	return (
-		<nav className="fixed top-0 left-0 z-40 w-full py-6">
+		<nav className={`fixed top-0 left-0 z-40 w-full py-4 sm:py-6 transition-all duration-300
+			${isScrolled ? "shadow-2xl backdrop-blur-lg bg-neutral-950/60" : "shadow-none bg-transparent"}
+		`}>
 			<div className="container">
 				<div className="relative flex items-center justify-between">
 
@@ -25,7 +41,7 @@ const Navbar: FC<NavbarProps> = () => {
 							height={40}
 							className="w-8 h-auto"
 						/>
-						<span className="mt-2 font-start2p">ElectroPlay</span>
+						<span className="hidden sm:block mt-2 font-start2p">ElectroPlay</span>
 					</Link>
 
 					{/* <NavbarMenu className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10" /> */}
