@@ -18,7 +18,7 @@ export default function Home() {
 					<Image
 						as={NextImage}
 						isBlurred
-						src={`/poster-blitzer.jpg`}
+						src={`/games/blitzer/media/poster.jpg`}
 						alt="Blitzer"
 						width={680}
 						height={200}
@@ -40,7 +40,7 @@ export default function Home() {
 					<Image
 						as={NextImage}
 						isBlurred
-						src={`/poster-spacefarer.jpg`}
+						src={`/games/spacefarer/media/poster.jpg`}
 						alt="Blitzer"
 						width={680}
 						height={200}
