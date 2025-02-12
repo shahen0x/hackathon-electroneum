@@ -18,7 +18,7 @@ const Navbar: FC<NavbarProps> = () => {
 	// Detect scroll position and set isScrolled state
 	useEffect(() => {
 		const handleScroll = () => {
-			setIsScrolled(window.scrollY > 50);
+			setIsScrolled(window.scrollY > 20);
 		};
 
 		window.addEventListener('scroll', handleScroll);
