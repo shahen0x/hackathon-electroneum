@@ -4,9 +4,18 @@ import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Progress
 import NextImage from "next/image";
 import { PiUsersFourThin } from "react-icons/pi";
 import ListGames from "@/components/list-games";
+
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 export default function Home() {
+
+	const tasks = useQuery(api.tasks.get);
+
+
 	return (
 		<div className="container space-y-6">
+
+			{tasks?.map(({ _id, text }) => <div key={_id}>{text}</div>)}
 
 
 			{/* BANNER */}
