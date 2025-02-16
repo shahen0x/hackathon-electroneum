@@ -5,6 +5,19 @@ const nextConfig = {
 		config.externals.push("pino-pretty", "lokijs", "encoding");
 		return config;
 	},
+
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 's2.coinmarketcap.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'wary-raccoon-546.convex.cloud',
+			}
+		],
+	},
 };
 
 export default nextConfig;

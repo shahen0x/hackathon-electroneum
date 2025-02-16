@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 // React Quary
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export default function Providers({ children }: { children: React.ReactNode }) {
 	return (

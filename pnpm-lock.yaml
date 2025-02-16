@@ -29,12 +29,27 @@ dependencies:
   '@heroui/theme':
     specifier: ^2.4.6
     version: 2.4.6(tailwindcss@3.4.0)
+  '@tanstack/query-sync-storage-persister':
+    specifier: ^5.66.2
+    version: 5.66.2
   '@tanstack/react-query':
     specifier: ^5.66.0
     version: 5.66.0(react@18.3.0)
+  '@tanstack/react-query-persist-client':
+    specifier: ^5.66.2
+    version: 5.66.2(@tanstack/react-query@5.66.0)(react@18.3.0)
   convex:
     specifier: ^1.19.2
     version: 1.19.2(react-dom@18.3.0)(react@18.3.0)
+  convex-helpers:
+    specifier: ^0.1.71
+    version: 0.1.71(convex@1.19.2)(react@18.3.0)
+  date-fns:
+    specifier: ^4.1.0
+    version: 4.1.0
+  date-fns-tz:
+    specifier: ^3.2.0
+    version: 3.2.0(date-fns@4.1.0)
   framer-motion:
     specifier: ^12.4.1
     version: 12.4.1(react-dom@18.3.0)(react@18.3.0)
@@ -4609,6 +4624,34 @@ packages:
     resolution: {integrity: sha512-J+JeBtthiKxrpzUu7rfIPDzhscXF2p5zE/hVdrqkACBP8Yu0M96mwJ5m/8cPPYQE9aRNvXztXHlNwIh4FEeMZw==}
     dev: false
 
+  /@tanstack/query-core@5.66.2:
+    resolution: {integrity: sha512-GL/Rx7rIUxyYgJPWSpFjz09lizvAAZut2RueuRXnedAJzJMI+NxpwKA6dojJ9gc26RdUviH5pvSvEiYXo8vSTg==}
+    dev: false
+
+  /@tanstack/query-persist-client-core@5.66.2:
+    resolution: {integrity: sha512-M8v7rg+DSiN27Ew+iuBEUfhNzrqDChfhpS+pTVzZXugJm8MyRFtPd13dOtDUuT9nfJCSuyekTPFDUGdvloEEMw==}
+    dependencies:
+      '@tanstack/query-core': 5.66.2
+    dev: false
+
+  /@tanstack/query-sync-storage-persister@5.66.2:
+    resolution: {integrity: sha512-Um4zPw1KwccB7UHtW3haBM2taOScNgudEoTn5dROin4Fkus6cgcA/lJvdSY051vWeC6xEydCJpLpZ9f+WhAadA==}
+    dependencies:
+      '@tanstack/query-core': 5.66.2
+      '@tanstack/query-persist-client-core': 5.66.2
+    dev: false
+
+  /@tanstack/react-query-persist-client@5.66.2(@tanstack/react-query@5.66.0)(react@18.3.0):
+    resolution: {integrity: sha512-nqvZRUty8v+oCtX3bs/6NyL006OvK+BD1EbwOp6mBrtc7stHLSSDg8k2e/Y+YBrTV8s3ueBSVayXze8ftV3pdw==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.66.2
+      react: ^18 || ^19
+    dependencies:
+      '@tanstack/query-persist-client-core': 5.66.2
+      '@tanstack/react-query': 5.66.0(react@18.3.0)
+      react: 18.3.0
+    dev: false
+
   /@tanstack/react-query@5.66.0(react@18.3.0):
     resolution: {integrity: sha512-z3sYixFQJe8hndFnXgWu7C79ctL+pI0KAelYyW+khaNJ1m22lWrhJU2QrsTcRKMuVPtoZvfBYrTStIdKo+x0Xw==}
     peerDependencies:
@@ -5627,6 +5670,26 @@ packages:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
     dev: false
 
+  /convex-helpers@0.1.71(convex@1.19.2)(react@18.3.0):
+    resolution: {integrity: sha512-/uucsexesq9CNl1J+wZIdjcvPWd9nXcZKE8sIGokduhmtPI+6GtXz/dkpNm9pgFXx6yPJ51lFMuuZFAkVicI0A==}
+    hasBin: true
+    peerDependencies:
+      convex: ^1.13.0
+      hono: ^4.0.5
+      react: ^17.0.2 || ^18.0.0 || ^19.0.0
+      zod: ^3.22.4
+    peerDependenciesMeta:
+      hono:
+        optional: true
+      react:
+        optional: true
+      zod:
+        optional: true
+    dependencies:
+      convex: 1.19.2(react-dom@18.3.0)(react@18.3.0)
+      react: 18.3.0
+    dev: false
+
   /convex@1.19.2(react-dom@18.3.0)(react@18.3.0):
     resolution: {integrity: sha512-rwhg5uVxFKVWf9zM8+QmpQ0MONE6FfeRoy8I/F2lZ7MIjtZyHVaIqpzmQ5ZvZFduseuBMrNy/Y9H4Olq1FlazQ==}
     engines: {node: '>=18.0.0', npm: '>=7.0.0'}
@@ -5728,6 +5791,18 @@ packages:
       es-errors: 1.3.0
       is-data-view: 1.0.2
     dev: true
+
+  /date-fns-tz@3.2.0(date-fns@4.1.0):
+    resolution: {integrity: sha512-sg8HqoTEulcbbbVXeg84u5UnlsQa8GS5QXMqjjYIhS4abEVVKIUwe0/l/UhrZdKaL/W5eWZNlbTeEIiOXTcsBQ==}
+    peerDependencies:
+      date-fns: ^3.0.0 || ^4.0.0
+    dependencies:
+      date-fns: 4.1.0
+    dev: false
+
+  /date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
+    dev: false
 
   /dateformat@4.6.3:
     resolution: {integrity: sha512-2P0p0pFGzHS5EMnhdxQi7aJN+iMheud0UhG4dlE1DLAlvL8JHjJJTX/CSm4JXwV0Ka5nGk3zC5mcb5bUQUxxMA==}
