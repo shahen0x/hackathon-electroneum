@@ -20,7 +20,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className="dark bg-[#121214]">
+		<html lang="en" className="dark bg-[#121214]" suppressHydrationWarning>
 			<body className={`${fontSans.variable} ${fontStart2P.variable}`}>
 				<Providers>
 					{children}
