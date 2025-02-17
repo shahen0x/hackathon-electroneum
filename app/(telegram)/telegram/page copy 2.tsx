@@ -6,22 +6,23 @@ import { useEffect, useState } from "react";
 import WebApp from "@twa-dev/sdk";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth } from "convex/react";
-import { Button } from "@heroui/button";
 
 export default function Home() {
-	const { signIn, signOut } = useAuthActions();
+	const { signIn } = useAuthActions();
 	const { isAuthenticated } = useConvexAuth();
+	const [step, setStep] = useState<"signUp" | "signIn">("signIn");
 
-	const [telegramInitData, setTelegramInitData] = useState<string>()
+	const [log, setLog] = useState<URLSearchParams>()
 
 
 	useEffect(() => {
 		if (WebApp) {
 			const initDataString = WebApp.initData;
-			setTelegramInitData(initDataString);
 
 			if (initDataString) {
 				const urlParams = new URLSearchParams(initDataString);
+				setLog(urlParams)
+
 				try {
 					const user = JSON.parse(urlParams.get('user') || '{}');
 					if (user.id) {
@@ -41,23 +42,13 @@ export default function Home() {
 		}
 	}, []);
 
-
-	const handleAuthentication = async () => {
-		if (telegramInitData) {
-			const formData = {
-				telegramInitData: telegramInitData
-			}
-			void signIn("telegramAuth", formData);
-		}
-	}
-
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-center p-24">
 			{/* <pre>{JSON.stringify(session, null, 2)}</pre>
 			<TelegramAuth /> */}
 
-			<pre className=" break-words">{telegramInitData}</pre>
-			{/* <form
+			<pre className=" break-words">{log}</pre>
+			<form
 				onSubmit={(event) => {
 					event.preventDefault();
 					const formData = new FormData(event.currentTarget);
@@ -76,11 +67,9 @@ export default function Home() {
 				>
 					{step === "signIn" ? "Sign up instead" : "Sign in instead"}
 				</button>
-			</form> */}
+			</form>
 
 			<p>authenticated: {String(isAuthenticated)}</p>
-			<Button onPress={handleAuthentication}>Authenticate</Button>
-			<Button onPress={signOut}>Sign Out</Button>
 		</main>
 	)
 }

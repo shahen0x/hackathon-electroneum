@@ -1,7 +1,10 @@
 "use client";
 
 import { HeroUIProvider } from "@heroui/react";
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+
+import { ConvexReactClient } from "convex/react";
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
+
 import { ThirdwebProvider } from "thirdweb/react";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -16,11 +19,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 		<>
 			<HeroUIProvider>
 				<ThirdwebProvider>
-					<ConvexProvider client={convex}>
+					<ConvexAuthProvider client={convex}>
 						<QueryClientProvider client={queryClient}>
 							{children}
 						</QueryClientProvider>
-					</ConvexProvider>
+					</ConvexAuthProvider>
 				</ThirdwebProvider>
 			</HeroUIProvider>
 		</>
