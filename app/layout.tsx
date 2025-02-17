@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Providers from "./providers";
 import { appConfig } from "@/config/app";
 import { fontSans, fontStart2P } from "@/config/fonts";
+import Head from "next/head";
 
 
 
@@ -13,6 +14,13 @@ export const metadata: Metadata = {
 	},
 	description: appConfig.description,
 };
+
+export const viewport: Viewport = {
+	width: 'device-width',
+	initialScale: 1,
+	maximumScale: 1,
+	userScalable: false,
+}
 
 export default function RootLayout({
 	children,

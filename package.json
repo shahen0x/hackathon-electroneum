@@ -34,7 +34,8 @@
     "react": "^18.3",
     "react-dom": "^18.3",
     "react-unity-webgl": "^9.7.0",
-    "thirdweb": "^5.88.1"
+    "thirdweb": "^5.88.1",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.66.1",
