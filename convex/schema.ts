@@ -21,6 +21,17 @@ export default defineSchema({
 		.index("byTelegramWallet", ["telegramWallet"]),
 
 
+	usersPrivateKeys: defineTable({
+		walletAddress: v.string(),
+		privateKey: v.string(),
+		identifier: v.union(
+			v.literal("telegram"),
+			v.literal("thirdweb")
+		),
+	})
+		.index("byWallet", ["walletAddress"]),
+
+
 	cycles: defineTable({
 		active: v.boolean(),
 		week: v.number(),

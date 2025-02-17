@@ -18,7 +18,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
 				}
 
 				// Verify telegram user
-				const telegramUser = await ctx.runAction(internal.telegram.verifyTelegramHash, {
+				const telegramUser = await ctx.runAction(internal.telegramVerification.verifyTelegramHash, {
 					telegramInitData: telegramInitData.toString()
 				});
 

@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { internalMutation, internalQuery } from "./_generated/server";
+import { generateWallet } from "./telegramWallet";
 
 
 
@@ -28,11 +29,24 @@ export const createUserByTelegramId = internalMutation({
 		lastName: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
+
+		// Generate a new wallet for the user
+		const { address, encryptedPrivateKey } = await generateWallet();
+
+		// Store the private key in the database
+		await ctx.db.insert("usersPrivateKeys", {
+			walletAddress: address,
+			privateKey: encryptedPrivateKey,
+			identifier: "telegram",
+		});
+
+		// Insert the user into the database
 		return await ctx.db.insert("users", {
 			telegramId: args.telegramId,
 			gamertag: args.username,
 			avatar: args.avatar,
 			name: args.firstName ? `${args.firstName} ${args.lastName}` : undefined,
+			telegramWallet: address,
 		})
 	}
 });
