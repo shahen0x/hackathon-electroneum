@@ -1,7 +1,5 @@
 "use client";
 
-import { getSession } from "@/utils/telegram/session"
-import TelegramAuth from "../components/telegram-auth"
 import { useEffect, useState } from "react";
 import WebApp from "@twa-dev/sdk";
 import { useAuthActions } from "@convex-dev/auth/react";
@@ -53,31 +51,6 @@ export default function Home() {
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-center p-24">
-			{/* <pre>{JSON.stringify(session, null, 2)}</pre>
-			<TelegramAuth /> */}
-
-			<pre className=" break-words">{telegramInitData}</pre>
-			{/* <form
-				onSubmit={(event) => {
-					event.preventDefault();
-					const formData = new FormData(event.currentTarget);
-					void signIn("password", formData);
-				}}
-			>
-				<input name="email" placeholder="Email" type="text" />
-				<input name="password" placeholder="Password" type="password" />
-				<input name="flow" type="hidden" value={step} />
-				<button type="submit">{step === "signIn" ? "Sign in" : "Sign up"}</button>
-				<button
-					type="button"
-					onClick={() => {
-						setStep(step === "signIn" ? "signUp" : "signIn");
-					}}
-				>
-					{step === "signIn" ? "Sign up instead" : "Sign in instead"}
-				</button>
-			</form> */}
-
 			<p>authenticated: {String(isAuthenticated)}</p>
 			<Button onPress={handleAuthentication}>Authenticate</Button>
 			<Button onPress={signOut}>Sign Out</Button>

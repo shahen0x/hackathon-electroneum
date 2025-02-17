@@ -6,10 +6,20 @@ export default defineSchema({
 
 	...authTables,
 
-	tasks: defineTable({
-		isCompleted: v.boolean(),
-		text: v.string(),
-	}),
+	users: defineTable({
+		name: v.optional(v.string()),
+		gamertag: v.optional(v.string()),
+		avatar: v.optional(v.string()),
+		email: v.optional(v.string()),
+		emailVerificationTime: v.optional(v.number()),
+		thirdwebwallet: v.optional(v.string()),
+		telegramId: v.optional(v.number()),
+		telegramWallet: v.optional(v.string())
+	})
+		.index("byTelegramId", ["telegramId"])
+		.index("byThirdwebWallet", ["thirdwebwallet"])
+		.index("byTelegramWallet", ["telegramWallet"]),
+
 
 	cycles: defineTable({
 		active: v.boolean(),
