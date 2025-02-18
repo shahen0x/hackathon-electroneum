@@ -2,6 +2,7 @@ import CurrentCycle from "@/components/cycle";
 import Leaderboard from "@/components/leaderboard";
 import ActivePools from "@/components/pools";
 import { api } from "@/convex/_generated/api";
+import WalletConnectButton from "@/thirdweb/wallet/connect-btn";
 import { preloadQuery } from "convex/nextjs";
 
 export default async function Home() {
@@ -10,7 +11,7 @@ export default async function Home() {
 
 	return (
 		<div className="container space-y-4">
-
+			<WalletConnectButton />
 			<div className="bg-primary/10 rounded-2xl p-4 lg:p-10 lg:flex items-center gap-12 lg:gap-24 bg-[url(/home-banner-mobile.png)] bg-no-repeat bg-right bg-contain xl:bg-[url(/banner.png)]">
 				<h1 className="mb-6 lg:mb-0 text-2xl sm:text-3xl font-bold font-start2p text-etn">Compete,<br />Climb,<br />Conquer</h1>
 				<div className="max-w-72 sm:max-w-lg md:max-w-xl lg:max-w-2xl">

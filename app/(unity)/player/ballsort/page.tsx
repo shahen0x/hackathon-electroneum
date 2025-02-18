@@ -10,8 +10,8 @@ export default function BallsortPlayer() {
 
 	const router = useRouter();
 
-	const baseUrl = process.env.NEXT_PUBLIC_GAME_BASEURL!;
-	// const baseUrl = "/games";
+	// const baseUrl = process.env.NEXT_PUBLIC_GAME_BASEURL!;
+	const baseUrl = "/games";
 	const gameName = "ballsort";
 
 	const {
@@ -30,7 +30,7 @@ export default function BallsortPlayer() {
 		dataUrl: `${baseUrl}/${gameName}/game/Build/${gameName}.data`,
 		frameworkUrl: `${baseUrl}/${gameName}/game/Build/${gameName}.framework.js`,
 		codeUrl: `${baseUrl}/${gameName}/game/Build/${gameName}.wasm`,
-		streamingAssetsUrl: `${baseUrl}/${gameName}/game/StreamingAssets`,
+		// streamingAssetsUrl: `${baseUrl}/${gameName}/game/StreamingAssets`,
 	});
 
 	const [devicePixelRatio, setDevicePixelRatio] = useState(
