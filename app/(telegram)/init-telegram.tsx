@@ -92,16 +92,20 @@ export default function InitTelegram({ children }: { children: React.ReactNode }
 
 
 	if (!WebApp) {
-		return "Loading...";
+		return <p>Loading...</p>;
 	}
 
 	if (isLoading) {
-		return "Authenticating user...";
+		return <p>Loading...</p>;
 	}
 
 	if (!isAuthenticated) {
-		return "Authenticating user 2";
+		return <p>Loading...</p>;
 	}
 
-	return children;
+	return (
+		<>
+			{children}
+		</>
+	);
 };

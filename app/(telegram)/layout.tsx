@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 				<Background />
 				<BottomBar />
-				<main className="relative z-30 h-[calc(100vh_-_80px)] overflow-hidden m-0 p-0">
+				<main className="relative z-30 h-[calc(100vh_-_80px)] overflow-hidden m-0 pt-28 pb-6 overflow-y-auto">
 					{children}
 				</main>
 			</InitTelegram>

@@ -3,10 +3,15 @@
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { UnityLoader } from "../_components/unity-loader";
 import { useEffect, useState } from "react";
+import { Button } from "@heroui/button";
+import { useRouter } from "next/navigation";
 
 export default function BallsortPlayer() {
 
-	const baseUrl = "/games/";
+	const router = useRouter();
+
+	const baseUrl = process.env.NEXT_PUBLIC_GAME_BASEURL!;
+	// const baseUrl = "/games";
 	const gameName = "ballsort";
 
 	const {
@@ -29,31 +34,28 @@ export default function BallsortPlayer() {
 	});
 
 	const [devicePixelRatio, setDevicePixelRatio] = useState(
-		window.devicePixelRatio
+		typeof window !== "undefined" ? window.devicePixelRatio : 1
 	);
 
-	useEffect(
-		function () {
-			// A function which will update the device pixel ratio of the Unity
-			// Application to match the device pixel ratio of the browser.
-			const updateDevicePixelRatio = function () {
-				setDevicePixelRatio(window.devicePixelRatio);
-			};
-			// A media matcher which watches for changes in the device pixel ratio.
-			const mediaMatcher = window.matchMedia(
-				`screen and (resolution: ${devicePixelRatio}dppx)`
-			);
-			// Adding an event listener to the media matcher which will update the
-			// device pixel ratio of the Unity Application when the device pixel
-			// ratio changes.
-			mediaMatcher.addEventListener("change", updateDevicePixelRatio);
-			return function () {
-				// Removing the event listener when the component unmounts.
-				mediaMatcher.removeEventListener("change", updateDevicePixelRatio);
-			};
-		},
-		[devicePixelRatio]
-	);
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+
+		const updateDevicePixelRatio = () => {
+			setDevicePixelRatio(window.devicePixelRatio);
+
+
+		};
+
+		const mediaMatcher = window.matchMedia(`(min-resolution: ${window.devicePixelRatio}dppx)`);
+		mediaMatcher.addEventListener("change", updateDevicePixelRatio);
+
+		window.addEventListener("resize", updateDevicePixelRatio);
+
+		return () => {
+			mediaMatcher.removeEventListener("change", updateDevicePixelRatio);
+			window.removeEventListener("resize", updateDevicePixelRatio);
+		};
+	}, [devicePixelRatio]);
 
 	return (
 		<>
@@ -62,8 +64,10 @@ export default function BallsortPlayer() {
 				id="UnityPlayer"
 				unityProvider={unityProvider}
 				devicePixelRatio={devicePixelRatio}
-				className="game fixed top-0 left-0 w-full h-full"
+				className="game fixed z-10 top-0 left-0 w-full h-full"
 			/>
+			{/* <Button onPress={() => router.back()} className="fixed bottom-2 left-2 z-50">Exit</Button> */}
+			<a href="/telegram" className="fixed bottom-2 left-2 z-50"> BACK HOME</a>
 		</>
 	)
 }

@@ -13,8 +13,8 @@ export default function Web3Page() {
 	const fetchTokenBalance = async () => {
 		try {
 			const contract = new ethers.Contract(tokenAddress, erc20Abi, provider);
-			const balance = await contract.balanceOf("0xc701ad764e12f3aa9c80Af0D60a957415FC7e479");
-			const formattedBalance = ethers.formatUnits(balance, 6); // Adjust decimals (USDT = 6, most tokens = 18)
+			const balance = await contract.balanceOf("0x911934037F313B28967001589ab2A46d0d6B8c0a");
+			const formattedBalance = ethers.formatUnits(balance, 18); // Adjust decimals (USDT = 6, most tokens = 18)
 			console.log("Balance:", formattedBalance);
 		} catch (error) {
 			console.error("Error fetching token balance:", error);
@@ -39,11 +39,11 @@ export default function Web3Page() {
 	console.log("ETN:", etn?.displayValue, etn?.symbol);
 
 	const { data: buddy } = useWalletBalance({
-		address: "0xc701ad764e12f3aa9c80Af0D60a957415FC7e479",
+		address: "0x911934037F313B28967001589ab2A46d0d6B8c0a",
 		client: thirdwebClient,
 		chain: {
 			id: 52014,
-			rpc: "https://rpc.ankr.com/electroneum/52b5f737aef79782f352d60c4aff29a46ba25df38d7a71bfad0befd77cb17eb9",
+			rpc: "https://rpc.ankr.com/electroneum",
 			nativeCurrency: {
 				name: "Electroneum",
 				symbol: "ETN",

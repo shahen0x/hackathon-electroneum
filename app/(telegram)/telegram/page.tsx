@@ -1,99 +1,27 @@
-"use client";
+import CurrentCycle from "@/components/cycle";
+import Leaderboard from "@/components/leaderboard";
+import ActivePools from "@/components/pools";
+import { api } from "@/convex/_generated/api";
+import { preloadQuery } from "convex/nextjs";
 
-import Image from "next/image";
-import { Button } from "@heroui/button";
-import { useRouter } from "next/navigation";
-import { useTelegramStore } from "@/store/use-telegram-store";
-import { shortenAddress } from "thirdweb/utils";
-import { useWalletBalance } from "thirdweb/react";
-import { thirdwebClient } from "@/thirdweb/client";
-import { ethers, formatEther, JsonRpcProvider } from "ethers";
-import { useEffect, useState } from "react";
+export default async function Home() {
 
-
-const provider = new JsonRpcProvider("https://rpc.ankr.com/electroneum");
-
-// ERC-20 token contract address (Example: USDT)
-const tokenAddress = "0x38B54f147303887BD2E932373432FfCBD11Ff6a5";
-
-// ERC-20 ABI for balanceOf function
-const erc20Abi = ["function balanceOf(address owner) view returns (uint256)"];
-export default function Home() {
-
-	const router = useRouter();
-	const { userData, isAuthenticated } = useTelegramStore();
-
-	const [balance, setBalance] = useState<string | null>(null);
-
-
-
-	useEffect(() => {
-		const fetchTokenBalance = async () => {
-			try {
-				const contract = new ethers.Contract(tokenAddress, erc20Abi, provider);
-				const balance = await contract.balanceOf("0xc701ad764e12f3aa9c80Af0D60a957415FC7e479");
-				const formattedBalance = ethers.formatUnits(balance, 6); // Adjust decimals (USDT = 6, most tokens = 18)
-				setBalance(formattedBalance);
-			} catch (error) {
-				console.error("Error fetching token balance:", error);
-			}
-		};
-
-		fetchTokenBalance();
-	}, []);
-
-	// const { data: etn } = useWalletBalance({
-	// 	address: userData?.telegramWallet,
-	// 	client: thirdwebClient,
-	// 	chain: {
-	// 		id: 5201420,
-	// 		rpc: "https://rpc.ankr.com/electroneum_testnet",
-	// 		nativeCurrency: {
-	// 			name: "Electroneum",
-	// 			symbol: "ETN",
-	// 			decimals: 18,
-	// 		},
-	// 		icon: { url: "/symbols/2137.png", width: 100, height: 100, format: "png" },
-	// 	},
-	// });
-
-
-	// const { data: buddy } = useWalletBalance({
-	// 	address: userData?.telegramWallet,
-	// 	client: thirdwebClient,
-	// 	chain: {
-	// 		id: 52014,
-	// 		rpc: "https://rpc.ankr.com/electroneum",
-	// 		nativeCurrency: {
-	// 			name: "Electroneum",
-	// 			symbol: "ETN",
-	// 			decimals: 18,
-	// 		},
-	// 		icon: { url: "/symbols/2137.png", width: 100, height: 100, format: "png" },
-	// 	},
-	// 	tokenAddress: "0x38B54f147303887BD2E932373432FfCBD11Ff6a5"
-	// });
-
-
-
-
+	const preloadedCycle = await preloadQuery(api.cycles.getActiveCycleWithPools);
 
 	return (
-		<main className="flex h-full flex-col items-center justify-center p-24">
-			<p>authenticated: {String(isAuthenticated)}</p>
-			{userData?.telegramWallet &&
-				<p>Wallet: {shortenAddress(userData.telegramWallet)}</p>
-			}
+		<div className="container space-y-4">
 
+			<div className="bg-primary/10 rounded-2xl p-4 lg:p-10 lg:flex items-center gap-12 lg:gap-24 bg-[url(/home-banner-mobile.png)] bg-no-repeat bg-right bg-contain xl:bg-[url(/banner.png)]">
+				<h1 className="mb-6 lg:mb-0 text-2xl sm:text-3xl font-bold font-start2p text-etn">Compete,<br />Climb,<br />Conquer</h1>
+				<div className="max-w-72 sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+					<h2 className="mb-2 sm:mb-1 text-[0.59rem] sm:text-lg font-semibold font-start2p">Weekly Token Rewards Await!</h2>
+					<p className="text-sm text-neutral-400">Join token pools and compete in exciting games to climb the leaderboards with 30% of the top participants winning weekly rewards, your chances of earning are high!</p>
+				</div>
+			</div>
 
-
-			<p>Balance: {balance} ETN</p>
-			{/* <p>Buddy Balance: {buddy?.displayValue} {buddy?.symbol}</p> */}
-			{userData?.avatar &&
-				<Image src={userData.avatar} alt="Logo" width={100} height={100} />
-			}
-
-			<Button onPress={() => router.push('/telegram/test')}>Test</Button>
-		</main>
+			<CurrentCycle preloadedCycle={preloadedCycle} />
+			<ActivePools preloadedCycle={preloadedCycle} />
+			<Leaderboard />
+		</div>
 	)
 }
