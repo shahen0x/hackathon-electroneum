@@ -1,5 +1,6 @@
 // import { useQuery } from "convex/react";
 import CurrentCycle from "@/components/cycle";
+import ListGames from "@/components/games";
 import Leaderboard from "@/components/leaderboard";
 import ActivePools from "@/components/pools";
 import { api } from "@/convex/_generated/api";
@@ -14,10 +15,6 @@ export default async function Home() {
 	return (
 		<div className="container space-y-6">
 
-			{/* {tasks?.map(({ _id, text }) => <div key={_id}>{text}</div>)} */}
-
-			<Link href={"/player/ballsort"}>Play</Link>
-
 			{/* BANNER */}
 			<div className="bg-primary/10 rounded-2xl p-6 lg:p-10 lg:flex items-center gap-12 lg:gap-24 bg-[url(/home-banner-mobile.png)] bg-no-repeat bg-right bg-contain xl:bg-[url(/banner.png)]">
 				<h1 className="mb-6 lg:mb-0 text-2xl sm:text-3xl font-bold font-start2p text-etn">Compete,<br />Climb,<br />Conquer</h1>
@@ -27,6 +24,7 @@ export default async function Home() {
 				</div>
 			</div>
 
+			<ListGames />
 			<CurrentCycle preloadedCycle={preloadedCycle} />
 			<ActivePools preloadedCycle={preloadedCycle} />
 			<Leaderboard />

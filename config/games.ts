@@ -1,7 +1,7 @@
 export const games = [
 	{
-		name: "Blitzer",
-		slug: "blitzer",
+		name: "MatchTwo",
+		slug: "matchtwo",
 		canPlay: true
 	},
 	{
@@ -10,13 +10,14 @@ export const games = [
 		canPlay: true
 	},
 	{
+		name: "Blitzer",
+		slug: "blitzer",
+		canPlay: false
+	},
+
+	{
 		name: "Spacefarer",
 		slug: "spacefarer",
-		canPlay: true
+		canPlay: false
 	},
-	{
-		name: "MatchTwo",
-		slug: "matchtwo",
-		canPlay: true
-	}
 ]

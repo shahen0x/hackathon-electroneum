@@ -14,17 +14,25 @@ export const metadata: Metadata = {
 	},
 	description: appConfig.description,
 	manifest: "/manifest.json",
-	appleWebApp: {
-		capable: true,
-		statusBarStyle: "black",
-		title: appConfig.name,
-		startupImage: "/icons/512x512.png",
-	},
+
 	formatDetection: {
 		telephone: false,
 	},
 	icons: {
-		apple: "/icons/512x512.png",
+		apple: [{ url: "icons/512x512.png" }],
+		icon: [{
+			url: "icons/512x512.png",
+			sizes: "512x512",
+			type: "image/png"
+		}]
+	},
+	appleWebApp: {
+		capable: true,
+		statusBarStyle: "black",
+		title: appConfig.name,
+		startupImage: [{
+			url: "/icons/512x512.png"
+		}],
 	},
 };
 
