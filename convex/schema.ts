@@ -12,24 +12,9 @@ export default defineSchema({
 		avatar: v.optional(v.string()),
 		email: v.optional(v.string()),
 		emailVerificationTime: v.optional(v.number()),
-		thirdwebwallet: v.optional(v.string()),
-		telegramId: v.optional(v.number()),
-		telegramWallet: v.optional(v.string())
+		walletAddress: v.optional(v.string()),
 	})
-		.index("byTelegramId", ["telegramId"])
-		.index("byThirdwebWallet", ["thirdwebwallet"])
-		.index("byTelegramWallet", ["telegramWallet"]),
-
-
-	usersPrivateKeys: defineTable({
-		walletAddress: v.string(),
-		privateKey: v.string(),
-		identifier: v.union(
-			v.literal("telegram"),
-			v.literal("thirdweb")
-		),
-	})
-		.index("byWallet", ["walletAddress"]),
+		.index("byWalletAddress", ["walletAddress"]),
 
 
 	cycles: defineTable({
