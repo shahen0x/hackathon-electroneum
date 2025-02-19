@@ -30,7 +30,7 @@ const ListGames: FC<ListGamesProps> = () => {
 							alt={game.name}
 							width={680}
 							height={400}
-							className={`w-full h-full rounded-2xl ${!game.canPlay && "grayscale opacity-70"}`}
+							className={`w-full h-full rounded-2xl ${!game.canPlay && "opacity-40"}`}
 						/>
 					</Link>
 				))}

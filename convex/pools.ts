@@ -24,7 +24,7 @@ export const createPools = mutation({
 });
 
 
-export const getCyclePools = query({
+export const getActivePools = query({
 	handler: async (ctx) => {
 
 		const activeCycle = await ctx.db

@@ -26,7 +26,7 @@ export default async function Home() {
 
 			<ListGames />
 			<CurrentCycle preloadedCycle={preloadedCycle} />
-			<ActivePools preloadedCycle={preloadedCycle} />
+			<ActivePools />
 			<Leaderboard />
 		</div>
 	);

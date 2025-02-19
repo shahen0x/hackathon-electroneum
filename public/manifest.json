@@ -2,12 +2,12 @@
 	"name": "ElectroPlay",
 	"short_name": "ElectroPlay",
 	"description": "Test description",
-	"theme_color": "#121214",
-	"background_color": "#121214",
-	"display": "standalone",
+	"theme_color": "#171717",
+	"background_color": "#171717",
+	"display": "fullscreen",
 	"orientation": "portrait",
 	"scope": "/",
-	"start_url": "/",
+	"start_url": "/pwa",
 	"icons": [
 		{
 			"src": "icons/16x16.png",

@@ -8,10 +8,10 @@ import { useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "@tanstack/react-query";
 
-interface ActivePoolsProps {
+interface PoolsPwaProps {
 }
 
-const ActivePools: FC<ActivePoolsProps> = () => {
+const PoolsPwa: FC<PoolsPwaProps> = () => {
 
 	const convex = useConvex();
 
@@ -33,14 +33,9 @@ const ActivePools: FC<ActivePoolsProps> = () => {
 
 	return data ? (
 		<>
-			<div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+			<div className="">
 				{data.map((pool) => (
-					<Card
-						key={pool.tokenSymbol}
-					// classNames={{
-					// 	base: "border-success-300 border",
-					// }}
-					>
+					<Card key={pool.tokenSymbol}>
 						<CardHeader className="gap-2">
 							{pool.tokenLogo &&
 								<Image
@@ -73,9 +68,9 @@ const ActivePools: FC<ActivePoolsProps> = () => {
 						</CardBody>
 					</Card>
 				))}
-			</div>
+			</div >
 		</>
 	) : null;
 }
 
-export default ActivePools;
+export default PoolsPwa;

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 	},
 	appleWebApp: {
 		capable: true,
-		statusBarStyle: "black",
+		statusBarStyle: "black-translucent",
 		title: appConfig.name,
 		startupImage: [{
 			url: "/icons/512x512.png"
@@ -41,7 +41,8 @@ export const viewport: Viewport = {
 	initialScale: 1,
 	maximumScale: 1,
 	userScalable: false,
-	// themeColor: "#000000",
+	// themeColor: "#171717",
+	viewportFit: "cover"
 }
 
 export default function RootLayout({
@@ -50,7 +51,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className="dark bg-[#121214]" suppressHydrationWarning>
+		<html lang="en" className="dark bg-[#121214] min-h-screen" suppressHydrationWarning>
 			<body className={`${fontSans.variable} ${fontStart2P.variable}`}>
 				<Providers>
 					{children}
