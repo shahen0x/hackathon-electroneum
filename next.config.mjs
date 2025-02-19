@@ -1,6 +1,8 @@
+import nextPwa from 'next-pwa';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	// fixes wallet connect dependency issue https://docs.walletconnect.com/web3modal/nextjs/about#extra-configuration
+	// fixes wallet connect dependency issue
 	webpack: (config) => {
 		config.externals.push("pino-pretty", "lokijs", "encoding");
 		return config;
@@ -20,4 +22,7 @@ const nextConfig = {
 	},
 };
 
-export default nextConfig;
+export default nextPwa({
+	dest: 'public',
+	disable: process.env.NODE_ENV === 'development', // Disable PWA in development
+})(nextConfig);

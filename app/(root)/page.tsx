@@ -4,6 +4,7 @@ import Leaderboard from "@/components/leaderboard";
 import ActivePools from "@/components/pools";
 import { api } from "@/convex/_generated/api";
 import { preloadQuery } from "convex/nextjs";
+import Link from "next/link";
 
 export default async function Home() {
 
@@ -15,6 +16,7 @@ export default async function Home() {
 
 			{/* {tasks?.map(({ _id, text }) => <div key={_id}>{text}</div>)} */}
 
+			<Link href={"/player/ballsort"}>Play</Link>
 
 			{/* BANNER */}
 			<div className="bg-primary/10 rounded-2xl p-6 lg:p-10 lg:flex items-center gap-12 lg:gap-24 bg-[url(/home-banner-mobile.png)] bg-no-repeat bg-right bg-contain xl:bg-[url(/banner.png)]">

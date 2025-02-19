@@ -67,7 +67,7 @@ export default function BallsortPlayer() {
 				className="game fixed z-10 top-0 left-0 w-full h-full"
 			/>
 			{/* <Button onPress={() => router.back()} className="fixed bottom-2 left-2 z-50">Exit</Button> */}
-			<a href="/telegram" className="fixed bottom-2 left-2 z-50"> BACK HOME</a>
+			<a href="http://192.168.100.92:3000/" className="fixed bottom-2 left-2 z-50"> BACK HOME</a>
 		</>
 	)
 }

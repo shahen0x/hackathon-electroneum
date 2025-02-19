@@ -28,7 +28,7 @@ const Navbar: FC<NavbarProps> = () => {
 
 	return (
 		<nav className={`fixed top-0 left-0 z-40 w-full py-4 sm:py-6 transition-all duration-300
-			${isScrolled ? "shadow-2xl backdrop-blur-lg bg-neutral-950/60" : "shadow-none bg-transparent"}
+			${isScrolled ? "shadow-2xl backdrop-blur-lg bg-neutral-950/60" : "shadow-none bg-black"}
 		`}>
 			<div className="container">
 				<div className="relative flex items-center justify-between">

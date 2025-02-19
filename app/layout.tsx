@@ -3,16 +3,25 @@ import "./globals.css";
 import Providers from "./providers";
 import { appConfig } from "@/config/app";
 import { fontSans, fontStart2P } from "@/config/fonts";
-import Head from "next/head";
 
 
 
 export const metadata: Metadata = {
+	applicationName: appConfig.name,
 	title: {
 		default: appConfig.name,
 		template: `%s - ${appConfig.name}`,
 	},
 	description: appConfig.description,
+	manifest: "/manifest.json",
+	appleWebApp: {
+		capable: true,
+		statusBarStyle: "black",
+		title: appConfig.name,
+	},
+	formatDetection: {
+		telephone: false,
+	},
 };
 
 export const viewport: Viewport = {
@@ -20,6 +29,7 @@ export const viewport: Viewport = {
 	initialScale: 1,
 	maximumScale: 1,
 	userScalable: false,
+	themeColor: "#000000",
 }
 
 export default function RootLayout({
