@@ -18,9 +18,13 @@ export const metadata: Metadata = {
 		capable: true,
 		statusBarStyle: "black",
 		title: appConfig.name,
+		startupImage: "/icons/512x512.png",
 	},
 	formatDetection: {
 		telephone: false,
+	},
+	icons: {
+		apple: "/icons/512x512.png",
 	},
 };
 
@@ -29,7 +33,7 @@ export const viewport: Viewport = {
 	initialScale: 1,
 	maximumScale: 1,
 	userScalable: false,
-	themeColor: "#000000",
+	// themeColor: "#000000",
 }
 
 export default function RootLayout({
