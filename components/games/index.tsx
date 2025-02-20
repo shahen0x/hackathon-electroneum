@@ -17,7 +17,7 @@ const ListGames: FC<ListGamesProps> = () => {
 					Not available on mobile yet
 				</Chip> */}
 			</div>
-			<div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-4">
+			<div className="grid grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-4">
 				{games.map((game) => (
 					<Link key={game.slug} href={`/game/${game.slug}`} className={`relative ${!game.canPlay && "pointer-events-none"}`}>
 						{!game.canPlay &&

@@ -16,7 +16,7 @@ const CurrentCycle: FC<CurrentCycleProps> = ({ preloadedCycle }) => {
 
 	return (
 		<>
-			<Card className="col-span-2">
+			<Card>
 				<CardHeader className="flex-col items-start p-4">
 					<div className="w-full flex items-center justify-between">
 						<h2 className="font-start2p text-sm sm:text-lg uppercase">Earn Rewards</h2>

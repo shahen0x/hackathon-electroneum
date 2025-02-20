@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "./providers";
 import { appConfig } from "@/config/app";
 import { fontSans, fontStart2P } from "@/config/fonts";
+import Head from "next/head";
 
 
 
@@ -51,12 +52,17 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className="dark bg-[#121214] min-h-screen" suppressHydrationWarning>
-			<body className={`${fontSans.variable} ${fontStart2P.variable}`}>
-				<Providers>
-					{children}
-				</Providers>
-			</body>
-		</html>
+		<>
+			<Head>
+				<link rel="icon" href="/favicon.ico" sizes="any" />
+			</Head>
+			<html lang="en" className="dark bg-[#121214] min-h-screen" suppressHydrationWarning>
+				<body className={`${fontSans.variable} ${fontStart2P.variable}`}>
+					<Providers>
+						{children}
+					</Providers>
+				</body>
+			</html>
+		</>
 	);
 }
