@@ -30,7 +30,7 @@ const Navbar: FC<NavbarProps> = () => {
 
 
 	return (
-		<nav className={`fixed top-0 left-0 z-40 w-full h-14 py-2 transition-all duration-300 border-b border-neutral-900
+		<nav className={`fixed top-0 left-0 z-40 w-full h-14 py-2 transition-all duration-300 border-b border-neutral-800
 		${isScrolled ? "shadow-2xl backdrop-blur-lg bg-neutral-950/90" : "shadow-none bg-transparent"}
 		`}>
 			<div className="px-4">

@@ -27,8 +27,8 @@ const NavbarMenu: FC<NavbarMenuProps> = ({ className }) => {
 				size="sm"
 				as={Link} href="/games"
 				startContent={<PiGameControllerDuotone size={20} />}
-				variant={pathname === "/games" ? "flat" : "light"}
-				color={pathname === "/games" ? "primary" : "default"}
+				variant={pathname.startsWith("/games") ? "flat" : "light"}
+				color={pathname.startsWith("/games") ? "primary" : "default"}
 			>
 				Games
 			</Button>

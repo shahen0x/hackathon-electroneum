@@ -26,10 +26,10 @@ export default function BallsortPlayer() {
 		companyName: "Cryptark",
 		productName: gameName,
 		productVersion: "1.0.0",
-		loaderUrl: `${baseUrl}/${gameName}/game/Build/${gameName}.loader.js`,
-		dataUrl: `${baseUrl}/${gameName}/game/Build/${gameName}.data`,
-		frameworkUrl: `${baseUrl}/${gameName}/game/Build/${gameName}.framework.js`,
-		codeUrl: `${baseUrl}/${gameName}/game/Build/${gameName}.wasm`,
+		loaderUrl: `${baseUrl}/${gameName}/build-web/${gameName}-web.loader.js`,
+		dataUrl: `${baseUrl}/${gameName}/build-web/${gameName}-web.data`,
+		frameworkUrl: `${baseUrl}/${gameName}/build-web/${gameName}-web.framework.js`,
+		codeUrl: `${baseUrl}/${gameName}/build-web/${gameName}-web.wasm`,
 		// streamingAssetsUrl: `${baseUrl}/${gameName}/game/StreamingAssets`,
 	});
 

@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					</ScrollShadow>
 				</div>
 
-				<div className="p-10 flex items-center justify-center">
+				<div className="p-6 flex items-center justify-center">
 					{children}
 				</div>
 			</main>
