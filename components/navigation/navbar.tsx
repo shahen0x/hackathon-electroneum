@@ -31,7 +31,7 @@ const Navbar: FC<NavbarProps> = () => {
 
 	return (
 		<nav className={`fixed top-0 left-0 z-40 w-full h-14 py-2 transition-all duration-300 border-b border-neutral-800
-		${isScrolled ? "shadow-2xl backdrop-blur-lg bg-neutral-950/90" : "shadow-none bg-transparent"}
+			${isScrolled ? "shadow-2xl backdrop-blur-lg bg-neutral-950/90" : "shadow-none bg-transparent"}
 		`}>
 			<div className="px-4">
 				<div className="relative flex items-center">
@@ -42,7 +42,7 @@ const Navbar: FC<NavbarProps> = () => {
 							alt="logo"
 							width={268}
 							height={40}
-							className="w-10 h-auto"
+							className="w-8 h-auto"
 						/>
 						{/* <span className="hidden sm:block mt-2 font-start2p">ElectroPlay</span> */}
 					</Link>
