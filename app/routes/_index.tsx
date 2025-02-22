@@ -7,6 +7,16 @@ import { Button } from "~/components/ui/button";
 import { clientThirdweb } from "~/thirdweb/client";
 import { polygon } from "thirdweb/chains";
 
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "~/components/ui/card"
+
+
 export const meta: MetaFunction = () => {
 	return [
 		{ title: "New Remix App" },
@@ -28,7 +38,7 @@ export default function Index() {
 
 
 	return (
-		<div className="flex h-screen items-center justify-center">
+		<div className="flex items-center justify-center">
 			<div className="flex flex-col items-center gap-16">
 				<header className="flex flex-col items-center gap-9">
 					<h1 className="leading text-2xl font-bold text-gray-800 dark:text-gray-100">
@@ -50,6 +60,19 @@ export default function Index() {
 						</p>
 					</div>
 				</header>
+
+				<Card>
+					<CardHeader>
+						<CardTitle>Card Title</CardTitle>
+						<CardDescription>Card Description</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<p>Card Content</p>
+					</CardContent>
+					<CardFooter>
+						<p>Card Footer</p>
+					</CardFooter>
+				</Card>
 			</div>
 		</div>
 	);
