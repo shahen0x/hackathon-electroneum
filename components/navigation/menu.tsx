@@ -1,53 +1,72 @@
+import { FC, HTMLAttributes } from "react";
 import { Button } from "@heroui/button";
 import { cn } from "@heroui/theme";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FC, HTMLAttributes } from "react";
-import { PiGameControllerDuotone, PiHouseDuotone, PiHouseLine, PiHouseLineDuotone, PiHouseLineLight, PiRankingDuotone } from "react-icons/pi";
+import { PiList, PiGameControllerDuotone, PiHouseDuotone, PiRankingDuotone, PiListLight } from "react-icons/pi";
+import {
+	Dropdown,
+	DropdownTrigger,
+	DropdownMenu,
+	DropdownSection,
+	DropdownItem
+} from "@heroui/dropdown";
 
 interface NavbarMenuProps extends HTMLAttributes<HTMLDivElement> { }
 
-const NavbarMenu: FC<NavbarMenuProps> = ({ className }) => {
+const NavbarMenu: FC<NavbarMenuProps> = () => {
 
 	const pathname = usePathname();
 
+	const menuIconSize = 20;
+
+	const menuItems = [
+		{ name: "Dashboard", href: "/", icon: <PiHouseDuotone size={menuIconSize} /> },
+		{ name: "Games", href: "/games", icon: <PiGameControllerDuotone size={menuIconSize} /> },
+		{ name: "Rankings", href: "/rankings", icon: <PiRankingDuotone size={menuIconSize} /> },
+	]
+
 	return (
-		<div className={cn("flex gap-2", className)}>
-			<Button
-				size="sm"
-				as={Link} href="/"
-				startContent={<PiHouseDuotone size={20} />}
-				variant={pathname === "/" ? "flat" : "light"}
-				color={pathname === "/" ? "primary" : "default"}
-			>
-				Home
-			</Button>
+		<>
+			<Dropdown backdrop="blur">
+				<DropdownTrigger>
+					<Button variant="bordered" isIconOnly>
+						<PiListLight size={20} />
+					</Button>
+				</DropdownTrigger>
+				<DropdownMenu aria-label="Link Actions" selectedKeys="all">
+					<>
+						{menuItems.map((item) => (
+							<DropdownItem
+								key={item.name}
+								as={Link}
+								href={item.href}
+								startContent={item.icon}
+							>
+								{item.name}
+							</DropdownItem>
+						))}
+					</>
+				</DropdownMenu>
+			</Dropdown>
 
-			<Button
-				size="sm"
-				as={Link} href="/games"
-				startContent={<PiGameControllerDuotone size={20} />}
-				variant={pathname.startsWith("/games") ? "flat" : "light"}
-				color={pathname.startsWith("/games") ? "primary" : "default"}
-			>
-				Games
-			</Button>
 
-			<Button
-				size="sm"
-				as={Link} href="/rankings"
-				startContent={<PiRankingDuotone size={20} />}
-				variant={pathname === "/rankings" ? "flat" : "light"}
-				color={pathname === "/rankings" ? "primary" : "default"}
-			>
-				Rankings
-			</Button>
-			{/* <Link href="/">
-				<PiHouseLineLight size={24} />
-				<span>Home</span>
-			</Link>
-			<Link href="/about">Compete</Link> */}
-		</div>
+			<div className="hidden lg:flex gap-2">
+				{menuItems.map((item) => (
+					<Button
+						size="sm"
+						key={item.name}
+						as={Link}
+						href={item.href}
+						startContent={item.icon}
+						variant={pathname.startsWith(item.href) ? "flat" : "light"}
+						color={pathname.startsWith(item.href) ? "primary" : "default"}
+					>
+						{item.name}
+					</Button>
+				))}
+			</div>
+		</>
 	)
 }
 
