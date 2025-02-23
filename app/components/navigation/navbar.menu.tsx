@@ -1,40 +1,63 @@
+import { FC, useState } from "react";
 import { Link, useLocation } from "@remix-run/react";
-import { FC } from "react";
-import { PiGameControllerDuotone, PiHouseDuotone, PiListLight, PiRankingDuotone } from "react-icons/pi";
 
+import { navbarMenuItems } from "~/config/menus";
+
+import { PiListLight } from "react-icons/pi";
+
+import { Button } from "~/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "~/components/ui/navigation-menu";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
 
-interface NavbarMenuProps {
-
-}
+interface NavbarMenuProps { }
 
 const NavbarMenu: FC<NavbarMenuProps> = () => {
 
+	// Hooks
 	const location = useLocation();
 
-	const menuIconSize = 18;
+	// States
+	const [isOpen, setIsOpen] = useState(false);
 
-	const menuItems = [
-		{ name: "Dashboard", href: "/", icon: <PiHouseDuotone size={menuIconSize} /> },
-		{ name: "Games", href: "/games", icon: <PiGameControllerDuotone size={menuIconSize} /> },
-		{ name: "Rankings", href: "/rankings", icon: <PiRankingDuotone size={menuIconSize} /> },
-	]
+	const handleLinkClick = () => {
+		setTimeout(() => {
+			setIsOpen(false);
+		}, 300);
+	};
+
+	const handleBackdropClick = () => {
+		setIsOpen(false); // Close dropdown if backdrop is clicked
+	};
 
 	return (
 		<>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
+			{/* MOBILE MENU */}
+
+			{isOpen &&
+				<button
+					onClick={handleBackdropClick}
+					className="fixed z-10 inset-0 transition-all backdrop-blur-sm bg-black/10"
+				/>
+			}
+
+			<DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+				<DropdownMenuTrigger className="lg:hidden" asChild>
 					<Button variant={"outline"} size={"icon"}>
 						<PiListLight size={20} />
 					</Button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent>
 
-					{menuItems.map((item) => (
-						<DropdownMenuItem key={item.name} className="p-0">
-							<Link to={item.href} className="px-3 py-2 flex items-center gap-2">
+				<DropdownMenuContent className="space-y-1">
+					{navbarMenuItems.map((item) => (
+						<DropdownMenuItem key={item.name} className="p-0 focus:bg-transparent">
+							<Link
+								to={item.href}
+								className={`
+									w-full px-3 py-2 flex items-center gap-2 rounded-lg transition-colors
+									${location.pathname === item.href || (item.href !== "/" && location.pathname.startsWith(item.href)) ? "bg-primary/20 text-etn" : "bg-transparent text-muted-foreground hover:bg-accent/50 hover:text-white"}	
+								`}
+								onClick={handleLinkClick}
+							>
 								{item.icon} {item.name}
 							</Link>
 						</DropdownMenuItem>
@@ -43,9 +66,10 @@ const NavbarMenu: FC<NavbarMenuProps> = () => {
 			</DropdownMenu>
 
 
-			<NavigationMenu className="hidden">
+			{/* DESKTOP MENU */}
+			<NavigationMenu className="hidden lg:block">
 				<NavigationMenuList>
-					{menuItems.map((item) => (
+					{navbarMenuItems.map((item) => (
 						<NavigationMenuItem key={item.name}>
 							<Link to={item.href} className={`
 								px-3 py-2 flex items-center gap-2 rounded-lg text-xs transition-colors
