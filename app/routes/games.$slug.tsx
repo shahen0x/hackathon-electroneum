@@ -1,13 +1,17 @@
 import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { games } from "~/config/games";
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	return params.slug;
 }
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ params }) => {
+	const slug = params.slug
+	const game = games.find((game) => game.slug === slug);
+
 	return [
-		{ title: "Games" },
+		{ title: `🟢 Playing: ${game?.name}` },
 		{ name: "description", content: "Welcome to Remix!" },
 	];
 };
@@ -19,7 +23,8 @@ export default function GamesPage() {
 	return (
 		<iframe
 			title={gameSlug}
-			src="/player/ballsort"
+			// src={`/play/${gameSlug}`}
+			src="/play/ballsort"
 			className="w-full max-w-7xl aspect-video rounded-2xl bg-[#231F20] border border-neutral-800"
 		/>
 	)

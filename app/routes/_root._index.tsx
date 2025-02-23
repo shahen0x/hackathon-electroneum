@@ -30,7 +30,7 @@ export default function Index() {
 	const { isAuthenticated } = useConvexAuth();
 
 	const account = useActiveAccount();
-	const { data: balance, isLoading } = useWalletBalance({
+	const { data: balance, } = useWalletBalance({
 		client: clientThirdweb,
 		chain: polygon,
 		address: account?.address,

@@ -46,9 +46,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<ConvexAuthProvider client={convex}>
 					<ThirdwebProvider>
 						<Navbar />
-						<main className="relative z-30 pt-[4.5rem] sm:pt-[5.5rem] lg:pt-28">
-							{children}
-						</main>
+
+						{children}
 					</ThirdwebProvider>
 				</ConvexAuthProvider>
 				<ScrollRestoration />
