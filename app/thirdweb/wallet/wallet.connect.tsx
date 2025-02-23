@@ -60,7 +60,7 @@ const WalletConnectButton: FC<WalletConnectButtonProps> = () => {
 						<PiSpinnerGap size={20} className="animate-spin" />
 					</Button>
 
-					<Button variant={"secondary"} className="hidden md:block" disabled>
+					<Button variant={"secondary"} className="hidden md:flex" disabled>
 						<PiSpinnerGap size={20} className="animate-spin" />
 						<span>Sign In</span>
 					</Button>
@@ -73,7 +73,7 @@ const WalletConnectButton: FC<WalletConnectButtonProps> = () => {
 						<PiWallet size={20} />
 					</Button>
 
-					<Button onClick={handleLogin} className="hidden md:block">
+					<Button onClick={handleLogin} className="hidden md:flex">
 						<PiWallet size={20} />
 						<span>Sign In</span>
 					</Button>

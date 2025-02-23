@@ -7,7 +7,9 @@ import { PiListLight } from "react-icons/pi";
 
 import { Button } from "~/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "~/components/ui/navigation-menu";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu";
+import { appSocials } from "~/config/app";
+import { FaTelegram, FaXTwitter } from "react-icons/fa6";
 
 interface NavbarMenuProps { }
 
@@ -47,7 +49,7 @@ const NavbarMenu: FC<NavbarMenuProps> = () => {
 					</Button>
 				</DropdownMenuTrigger>
 
-				<DropdownMenuContent className="space-y-1">
+				<DropdownMenuContent className="min-w-40 space-y-1">
 					{navbarMenuItems.map((item) => (
 						<DropdownMenuItem key={item.name} className="p-0 focus:bg-transparent">
 							<Link
@@ -62,6 +64,21 @@ const NavbarMenu: FC<NavbarMenuProps> = () => {
 							</Link>
 						</DropdownMenuItem>
 					))}
+
+					<DropdownMenuSeparator />
+
+					<DropdownMenuItem className="p-0 focus:bg-transparent">
+						<a href={appSocials.twitter} className="w-full px-3 py-2 flex items-center gap-2" target="_blank" rel="noreferrer">
+							<FaXTwitter size={16} /> Twitter
+						</a>
+					</DropdownMenuItem>
+
+					<DropdownMenuItem className="p-0 focus:bg-transparent">
+						<a href={appSocials.telegram} className="w-full px-3 py-2 flex items-center gap-2" target="_blank" rel="noreferrer">
+							<FaTelegram size={16} /> Telegram
+						</a>
+					</DropdownMenuItem>
+
 				</DropdownMenuContent>
 			</DropdownMenu>
 
