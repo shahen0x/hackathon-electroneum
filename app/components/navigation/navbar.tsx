@@ -1,5 +1,6 @@
 import { Link, useLocation } from "@remix-run/react";
 import { FC } from "react";
+import NavbarMenu from "./navbar.menu";
 
 interface NavbarProps {
 
@@ -20,6 +21,8 @@ const Navbar: FC<NavbarProps> = () => {
 			<Link to={"/"} className="absolute left-1/2 -translate-x-1/2">
 				<img src="/logo.svg" alt="ElectroPlay" className="w-8 h-auto" />
 			</Link>
+
+			<NavbarMenu />
 		</nav>
 	)
 }
