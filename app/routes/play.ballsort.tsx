@@ -19,10 +19,10 @@ export default function Ballsort() {
 		unityProvider,
 		isLoaded,
 		loadingProgression,
-		requestFullscreen,
-		addEventListener,
-		removeEventListener,
-		sendMessage
+		// requestFullscreen,
+		// addEventListener,
+		// removeEventListener,
+		// sendMessage
 	} = useUnityContext({
 		companyName: "Cryptark",
 		productName: gameName,
