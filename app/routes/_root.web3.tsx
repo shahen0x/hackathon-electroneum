@@ -1,6 +1,6 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { api } from "convex/_generated/api";
-import { useAction } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { signLoginPayload } from "thirdweb/auth";
 import { useActiveAccount } from "thirdweb/react";
 import { Button } from "~/components/ui/button";
@@ -14,6 +14,7 @@ export default function Web3() {
 	const wallet = useActiveAccount();
 
 	const generatePayload = useAction(api.authWallet.generatePayload);
+	const testUser = useMutation(api.authWallet.testUser);
 	// const authenticateWallet = useAction(api.authWallet.authenticateWallet);
 	const { signIn } = useAuthActions();
 
@@ -47,9 +48,19 @@ export default function Web3() {
 		}
 	}
 
+	const handleTest = async () => {
+		try {
+			const user = await testUser();
+			console.log(user);
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	return (
 		<>
 			<Button onClick={handleAuthentication}>Authenticate</Button>
+			<Button onClick={handleTest}>Test</Button>
 		</>
 	)
 }

@@ -1,8 +1,9 @@
 import { createThirdwebClient } from "thirdweb";
 import { createAuth } from "thirdweb/auth";
 import { privateKeyToAccount } from "thirdweb/wallets";
-import { action, internalMutation, internalQuery } from "./_generated/server";
+import { action, internalMutation, internalQuery, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 // const payload = v.object({
 // 	domain: v.string(),
@@ -96,6 +97,17 @@ export const createUserWithAddress = internalMutation({
 		})
 	},
 });
+
+
+export const testUser = mutation({
+	handler: async (ctx) => {
+		const userId = await getAuthUserId(ctx);
+		if (userId === null) {
+			throw new Error("Not authenticated.");
+		}
+		return await ctx.db.get(userId);
+	}
+})
 
 
 
