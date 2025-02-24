@@ -1,0 +1,75 @@
+import { MetaFunction } from "@remix-run/node";
+import { useEffect, useState } from "react";
+import { Unity, useUnityContext } from "react-unity-webgl";
+import { UnityLoader } from "~/components/unity/unity-loader";
+
+export const meta: MetaFunction = () => {
+	return [
+		{ title: "Ballsort" },
+		{ name: "description", content: "Welcome to Remix!" },
+	];
+};
+
+export default function Ballsort() {
+
+	const baseUrl = "/games";
+	const gameName = "ballsort";
+
+	const {
+		unityProvider,
+		isLoaded,
+		loadingProgression,
+		// requestFullscreen,
+		// addEventListener,
+		// removeEventListener,
+		// sendMessage
+	} = useUnityContext({
+		companyName: "Cryptark",
+		productName: gameName,
+		productVersion: "1.0.0",
+		loaderUrl: `${baseUrl}/${gameName}/build-web/${gameName}-web.loader.js`,
+		dataUrl: `${baseUrl}/${gameName}/build-web/${gameName}-web.data`,
+		frameworkUrl: `${baseUrl}/${gameName}/build-web/${gameName}-web.framework.js`,
+		codeUrl: `${baseUrl}/${gameName}/build-web/${gameName}-web.wasm`,
+		// streamingAssetsUrl: `${baseUrl}/${gameName}/game/StreamingAssets`,
+	});
+
+	const [devicePixelRatio, setDevicePixelRatio] = useState(
+		typeof window !== "undefined" ? window.devicePixelRatio : 1
+	);
+
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+
+		const updateDevicePixelRatio = () => {
+			setDevicePixelRatio(window.devicePixelRatio);
+
+
+		};
+
+		const mediaMatcher = window.matchMedia(`(min-resolution: ${window.devicePixelRatio}dppx)`);
+		mediaMatcher.addEventListener("change", updateDevicePixelRatio);
+
+		window.addEventListener("resize", updateDevicePixelRatio);
+
+		return () => {
+			mediaMatcher.removeEventListener("change", updateDevicePixelRatio);
+			window.removeEventListener("resize", updateDevicePixelRatio);
+		};
+	}, [devicePixelRatio]);
+
+
+	return (
+		<>
+			<UnityLoader isLoaded={isLoaded} loadingProgression={loadingProgression} />
+			<Unity
+				id="UnityPlayer"
+				unityProvider={unityProvider}
+				devicePixelRatio={devicePixelRatio}
+				className="game fixed z-10 top-0 left-0 w-full h-full"
+			/>
+			{/* <Button onPress={() => router.back()} className="fixed bottom-2 left-2 z-50">Exit</Button> */}
+			{/* <a href="http://192.168.100.92:3000/" className="fixed bottom-2 left-2 z-50"> BACK HOME</a> */}
+		</>
+	);
+}

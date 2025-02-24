@@ -1,59 +1,40 @@
+# Welcome to Remix!
 
-![tw-banner](https://github.com/thirdweb-example/next-starter/assets/57885104/20c8ce3b-4e55-4f10-ae03-2fe4743a5ee8)
+- 📖 [Remix docs](https://remix.run/docs)
 
-# thirdweb-next-starter
+## Development
 
-Starter template to build an onchain react native app with [thirdweb](https://thirdweb.com/) and [next](https://nextjs.org/).
+Run the dev server:
 
-## Installation
-
-Install the template using [thirdweb create](https://portal.thirdweb.com/cli/create)
-
-```bash
-  npx thirdweb create app --next
+```shellscript
+npm run dev
 ```
 
-## Environment Variables
+## Deployment
 
-To run this project, you will need to add the following environment variables to your .env file:
+First, build your app for production:
 
-`CLIENT_ID`
-
-To learn how to create a client ID, refer to the [client documentation](https://portal.thirdweb.com/typescript/v5/client). 
-
-## Run locally
-
-Install dependencies
-
-```bash
-yarn
+```sh
+npm run build
 ```
 
-Start development server
+Then run the app in production mode:
 
-```bash
-yarn dev
+```sh
+npm start
 ```
 
-Create a production build
+Now you'll need to pick a host to deploy it to.
 
-```bash
-yarn build
-```
+### DIY
 
-Preview the production build
+If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
 
-```bash
-yarn start
-```
+Make sure to deploy the output of `npm run build`
 
-## Resources
+- `build/server`
+- `build/client`
 
-- [Documentation](https://portal.thirdweb.com/typescript/v5)
-- [Templates](https://thirdweb.com/templates)
-- [YouTube](https://www.youtube.com/c/thirdweb)
-- [Blog](https://blog.thirdweb.com)
+## Styling
 
-## Need help?
-
-For help or feedback, please [visit our support site](https://thirdweb.com/support)
+This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
