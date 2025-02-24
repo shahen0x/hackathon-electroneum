@@ -13,6 +13,11 @@ export default defineSchema({
 
 	...authTables,
 
+	authNonces: defineTable({
+		nonce: v.string(),
+	})
+		.index("byNonce", ["nonce"]),
+
 	users: defineTable({
 		name: v.optional(v.string()),
 		gamertag: v.optional(v.string()),

@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as auth from "../auth.js";
+import type * as authWallet from "../authWallet.js";
 import type * as cycles from "../cycles.js";
 import type * as http from "../http.js";
 import type * as poolOwners from "../poolOwners.js";
@@ -30,6 +31,7 @@ import type * as poolsJoin from "../poolsJoin.js";
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  authWallet: typeof authWallet;
   cycles: typeof cycles;
   http: typeof http;
   poolOwners: typeof poolOwners;
