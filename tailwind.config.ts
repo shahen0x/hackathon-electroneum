@@ -4,6 +4,17 @@ export default {
 	darkMode: ["class"],
 	content: ["./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}"],
 	theme: {
+		container: {
+			center: true,
+			padding: {
+				DEFAULT: '1rem',
+				xs: '2rem',
+				sm: '2rem',
+				md: '2rem',
+				lg: '2rem',
+				xl: '4rem'
+			}
+		},
 		extend: {
 			fontFamily: {
 				sans: [

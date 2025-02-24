@@ -15,11 +15,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card"
+import { appConfig } from "~/config/app";
 
 
 export const meta: MetaFunction = () => {
 	return [
-		{ title: "New Remix App" },
+		{ title: `Dashboard - ${appConfig.name}` },
 		{ name: "description", content: "Welcome to Remix!" },
 	];
 };
