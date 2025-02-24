@@ -2,6 +2,13 @@ import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
+
+export const gameLineup = {
+	ballsort: v.optional(v.boolean()),
+	matchtwo: v.optional(v.boolean()),
+}
+
+
 export default defineSchema({
 
 	...authTables,
@@ -25,10 +32,7 @@ export default defineSchema({
 			playtime: v.string(),
 			end: v.string(),
 		}),
-		gameLineup: v.object({
-			blitzer: v.optional(v.boolean()),
-			ballsort: v.optional(v.boolean()),
-		}),
+		gameLineup: v.object(gameLineup),
 		pools: v.optional(v.array(v.id("pools"))),
 	})
 		.index("byActive", ["active"]),
@@ -45,7 +49,15 @@ export default defineSchema({
 		poolOwner: v.id("poolOwners"),
 		contractAddress: v.string(),
 	})
-		.index("byCycle", ["cycle"])
+		.index("byCycle", ["cycle"]),
 
+	scorecards: defineTable({
+		userId: v.id("users"),
+		poolId: v.id("pools"),
+		gamertag: v.optional(v.string()),
+		totalPoints: v.number(),
+		gameData: v.any()
+	})
+		.index("byUserAndPoolId", ["userId", "poolId"]),
 
 });
