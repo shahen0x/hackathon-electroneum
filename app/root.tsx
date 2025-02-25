@@ -11,6 +11,8 @@ import { ThirdwebProvider } from "thirdweb/react";
 import Background from "./components/background";
 import Navbar from "./components/navigation/navbar";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 export const links: LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 	{
@@ -37,6 +39,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 	const { ENV } = useLoaderData<typeof loader>();
 	const [convex] = useState(() => new ConvexReactClient(ENV.CONVEX_URL));
 
+	const queryClient = new QueryClient();
+
 	return (
 		<html lang="en" className="dark">
 			<head>
@@ -47,13 +51,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			</head>
 			<body>
 				<Background />
-				<ConvexAuthProvider client={convex}>
-					<ThirdwebProvider>
-						<Navbar />
+				<QueryClientProvider client={queryClient}>
+					<ConvexAuthProvider client={convex}>
+						<ThirdwebProvider>
+							<Navbar />
 
-						{children}
-					</ThirdwebProvider>
-				</ConvexAuthProvider>
+							{children}
+						</ThirdwebProvider>
+					</ConvexAuthProvider>
+				</QueryClientProvider>
 				<ScrollRestoration />
 				<Scripts />
 			</body>
