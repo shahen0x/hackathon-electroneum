@@ -1,20 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { api } from "convex/_generated/api";
-import { useConvexAuth, useQuery } from "convex/react";
-import { ConnectButton, useActiveAccount, useWalletBalance } from "thirdweb/react";
-import { SignIn } from "~/components/SignIn";
-import { Button } from "~/components/ui/button";
-import { clientThirdweb } from "~/thirdweb/client";
-import { polygon } from "thirdweb/chains";
-
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "~/components/ui/card"
+import ActivePools from "~/components/pools/pools.active";
 import { appConfig } from "~/config/app";
 
 
@@ -27,54 +12,20 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
 
-	const pools = useQuery(api.pools.getAllPools);
-	const { isAuthenticated } = useConvexAuth();
-
-	const account = useActiveAccount();
-	const { data: balance, } = useWalletBalance({
-		client: clientThirdweb,
-		chain: polygon,
-		address: account?.address,
-	});
-
-
 	return (
-		<div className="flex items-center justify-center">
-			<div className="flex flex-col items-center gap-16">
-				<header className="flex flex-col items-center gap-9">
-					<h1 className="leading text-2xl font-bold text-gray-800 dark:text-gray-100">
-						Welcome to <span className="sr-only">Remix</span>
-					</h1>
-					{pools === undefined
-						? "loading..."
-						: pools.map(({ _id, poolOwner }) => <div key={_id}>{poolOwner}</div>)}
-					<Button onClick={() => alert("Hello!")}>Click me</Button>
-
-					<SignIn />
-					<p>{isAuthenticated ? "Authenticated" : "Not Authenticated"}</p>
-
-					<ConnectButton client={clientThirdweb} />
-					<div>
-						<p>Wallet address: {account?.address}</p>
-						<p>
-							Wallet balance: {balance?.displayValue} {balance?.symbol}
-						</p>
-					</div>
-				</header>
-
-				<Card>
-					<CardHeader>
-						<CardTitle>Card Title</CardTitle>
-						<CardDescription>Card Description</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<p>Card Content</p>
-					</CardContent>
-					<CardFooter>
-						<p>Card Footer</p>
-					</CardFooter>
-				</Card>
+		<div className="container space-y-4">
+			{/* BANNER */}
+			<div className="bg-primary/20 rounded-2xl p-6 lg:p-10 lg:flex items-center gap-12 lg:gap-24 bg-[url(/home/home-banner-mobile.png)] bg-no-repeat bg-right bg-contain xl:bg-[url(/home/home-banner.png)]">
+				<h1 className="mb-6 lg:mb-0 text-2xl sm:text-3xl font-bold font-pixel">Compete,<br />Climb,<br />Conquer</h1>
+				<div className="max-w-72 sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+					<h2 className="mb-2 sm:mb-1 text-[0.59rem] sm:text-lg font-semibold font-pixel">Weekly Token Rewards Await!</h2>
+					<p className="text-sm">Join token pools and compete in exciting games to climb the leaderboards with 30% of the top participants winning weekly rewards, your chances of earning are high!</p>
+				</div>
 			</div>
+
+			<ActivePools />
+
+
 		</div>
 	);
 }

@@ -7,7 +7,7 @@ export default {
 		container: {
 			center: true,
 			padding: {
-				DEFAULT: '1rem',
+				DEFAULT: '0.6rem',
 				xs: '2rem',
 				sm: '2rem',
 				md: '2rem',
@@ -26,7 +26,8 @@ export default {
 					'Segoe UI Emoji',
 					'Segoe UI Symbol',
 					'Noto Color Emoji'
-				]
+				],
+				pixel: ['"Press Start 2P"', 'cursive']
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
