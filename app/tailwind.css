@@ -82,3 +82,7 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.boxWithGradient {
+  background: radial-gradient(44.17% 43.41% at 50% 0, #434242 0, #121212 100%) !important;
+}

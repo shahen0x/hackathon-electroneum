@@ -53,7 +53,7 @@ const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 		queryFn: retrieveOnchainData
 	});
 
-	console.log("user joined: ", onchain?.userRecorded)
+	// console.log("user joined: ", onchain?.userRecorded)
 
 	return (
 		<Card>
@@ -85,12 +85,8 @@ const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 			</CardContent>
 
 			<CardFooter className="p-3 pt-0 flex-col">
-
 				{isLoading && <Skeleton className="w-full h-[32px] rounded-md" />}
-				{!isLoading &&
-					<PoolJoin pool={pool} onchain={onchain} />
-				}
-
+				{!isLoading && <PoolJoin pool={pool} onchain={onchain} isNative={isNative} />}
 			</CardFooter>
 
 		</Card>
