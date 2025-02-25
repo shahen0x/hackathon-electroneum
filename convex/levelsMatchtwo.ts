@@ -1,7 +1,7 @@
 import { shuffleString } from "./utils/shuffleString";
-import { internalMutation, internalQuery } from "./_generated/server";
+import { internalMutation, internalQuery, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
-import { internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 
 enum MatchtwoGridSize {
     FourByFour = 16,
@@ -58,8 +58,7 @@ export const generateMatchtwoLevels = internalMutation({
         const { cycleId } = args;
 
         // Check if levels already exist for this cycle
-        const levels = await ctx.runQuery(internal.levelsMatchtwo.getLevelsForCycle, { cycleId });
-        
+        const levels = await getMatchtwoDataForCycle(ctx, cycleId);
         if (levels) throw new Error("Match two levels already exist for this cycle.");
 
         // Generate levels
@@ -77,21 +76,35 @@ export const generateMatchtwoLevels = internalMutation({
     },
   });
 
-    export const getLevelsForCycle = internalQuery({
-      args: {
-          cycleId: v.id("cycles"),
-        },
-      handler: async (ctx, args) => {
-          const { cycleId } = args;
-  
-          const levels = await ctx.db
-              .query("levelsMatchtwo")
-              .withIndex("byCycleId", (q) =>
-                  q.eq("cycleId", cycleId)
-              )
-              .unique();
-    
-          return levels;
-    
-      }
-    })
+export async function getMatchtwoDataForCycle(ctx: MutationCtx, cycleId: Id<"cycles">){
+    const levels = await ctx.db
+        .query("levelsMatchtwo")
+        .withIndex("byCycleId", (q) =>
+            q.eq("cycleId", cycleId)
+        )
+        .unique();
+
+    return levels;
+
+}
+
+// export const getLevelsForCycle = internalQuery({
+//   args: {
+//       cycleId: v.id("cycles"),
+//     },
+//   handler: async (ctx, args) => {
+//       const { cycleId } = args;
+
+//       const levels = await ctx.db
+//           .query("levelsMatchtwo")
+//           .withIndex("byCycleId", (q) =>
+//               q.eq("cycleId", cycleId)
+//           )
+//           .unique();
+
+//       return levels;
+
+//   }
+// })
+
+

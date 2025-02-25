@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as auth from "../auth.js";
 import type * as authWallet from "../authWallet.js";
+import type * as compete from "../compete.js";
 import type * as cycles from "../cycles.js";
 import type * as http from "../http.js";
 import type * as levelsBallsort from "../levelsBallsort.js";
@@ -37,6 +38,7 @@ import type * as utils_shuffleString from "../utils/shuffleString.js";
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   authWallet: typeof authWallet;
+  compete: typeof compete;
   cycles: typeof cycles;
   http: typeof http;
   levelsBallsort: typeof levelsBallsort;

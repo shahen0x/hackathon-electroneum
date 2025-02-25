@@ -1,7 +1,8 @@
 import { v } from "convex/values";
-import { internalMutation, internalQuery, query } from "./_generated/server";
+import { internalMutation, internalQuery, MutationCtx, query } from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import { shuffleString } from "./utils/shuffleString";
+import { Id } from "./_generated/dataModel";
 
 type LevelSpecBallsort = {
     ta: number,
@@ -68,7 +69,7 @@ export const generateBallsortLevels = internalMutation({
         const { cycleId } = args;
 
         // Check if levels already exist for this cycle
-        const levels = await ctx.runQuery(internal.levelsBallsort.getLevelsForCycle, { cycleId });
+        const levels = await getBallsortDataForCycle(ctx, cycleId);
         
         if (levels) throw new Error("Ball Sort levels already exist for this cycle.");
 
@@ -84,26 +85,39 @@ export const generateBallsortLevels = internalMutation({
 
         return levelsId;
     },
-  });
+});
 
-  export const getLevelsForCycle = internalQuery({
-    args: {
-        cycleId: v.id("cycles"),
-      },
-    handler: async (ctx, args) => {
-        const { cycleId } = args;
+export async function getBallsortDataForCycle(ctx: MutationCtx, cycleId: Id<"cycles">){
+    const levels = await ctx.db
+        .query("levelsBallsort")
+        .withIndex("byCycleId", (q) =>
+            q.eq("cycleId", cycleId)
+        )
+        .unique();
 
-        const levels = await ctx.db
-            .query("levelsBallsort")
-            .withIndex("byCycleId", (q) =>
-                q.eq("cycleId", cycleId)
-            )
-            .unique();
+    return levels;
+
+}
+
+//   export const getLevelsForCycle = internalQuery({
+//     args: {
+//         cycleId: v.id("cycles"),
+//       },
+//     handler: async (ctx, args) => {
+//         const { cycleId } = args;
+
+//         const levels = await ctx.db
+//             .query("levelsBallsort")
+//             .withIndex("byCycleId", (q) =>
+//                 q.eq("cycleId", cycleId)
+//             )
+//             .unique();
   
-        return levels;
+//         return levels;
   
-    }
-  })
+//     }
+
+
 
 
 
