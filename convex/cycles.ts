@@ -1,4 +1,3 @@
-import { Doc } from "@convex-dev/auth/server";
 import { mutation, query } from "./_generated/server";
 
 export const createMockCycle = mutation({
@@ -12,7 +11,7 @@ export const createMockCycle = mutation({
 				end: "2025-02-28T10:34:26.862Z",
 			},
 			gameLineup: {
-                ballsort: true,
+				ballsort: true,
 				matchtwo: true,
 			}
 		});
@@ -28,7 +27,7 @@ export const getActiveCycle = query({
 			)
 			.unique();
 
-        return activeCycle;
+		return activeCycle;
 
 	}
 })

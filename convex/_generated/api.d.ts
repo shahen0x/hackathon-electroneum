@@ -14,11 +14,13 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as auth from "../auth.js";
+import type * as authWallet from "../authWallet.js";
 import type * as cycles from "../cycles.js";
 import type * as http from "../http.js";
 import type * as poolOwners from "../poolOwners.js";
 import type * as pools from "../pools.js";
 import type * as poolsJoin from "../poolsJoin.js";
+import type * as users from "../users.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -30,11 +32,13 @@ import type * as poolsJoin from "../poolsJoin.js";
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  authWallet: typeof authWallet;
   cycles: typeof cycles;
   http: typeof http;
   poolOwners: typeof poolOwners;
   pools: typeof pools;
   poolsJoin: typeof poolsJoin;
+  users: typeof users;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

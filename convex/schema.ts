@@ -13,15 +13,22 @@ export default defineSchema({
 
 	...authTables,
 
+	authNonces: defineTable({
+		nonce: v.string(),
+	})
+		.index("byNonce", ["nonce"]),
+
 	users: defineTable({
-		name: v.optional(v.string()),
 		gamertag: v.optional(v.string()),
 		avatar: v.optional(v.string()),
-		email: v.optional(v.string()),
-		emailVerificationTime: v.optional(v.number()),
 		walletAddress: v.optional(v.string()),
 	})
 		.index("byWalletAddress", ["walletAddress"]),
+
+	usersFrozen: defineTable({
+		userId: v.id("users")
+	})
+		.index("byUserId", ["userId"]),
 
 
 	cycles: defineTable({
