@@ -20,6 +20,7 @@ import type * as http from "../http.js";
 import type * as poolOwners from "../poolOwners.js";
 import type * as pools from "../pools.js";
 import type * as poolsJoin from "../poolsJoin.js";
+import type * as users from "../users.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   poolOwners: typeof poolOwners;
   pools: typeof pools;
   poolsJoin: typeof poolsJoin;
+  users: typeof users;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

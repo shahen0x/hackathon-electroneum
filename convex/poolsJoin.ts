@@ -1,6 +1,6 @@
 import { ConvexError, v } from "convex/values";
 import { api, internal } from "./_generated/api";
-import { Doc, Id } from "./_generated/dataModel";
+import { Id } from "./_generated/dataModel";
 import { action, internalMutation } from "./_generated/server";
 import { parseISO } from "date-fns";
 import { gameLineup } from "./schema";
@@ -21,11 +21,10 @@ export type GameDataMatchtwo = typeof matchtwoGameData;
 
 export const joinPool = action({
     handler: async (ctx) => {
-        const user = {
-            _id: "k57cdqhnpr5pw5pg8xx2g6mybx7azmp0",
-            walletAddress: "adiadihsadasan",
-            gamertag: "shahil"
-        } as Doc<"users">;
+
+        // Get the authenticated user
+        const user = await ctx.runQuery(api.users.getCurrentUser);
+        if (!user) throw new ConvexError({ message: "You must be authenticated first!" });
 
         const poolId = "k172nvwjmndxkmbav96qsfd2pd7ayny7" as Id<"pools">;
 
@@ -91,6 +90,7 @@ export const createScorecard = internalMutation({
         if (userScorecard) throw new ConvexError({ message: "You have already joined this pool." });
 
         // Create empty gameData based on game lineup
+        // @ts-ignore
         const gameData: any = {};
         const gameLineupArray = Object.keys(gameLineup);
         gameLineupArray.forEach((game: string) => {

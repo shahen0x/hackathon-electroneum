@@ -1,6 +1,6 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { api } from "convex/_generated/api";
-import { useAction, useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { signLoginPayload } from "thirdweb/auth";
 import { useActiveAccount } from "thirdweb/react";
 import { Button } from "~/components/ui/button";
@@ -14,8 +14,6 @@ export default function Web3() {
 	const wallet = useActiveAccount();
 
 	const generatePayload = useAction(api.authWallet.generatePayload);
-	const testUser = useMutation(api.authWallet.testUser);
-	// const authenticateWallet = useAction(api.authWallet.authenticateWallet);
 	const { signIn } = useAuthActions();
 
 	const handleAuthentication = async (): Promise<void> => {
@@ -33,34 +31,19 @@ export default function Web3() {
 			if (!signedPayload) throw new Error("Signature failed.");
 
 			// Authenticate the wallet
-			// const formData = {
-			// 	signedPayload
-			// }
-
 			const backendResponse = await signIn("siwe", { signedPayload });
 			if (!backendResponse.signingIn) throw new Error("Sign-in process failed.");
 
-			// const jwt = await authenticateWallet({ signedPayload: { payload, signature: signatureResult.signature } });
 
-			// console.log(jwt)
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
-	const handleTest = async () => {
-		try {
-			const user = await testUser();
-			console.log(user);
-		} catch (error) {
-			console.log(error);
-		}
-	}
 
 	return (
 		<>
 			<Button onClick={handleAuthentication}>Authenticate</Button>
-			<Button onClick={handleTest}>Test</Button>
 		</>
 	)
 }
