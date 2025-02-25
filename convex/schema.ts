@@ -3,10 +3,16 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 
-export const gameLineup = {
+export const gameLineup = v.object({
 	ballsort: v.optional(v.boolean()),
 	matchtwo: v.optional(v.boolean()),
-}
+});
+
+export const schedule = v.object({
+	enroll: v.string(),
+	playtime: v.string(),
+	end: v.string(),
+});
 
 
 export default defineSchema({
@@ -34,12 +40,8 @@ export default defineSchema({
 	cycles: defineTable({
 		active: v.boolean(),
 		week: v.number(),
-		schedule: v.object({
-			enroll: v.string(),
-			playtime: v.string(),
-			end: v.string(),
-		}),
-		gameLineup: v.object(gameLineup),
+		schedule,
+		gameLineup,
 		pools: v.optional(v.array(v.id("pools"))),
 	})
 		.index("byActive", ["active"]),
@@ -67,4 +69,15 @@ export default defineSchema({
 	})
 		.index("byUserAndPoolId", ["userId", "poolId"]),
 
+	levelsBallsort: defineTable({
+		cycleId: v.id("cycles"),
+		levels: v.string()
+	})
+		.index("byCycleId", ["cycleId"]),
+
+	levelsMatchtwo: defineTable({
+		cycleId: v.id("cycles"),
+		levels: v.string()
+	})
+		.index("byCycleId", ["cycleId"]),
 });
