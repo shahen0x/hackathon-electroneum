@@ -67,4 +67,9 @@ export default defineSchema({
 	})
 		.index("byUserAndPoolId", ["userId", "poolId"]),
 
+	levelsBallsort: defineTable({
+		cycleId: v.id("cycles"),
+		levels: v.string()
+	})
+		.index("byCycleId", ["cycleId"]),
 });

@@ -13,6 +13,7 @@ export const ballsortGameData = {
 }
 export type GameDataBallsort = typeof ballsortGameData;
 
+// /** MATCH TWO */
 export const matchtwoGameData = {
     finalTime: 0,
     matchesAttempted: 0,
@@ -20,16 +21,17 @@ export const matchtwoGameData = {
 export type GameDataMatchtwo = typeof matchtwoGameData;
 
 export const joinPool = action({
+    // args: {
+    //     poolId: v.id("pools"),
+    // },
     handler: async (ctx) => {
 
         // Get the authenticated user
         const user = await ctx.runQuery(api.users.getCurrentUser);
         if (!user) throw new ConvexError({ message: "You must be authenticated first!" });
 
+        // retrieve via args, this is for testing only 
         const poolId = "k172nvwjmndxkmbav96qsfd2pd7ayny7" as Id<"pools">;
-
-        // TODO: Authenticate user with convex
-        // TODO: Verify user wallet
 
         // Fetch active cycle
         const activeCycle = await ctx.runQuery(api.cycles.getActiveCycle);
@@ -57,7 +59,7 @@ export const joinPool = action({
             throw new ConvexError({ message: "Enrollment phase is over." });
         }
 
-        // TODO: Check user participation in pool on smart contract
+        // 🛑🛑🛑 TODO: Check user participation in pool on smart contract 🛑🛑🛑
 
         // Create scorecard, IF NOT ALREADY CREATED in an internal mutation
         const res: string = await ctx.runMutation(internal.poolsJoin.createScorecard, {
@@ -92,7 +94,13 @@ export const createScorecard = internalMutation({
         // Create empty gameData based on game lineup
         // @ts-ignore
         const gameData: any = {};
-        const gameLineupArray = Object.keys(gameLineup);
+
+        // Only take keys that are true
+        const gameLineupArray = Object.keys(gameLineup)
+        .filter((key): key is keyof typeof gameLineup => 
+            gameLineup[key as keyof typeof gameLineup] === true
+        )
+
         gameLineupArray.forEach((game: string) => {
             gameData[game] = emptyScorecard(game);
         });
