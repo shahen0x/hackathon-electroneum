@@ -3,13 +3,13 @@ import { internalMutation, internalQuery, query } from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import { shuffleString } from "./utils/shuffleString";
 
-type LevelSpecBallSort = {
+type LevelSpecBallsort = {
     ta: number,
     bd: string
 }
 
-type SpecsBallSort = {
-    levels: LevelSpecBallSort[]
+type SpecsBallsort = {
+    levels: LevelSpecBallsort[]
 }
 
 function findColorAmount(tubeAmount: number) {
@@ -27,10 +27,10 @@ function findColorAmount(tubeAmount: number) {
     }
 }
 
-const ballSortLevelGenerator = (setAmount: number) => {
+const ballSortPlaylistGenerator = (setAmount: number) => {
     const ballsAvailable = "123456789abcdef";
 
-    let specs: SpecsBallSort[] = [];
+    let specs: SpecsBallsort[] = [];
 
     for (let i = 0; i < setAmount; i++) {
         specs[i] = { levels: [] }
@@ -52,7 +52,7 @@ const ballSortLevelGenerator = (setAmount: number) => {
             }
         }
 
-        const levelSpec: LevelSpecBallSort = {
+        const levelSpec: LevelSpecBallsort = {
             ta: tubeAmount,
             bd: shuffleString(buildInstructions)
         }
@@ -68,13 +68,13 @@ export const generateBallsortLevels = internalMutation({
         const { cycleId } = args;
 
         // Check if levels already exist for this cycle
-        const levels = await ctx.runQuery(internal.levelsBallsort.getLevels, { cycleId });
+        const levels = await ctx.runQuery(internal.levelsBallsort.getLevelsForCycle, { cycleId });
         
-        if (levels) throw new Error("Levels already exist for this cycle.");
+        if (levels) throw new Error("Ball Sort levels already exist for this cycle.");
 
         // Generate levels
         const setAmount = 3;
-        const levelString = ballSortLevelGenerator(setAmount);
+        const levelString = ballSortPlaylistGenerator(setAmount);
 
         // Insert new levels
         const levelsId = await ctx.db.insert("levelsBallsort", {
@@ -86,7 +86,7 @@ export const generateBallsortLevels = internalMutation({
     },
   });
 
-  export const getLevels = internalQuery({
+  export const getLevelsForCycle = internalQuery({
     args: {
         cycleId: v.id("cycles"),
       },

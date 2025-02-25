@@ -18,6 +18,7 @@ import type * as authWallet from "../authWallet.js";
 import type * as cycles from "../cycles.js";
 import type * as http from "../http.js";
 import type * as levelsBallsort from "../levelsBallsort.js";
+import type * as levelsMatchtwo from "../levelsMatchtwo.js";
 import type * as poolOwners from "../poolOwners.js";
 import type * as pools from "../pools.js";
 import type * as poolsJoin from "../poolsJoin.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   cycles: typeof cycles;
   http: typeof http;
   levelsBallsort: typeof levelsBallsort;
+  levelsMatchtwo: typeof levelsMatchtwo;
   poolOwners: typeof poolOwners;
   pools: typeof pools;
   poolsJoin: typeof poolsJoin;

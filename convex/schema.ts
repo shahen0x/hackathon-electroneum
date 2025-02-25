@@ -72,4 +72,10 @@ export default defineSchema({
 		levels: v.string()
 	})
 		.index("byCycleId", ["cycleId"]),
+
+	levelsMatchtwo: defineTable({
+		cycleId: v.id("cycles"),
+		levels: v.string()
+	})
+		.index("byCycleId", ["cycleId"]),
 });
