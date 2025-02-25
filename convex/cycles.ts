@@ -1,8 +1,13 @@
-import { mutation, query } from "./_generated/server";
+import { ConvexError, v } from "convex/values";
+import { api, internal } from "./_generated/api";
+import { internalMutation, mutation, query } from "./_generated/server";
+import { gameLineup, schedule } from "./schema";
+import { getActiveGameLineup } from "./utils/getActiveGameLineup";
+import { parseISO } from "date-fns";
 
 export const createMockCycle = mutation({
 	handler: async (ctx) => {
-		return await ctx.db.insert("cycles", {
+		return  await ctx.db.insert("cycles", {
 			active: true,
 			week: 0,
 			schedule: {
@@ -15,6 +20,66 @@ export const createMockCycle = mutation({
 				matchtwo: true,
 			}
 		});
+	}
+})
+
+export const createCycle = internalMutation({
+	args: {
+		week : v.number(),
+		schedule,
+		gameLineup,
+	},
+	handler: async (ctx, args) => {
+		const {week, schedule, gameLineup} = args;
+
+		// Validate game lineup
+		const lineup = getActiveGameLineup(gameLineup);
+		if (lineup.length === 0) throw new ConvexError({ message: "Game lineup must have at least 1 active game." });
+
+		// Validate schedule
+		const isEnrollISOFormat = isISODate(schedule.enroll);
+		const isPlaytimeISOFormat = isISODate(schedule.playtime);
+		const isEndISOFormat = isISODate(schedule.end);
+		
+		if (!isEnrollISOFormat || !isPlaytimeISOFormat || !isEndISOFormat) throw new ConvexError({ message: "Schedule must be in ISO format." });
+
+        const enrollDate = parseISO(schedule.enroll);
+		const playtimeDate = parseISO(schedule.playtime);
+        const endDate = parseISO(schedule.end);
+
+		if (enrollDate > playtimeDate) throw new ConvexError({ message: "Enrollment date cannot be after playtime date." });
+		if (enrollDate >= endDate) throw new ConvexError({ message: "Enrollment date must be before end date." });
+		if (playtimeDate >= endDate) throw new ConvexError({ message: "Playtime date must be before end date." });
+
+		// Check for active cycle
+		const activeCycle = await ctx.runQuery(api.cycles.getActiveCycle);
+		if (activeCycle) throw new ConvexError({ message: "There is already an active cycle" });
+
+		// Create cycle
+		const cycleId =  await ctx.db.insert("cycles", {
+			active: true,
+			week,
+			schedule,
+			gameLineup
+		});
+
+		// Create ball sort levels, if needed
+		if (gameLineup.ballsort) {
+			await ctx.scheduler.runAfter(0, internal.levelsBallsort.generateBallsortLevels, {
+				cycleId: cycleId,
+			});
+		}
+
+		// Create match two levels, if needed
+		if (gameLineup.matchtwo) {
+			await ctx.scheduler.runAfter(0, internal.levelsMatchtwo.generateMatchtwoLevels, {
+				cycleId: cycleId,
+			});
+		}
+
+        // 🛑🛑🛑 TODO: Schedule cycle closure 🛑🛑🛑
+
+		return cycleId;
 	}
 })
 
@@ -31,3 +96,12 @@ export const getActiveCycle = query({
 
 	}
 })
+
+function isISODate(str: string): boolean {
+    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(str)) {
+        return false;
+    }
+    
+    const timestamp = Date.parse(str);
+    return !isNaN(timestamp);
+}

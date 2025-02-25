@@ -4,6 +4,7 @@ import { Id } from "./_generated/dataModel";
 import { action, internalMutation } from "./_generated/server";
 import { parseISO } from "date-fns";
 import { gameLineup } from "./schema";
+import { getActiveGameLineup } from "./utils/getActiveGameLineup";
 
 // /** BALLSORT */
 export const ballsortGameData = {
@@ -21,33 +22,23 @@ export const matchtwoGameData = {
 export type GameDataMatchtwo = typeof matchtwoGameData;
 
 export const joinPool = action({
-    // args: {
-    //     poolId: v.id("pools"),
-    // },
-    handler: async (ctx) => {
+    args: {
+        poolId: v.id("pools"),
+    },
+    handler: async (ctx, args) => {
+        const { poolId } = args;
 
         // Get the authenticated user
         const user = await ctx.runQuery(api.users.getCurrentUser);
         if (!user) throw new ConvexError({ message: "You must be authenticated first!" });
 
-        // retrieve via args, this is for testing only 
-        const poolId = "k172nvwjmndxkmbav96qsfd2pd7ayny7" as Id<"pools">;
-
-        // Fetch active cycle
+        // Check active cycle
         const activeCycle = await ctx.runQuery(api.cycles.getActiveCycle);
-
-        if (!activeCycle) {
-            throw new ConvexError({ message: "Active cycle not found." });
-        }
+        if (!activeCycle) throw new ConvexError({ message: "Active cycle not found." });
 
         // Check if pool is in active cycle
-        if (!activeCycle.pools || activeCycle.pools.length === 0) {
-            throw new ConvexError({ message: "No pools found in active cycle." });
-        }
-
-        if (!activeCycle.pools.includes(poolId)) {
-            throw new ConvexError({ message: "Pool not found in active cycle." });
-        }
+        if (!activeCycle.pools || activeCycle.pools.length === 0) throw new ConvexError({ message: "No pools found in active cycle." });
+        if (!activeCycle.pools.includes(poolId)) throw new ConvexError({ message: "Pool not found in active cycle." });
 
         // Check schedule
         const now = new Date();
@@ -79,7 +70,7 @@ export const createScorecard = internalMutation({
         userId: v.id("users"),
         poolId: v.id("pools"),
         gamertag: v.optional(v.string()),
-        gameLineup: v.object(gameLineup),
+        gameLineup,
     },
     handler: async (ctx, args) => {
         const { userId, poolId, gamertag, gameLineup } = args;
@@ -96,10 +87,7 @@ export const createScorecard = internalMutation({
         const gameData: any = {};
 
         // Only take keys that are true
-        const gameLineupArray = Object.keys(gameLineup)
-        .filter((key): key is keyof typeof gameLineup => 
-            gameLineup[key as keyof typeof gameLineup] === true
-        )
+        const gameLineupArray = getActiveGameLineup(gameLineup);
 
         gameLineupArray.forEach((game: string) => {
             gameData[game] = emptyScorecard(game);

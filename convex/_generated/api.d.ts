@@ -23,6 +23,7 @@ import type * as poolOwners from "../poolOwners.js";
 import type * as pools from "../pools.js";
 import type * as poolsJoin from "../poolsJoin.js";
 import type * as users from "../users.js";
+import type * as utils_getActiveGameLineup from "../utils/getActiveGameLineup.js";
 import type * as utils_shuffleString from "../utils/shuffleString.js";
 
 /**
@@ -44,6 +45,7 @@ declare const fullApi: ApiFromModules<{
   pools: typeof pools;
   poolsJoin: typeof poolsJoin;
   users: typeof users;
+  "utils/getActiveGameLineup": typeof utils_getActiveGameLineup;
   "utils/shuffleString": typeof utils_shuffleString;
 }>;
 export declare const api: FilterApi<
