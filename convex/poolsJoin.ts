@@ -1,6 +1,5 @@
 import { ConvexError, v } from "convex/values";
 import { api, internal } from "./_generated/api";
-import { Id } from "./_generated/dataModel";
 import { action, internalMutation } from "./_generated/server";
 import { parseISO } from "date-fns";
 import { gameLineup } from "./schema";

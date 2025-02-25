@@ -1,13 +1,13 @@
 import { ConvexError, v } from "convex/values";
 import { api, internal } from "./_generated/api";
-import { internalMutation, mutation, query } from "./_generated/server";
+import { internalMutation, query} from "./_generated/server";
 import { gameLineup, schedule } from "./schema";
 import { getActiveGameLineup } from "./utils/getActiveGameLineup";
 import { parseISO } from "date-fns";
 
-export const createMockCycle = mutation({
+export const createMockCycle = internalMutation({
 	handler: async (ctx) => {
-		return  await ctx.db.insert("cycles", {
+		return await ctx.db.insert("cycles", {
 			active: true,
 			week: 0,
 			schedule: {
@@ -93,7 +93,6 @@ export const getActiveCycle = query({
 			.unique();
 
 		return activeCycle;
-
 	}
 })
 
