@@ -15,10 +15,11 @@ import PoolJoin from "./pool.join";
 interface PoolModalProps {
 	data: PoolType;
 	userJoinedPool: boolean | undefined;
-	refetch: () => void;
+	refetchData: () => void;
+	refetchJoinedPool: () => void;
 }
 
-const PoolModal: FC<PoolModalProps> = ({ data, userJoinedPool }) => {
+const PoolModal: FC<PoolModalProps> = ({ data, userJoinedPool, refetchData, refetchJoinedPool }) => {
 
 	// States
 	const [open, setOpen] = useState(false);
@@ -128,6 +129,8 @@ const PoolModal: FC<PoolModalProps> = ({ data, userJoinedPool }) => {
 						setOpen={setOpen}
 						processing={processing}
 						setProcessing={setProcessing}
+						refetchData={refetchData}
+						refetchJoinedPool={refetchJoinedPool}
 					/>
 				</div>
 

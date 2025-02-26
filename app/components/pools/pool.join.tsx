@@ -18,9 +18,11 @@ interface PoolJoinProps {
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	processing: boolean;
 	setProcessing: React.Dispatch<React.SetStateAction<boolean>>;
+	refetchData: () => void;
+	refetchJoinedPool: () => void;
 }
 
-const PoolJoin: FC<PoolJoinProps> = ({ data, userJoinedPool, setOpen, processing, setProcessing }) => {
+const PoolJoin: FC<PoolJoinProps> = ({ data, userJoinedPool, setOpen, processing, setProcessing, refetchData, refetchJoinedPool }) => {
 
 	// Thirdweb
 	const account = useActiveAccount();
@@ -60,7 +62,13 @@ const PoolJoin: FC<PoolJoinProps> = ({ data, userJoinedPool, setOpen, processing
 			value: toWei(String(data.poolPrice)),
 		});
 
-		return await initTransaction(transaction);
+		const joinHash = await initTransaction(transaction);
+
+		return await waitForReceipt({
+			client,
+			chain,
+			transactionHash: joinHash
+		});
 	};
 
 
@@ -95,7 +103,13 @@ const PoolJoin: FC<PoolJoinProps> = ({ data, userJoinedPool, setOpen, processing
 			method: "joinPool"
 		});
 
-		return await initTransaction(joinTx);
+		const joinHash = await initTransaction(joinTx);
+
+		return await waitForReceipt({
+			client,
+			chain,
+			transactionHash: joinHash
+		});
 	}
 
 
@@ -109,6 +123,8 @@ const PoolJoin: FC<PoolJoinProps> = ({ data, userJoinedPool, setOpen, processing
 			setProcessing(false);
 			setOpen(false);
 			toast.success("Successfully joined the pool!");
+			refetchData();
+			refetchJoinedPool();
 		},
 	});
 
@@ -124,6 +140,8 @@ const PoolJoin: FC<PoolJoinProps> = ({ data, userJoinedPool, setOpen, processing
 			setProcessing(false);
 			setOpen(false);
 			toast.success("Successfully joined the pool!");
+			refetchData();
+			refetchJoinedPool();
 		},
 	});
 

@@ -35,6 +35,7 @@ const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 
 	// Retrieve data from smart contract
 	const retrieveOnchainData = async () => {
+		console.log("Refetching on-chain data...");
 		const [participants, poolPrice, commissionPercentage] = await Promise.all([
 			readContract({ contract, method: "getUniqueParticipants" }),
 			readContract({ contract, method: "getPoolPrice" }),
@@ -65,12 +66,12 @@ const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 		return userRecorded;
 	}
 
-	const { data, isLoading, refetch } = useQuery({
+	const { data, isLoading, refetch: refetchData, } = useQuery({
 		queryKey: [`pool-${pool.tokenSymbol}`],
 		queryFn: retrieveOnchainData
 	});
 
-	const { data: userJoinedPool } = useQuery({
+	const { data: userJoinedPool, refetch: refetchJoinedPool } = useQuery({
 		queryKey: [`pool-${pool.tokenSymbol}-${account?.address}`],
 		queryFn: retriveUserJoinedPool,
 		enabled: !!account,
@@ -108,7 +109,7 @@ const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 
 			<CardFooter className="p-3 pt-0 flex-col">
 				{isLoading && <Skeleton className="w-full h-[32px] rounded-md" />}
-				{!isLoading && <PoolModal data={data} userJoinedPool={userJoinedPool} refetch={refetch} />}
+				{!isLoading && <PoolModal data={data} userJoinedPool={userJoinedPool} refetchData={refetchData} refetchJoinedPool={refetchJoinedPool} />}
 			</CardFooter>
 
 		</Card>
