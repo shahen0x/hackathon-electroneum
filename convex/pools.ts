@@ -10,6 +10,16 @@ export const getAllPools = query({
 	},
 });
 
+export const getPool = query({
+	args: {
+		poolId: v.id("pools")
+	},
+	handler: async (ctx, args) => {
+		const {poolId} = args;
+		return await ctx.db.get(poolId);
+	},
+});
+
 export const createMockPools = internalMutation({
 	handler: async (ctx) => {
 		const pools = [
