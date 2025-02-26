@@ -2,8 +2,8 @@
 
 import { FC } from "react";
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
-import { avalancheFuji } from "thirdweb/chains";
 import { clientThirdweb } from "../client";
+import { chain } from "~/config/chain";
 interface WalletModalProps {
 
 }
@@ -33,19 +33,17 @@ const WalletModal: FC<WalletModalProps> = () => {
 					// 	},
 					// }
 				}}
-				chain={avalancheFuji}
-			// chain={
-			// 	defineChain({
-			// 		id: 5201420,
-			// 		rpc: "https://rpc.ankr.com/electroneum_testnet",
-			// 		nativeCurrency: {
-			// 			name: "Electroneum",
-			// 			symbol: "ETN",
-			// 			decimals: 18,
-			// 		},
-			// 		icon: { url: "/symbols/2137.png", width: 100, height: 100, format: "png" },
-			// 	})
-			// }
+				chain={chain}
+				supportedTokens={{
+					52014: [
+						{
+							address: "0x38B54f147303887BD2E932373432FfCBD11Ff6a5",
+							name: "ETN Buddy",
+							symbol: "BUDDY",
+							icon: "https://app.electroswap.io/images/0x38B54f147303887BD2E932373432FfCBD11Ff6a5.png"
+						}
+					]
+				}}
 			/>
 		</>
 	) : null;
