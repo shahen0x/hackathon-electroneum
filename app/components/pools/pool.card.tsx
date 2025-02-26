@@ -1,17 +1,17 @@
 import { FC } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
-// import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-// import { Button } from "../ui/button";
-// import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Pool } from "./pools.active";
-import { defineChain, getContract, readContract, toEther } from "thirdweb";
+import { getContract, readContract, toEther } from "thirdweb";
 import { clientThirdweb } from "~/thirdweb/client";
 import { abiPoolNative } from "~/thirdweb/abi/abi.pool.native";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "../ui/skeleton";
 import { abiPoolERC20 } from "~/thirdweb/abi/abi.pool.erc20";
-import PoolJoin from "./pool.join";
+import { formatEth } from "~/lib/format.eth";
+import PoolModal from "./pool.modal";
+import { chain } from "~/config/chain";
+import { useActiveAccount } from "thirdweb/react";
 
 interface PoolCardProps {
 	pool: Pool;
@@ -19,41 +19,63 @@ interface PoolCardProps {
 
 const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 
+	// Thirdweb
+	const account = useActiveAccount();
+
 	// If the pool token is ETN
 	const isNative = pool.tokenSymbol === "ETN";
 
 	// Initiate smart contract
 	const contract = getContract({
 		client: clientThirdweb,
-		chain: defineChain(43113),
+		chain,
 		address: pool.contractAddress,
 		abi: isNative ? abiPoolNative : abiPoolERC20
 	});
 
 	// Retrieve data from smart contract
 	const retrieveOnchainData = async () => {
-		const [participants, poolPrice, commissionPercentage, userRecorded] = await Promise.all([
+		const [participants, poolPrice, commissionPercentage] = await Promise.all([
 			readContract({ contract, method: "getUniqueParticipants" }),
 			readContract({ contract, method: "getPoolPrice" }),
 			readContract({ contract, method: "getCommissionPercentage" }),
-			readContract({ contract, method: "getUserRecorded", params: ["0x37E5831239785039Ce8A76AfF44AD0E53AA25c8C"] }),
 		]);
 
 		return {
+			isNative: isNative,
+			tokenSymbol: pool.tokenSymbol,
+			tokenLogo: pool.tokenLogo,
+			contractAddress: pool.contractAddress,
+			tokenAddress: pool.tokenAddress,
 			participants,
 			poolPrice: Number(toEther(poolPrice)),
-			commissionPercentage,
-			userRecorded
+			commissionPercentage
 		}
 	}
 
-	// Retrieve on-chain data
-	const { data: onchain, isLoading } = useQuery({
+	const retriveUserJoinedPool = async () => {
+		if (!account) throw new Error("Wallet not connected.");
+
+		const userRecorded = await readContract({
+			contract,
+			method: "getUserRecorded",
+			params: [account.address]
+		});
+
+		return userRecorded;
+	}
+
+	const { data, isLoading, refetch } = useQuery({
 		queryKey: [`pool-${pool.tokenSymbol}`],
 		queryFn: retrieveOnchainData
 	});
 
-	// console.log("user joined: ", onchain?.userRecorded)
+	const { data: userJoinedPool } = useQuery({
+		queryKey: [`pool-${pool.tokenSymbol}-${account?.address}`],
+		queryFn: retriveUserJoinedPool,
+		enabled: !!account,
+	});
+
 
 	return (
 		<Card>
@@ -63,7 +85,7 @@ const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 				<div className="leading-[0.6] w-full">
 					<h4 className="text-sm font-bold">{pool.tokenSymbol} Pool</h4>
 					{isLoading && <Skeleton className="w-[50px] h-[10px] rounded-full" />}
-					{!isLoading && <span className="text-[0.75rem] text-muted-foreground">{onchain?.participants} players</span>}
+					{!isLoading && <span className="text-[0.75rem] text-muted-foreground">{data?.participants} {data?.participants === 1 ? "player" : "players"}</span>}
 				</div>
 			</CardHeader>
 
@@ -75,8 +97,8 @@ const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 						<div className="text-[0.6rem] text-neutral-500">Rewards reached</div>
 						<div className="flex items-center gap-2">
 							{isLoading && <Skeleton className="w-[60px] h-[20px] my-[4px] rounded-md" />}
-							{!isLoading && onchain &&
-								<span className="text-xl font-semibold">{onchain.participants * onchain.poolPrice * (1 - onchain.commissionPercentage / 100)}</span>
+							{!isLoading && data &&
+								<span className="text-xl font-semibold">{formatEth(data.participants * data.poolPrice * (1 - data.commissionPercentage / 100))}</span>
 							}
 							<span className="text-xs uppercase"> {pool.tokenSymbol}</span>
 						</div>
@@ -86,7 +108,7 @@ const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 
 			<CardFooter className="p-3 pt-0 flex-col">
 				{isLoading && <Skeleton className="w-full h-[32px] rounded-md" />}
-				{!isLoading && <PoolJoin pool={pool} onchain={onchain} isNative={isNative} />}
+				{!isLoading && <PoolModal data={data} userJoinedPool={userJoinedPool} refetch={refetch} />}
 			</CardFooter>
 
 		</Card>

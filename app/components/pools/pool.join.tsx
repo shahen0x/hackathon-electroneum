@@ -1,125 +1,150 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Button } from "../ui/button";
-import { Pool } from "./pools.active";
-
-import { getContract, prepareContractCall, sendTransaction, toWei } from "thirdweb";
-import { defineChain } from "thirdweb/chains";
-import { clientThirdweb } from "~/thirdweb/client";
+import { useActiveAccount } from "thirdweb/react";
+import { PoolType } from "./pools.active";
+import { PiWallet } from "react-icons/pi";
+import { getContract, prepareContractCall, sendTransaction, toWei, waitForReceipt } from "thirdweb";
+import { clientThirdweb as client } from "~/thirdweb/client";
+import { chain } from "~/config/chain";
 import { abiPoolNative } from "~/thirdweb/abi/abi.pool.native";
-import { useActiveAccount, useWalletBalance } from "thirdweb/react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Separator } from "../ui/separator";
+import { useMutation } from "@tanstack/react-query";
+import { abiPoolERC20 } from "~/thirdweb/abi/abi.pool.erc20";
+import { handleOnChainError } from "~/lib/onchain.errors";
+import toast from "react-hot-toast";
 
 interface PoolJoinProps {
-	pool: Pool;
-	onchain: {
-		participants: number;
-		poolPrice: number;
-		commissionPercentage: number;
-		userRecorded: boolean;
-	} | undefined;
-	isNative: boolean;
+	data: PoolType;
+	userJoinedPool: boolean | undefined;
+	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	processing: boolean;
+	setProcessing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PoolJoin: FC<PoolJoinProps> = ({ pool, onchain, isNative }) => {
+const PoolJoin: FC<PoolJoinProps> = ({ data, userJoinedPool, setOpen, processing, setProcessing }) => {
 
-	// Hooks
+	// Thirdweb
 	const account = useActiveAccount();
 
-	// States
-	const [open, setOpen] = useState(false);
 
-	const handleTrigger = async () => {
-		setOpen(true);
-		// await handlePrepareContractCall();
-	}
-
-	const { data: balance } = useWalletBalance({
-		chain: defineChain(43113),
-		address: account?.address,
-		client: clientThirdweb,
-		tokenAddress: isNative ? undefined : pool.tokenAddress,
-	});
-
-	const handlePrepareContractCall = async () => {
-		try {
-			if (!account) throw new Error("No account found");
-
-			const contract = getContract({
-				client: clientThirdweb,
-				chain: defineChain(43113),
-				address: pool.contractAddress,
-				abi: abiPoolNative
-			});
-
-			const transaction = await prepareContractCall({
-				contract,
-				method: "joinPool",
-				value: toWei("0.1"),
-			});
-
-			const { transactionHash } = await sendTransaction({
-				transaction,
-				account: account,
-			});
-
-			return transactionHash;
-		} catch (error) {
-			console.log(error);
-		}
-	}
-
-
-	const formatBalance = (value?: string | number, symbol?: string) => {
-		if (value === undefined || value === null) return "--";
-
-		const num = Number(value);
-		return `${num.toLocaleString(undefined, {
-			minimumFractionDigits: num % 1 === 0 ? 0 : 2,
-			maximumFractionDigits: 2,
-		})} ${symbol ?? ""}`;
+	// Reusable contract instance
+	const getContractInstance = (address: string, abi?: any) => {
+		setProcessing(true);
+		return getContract({ client, chain, address, abi });
 	};
 
 
+	// Reusable send transaction
+	const initTransaction = async (transaction: any) => {
+		if (!account) throw new Error("No account found");
+
+		const { transactionHash } = await sendTransaction({
+			transaction,
+			account,
+		});
+		return transactionHash;
+	};
+
+
+	// Join ETN Pool
+	const handleNativeJoin = async () => {
+		if (!data) throw new Error("Pool data not found");
+
+		const contract = getContractInstance(
+			data.contractAddress,
+			abiPoolNative
+		);
+
+		const transaction = await prepareContractCall({
+			contract,
+			method: "joinPool",
+			value: toWei(String(data.poolPrice)),
+		});
+
+		return await initTransaction(transaction);
+	};
+
+
+	// Join ERC20 Pool
+	const handleERC20Join = async () => {
+		if (!data) throw new Error("Pool data not found");
+		if (userJoinedPool) throw new Error("You are already in the pool!");
+
+		const tokenContract = getContractInstance(data.tokenAddress);
+
+		// Approve token spend
+		const approveTx = await prepareContractCall({
+			contract: tokenContract,
+			method: "function approve(address spender, uint256 amount) returns (bool)",
+			params: [data.contractAddress, toWei(String(data.poolPrice))],
+		});
+
+		const approveHash = await initTransaction(approveTx);
+		if (!approveHash) throw new Error("Approval failed.");
+
+		await waitForReceipt({
+			client,
+			chain,
+			transactionHash: approveHash
+		});
+
+		// Join pool
+		const poolContract = getContractInstance(data.contractAddress, abiPoolERC20);
+
+		const joinTx = await prepareContractCall({
+			contract: poolContract,
+			method: "joinPool"
+		});
+
+		return await initTransaction(joinTx);
+	}
+
+
+	const { mutate: joinPoolNative } = useMutation({
+		mutationFn: handleNativeJoin,
+		onError(error) {
+			setProcessing(false);
+			handleOnChainError(error);
+		},
+		onSuccess() {
+			setProcessing(false);
+			setOpen(false);
+			toast.success("Successfully joined the pool!");
+		},
+	});
+
+
+
+	const { mutate: joinPoolErc20 } = useMutation({
+		mutationFn: handleERC20Join,
+		onError(error) {
+			setProcessing(false);
+			handleOnChainError(error);
+		},
+		onSuccess() {
+			setProcessing(false);
+			setOpen(false);
+			toast.success("Successfully joined the pool!");
+		},
+	});
 
 	return (
-		<Dialog open={open} onOpenChange={open ? () => { } : setOpen}>
-			<Button onClick={handleTrigger} size={"sm"} className="w-full">Join - {onchain?.poolPrice} {pool.tokenSymbol}</Button>
-			{/* <DialogTrigger asChild>
-			</DialogTrigger> */}
-			<DialogContent className="max-sm:h-full max-sm:border-none sm:max-w-72 [&>button]:hidden">
-				<DialogHeader className="space-y-1">
-					<DialogDescription className="text-center text-xs">Join the</DialogDescription>
-					<DialogTitle className="text-center">{pool.tokenSymbol} POOL</DialogTitle>
-					<VisuallyHidden>
-					</VisuallyHidden>
-				</DialogHeader>
-
-
-				<div className="relative w-16 h-16 mx-auto my-6">
-					{/* <div className="w-full h-full bg-etn rounded-full animate-ping" /> */}
-					<img src={pool.tokenLogo} alt={pool.tokenSymbol} className="absolute top-0 left-0 w-full h-full rounded-full" />
-				</div>
-
-				<div className="space-y-3">
-					<div className="text-xs flex items-center justify-center text-muted-foreground">
-						<span>My Balance:&nbsp;</span>
-						<span>{formatBalance(balance?.displayValue, balance?.symbol)}</span>
-					</div>
-					<Separator />
-					<div className="text-sm font-bold flex items-center justify-between">
-						<span>Join Fee</span>
-						<span>{formatBalance(onchain?.poolPrice, pool.tokenSymbol)}</span>
-					</div>
-					<Separator />
-				</div>
-				<div className="flex gap-2">
-					<Button variant={"secondary"} className="w-24" onClick={() => setOpen(false)}>Cancel</Button>
-					<Button className="w-full">Confirm</Button>
-				</div>
-			</DialogContent>
-		</Dialog>
+		<Button
+			disabled={!account || processing || userJoinedPool}
+			onClick={() => data?.isNative ? joinPoolNative() : joinPoolErc20()}
+			variant={account ? "default" : "outline"}
+			className={`w-full px-0 ${!account || processing && "text-xs"}`}
+		>
+			{account ?
+				<>
+					{processing ? "Awaiting confirmation..." : "Proceed"}
+				</>
+				:
+				<>
+					<PiWallet size={20} />
+					Wallet not connected
+				</>
+			}
+		</Button>
 	)
 }
 
