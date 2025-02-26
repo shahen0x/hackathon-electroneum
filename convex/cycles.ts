@@ -1,9 +1,11 @@
 import { ConvexError, v } from "convex/values";
 import { api, internal } from "./_generated/api";
-import { internalMutation, query} from "./_generated/server";
+import { internalAction, internalMutation, query} from "./_generated/server";
 import { gameLineup, schedule } from "./schema";
 import { getActiveGameLineup } from "./utils/getActiveGameLineup";
 import { parseISO } from "date-fns";
+import { asyncMap } from "convex-helpers";
+import { generatePaytable } from "./paytable/paytable";
 
 export const createMockCycle = internalMutation({
 	handler: async (ctx) => {
@@ -80,6 +82,39 @@ export const createCycle = internalMutation({
         // 🛑🛑🛑 TODO: Schedule cycle closure 🛑🛑🛑
 
 		return cycleId;
+	}
+})
+
+export const endCycle = internalAction({
+	handler: async (ctx, args) => {
+		// Get active cycle
+		const activeCycle = await ctx.runQuery(api.cycles.getActiveCycle);
+		if (!activeCycle) throw new ConvexError({ message: "Active cycle not found." });
+
+		// Check if pool is in active cycle
+		if (!activeCycle.pools || activeCycle.pools.length === 0) throw new ConvexError({ message: "No pools found in active cycle." });
+
+		// Check playtime is over
+		// const now = new Date();
+		// const endDate = parseISO(activeCycle.schedule.end);
+		// if (now < endDate) throw new ConvexError({ message: "Playtime is not over yet." });
+
+		await asyncMap(activeCycle.pools, async (poolId) => {
+			// Get pool
+			const pool = await ctx.runQuery(api.pools.getPool, {poolId});
+			console.log(pool);
+
+			// 🛑🛑🛑 TODO: // Use contract address to fetch price, totalParticipants and prizePool 🛑🛑🛑
+			
+			const price = 2000000000000000000000; // in wei
+			const totalParticipants = 10;
+			const commission = 30;
+			const prizePoolShare = (100 - commission) / 100;
+
+			const paytable = await generatePaytable(price, totalParticipants, prizePoolShare);
+			console.log(paytable);
+		
+		});
 	}
 })
 
