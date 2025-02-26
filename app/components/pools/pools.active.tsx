@@ -1,7 +1,9 @@
-import { FC } from "react";
+import { FC, HTMLAttributes } from "react";
 import PoolCard from "./pool.card";
+import { Card } from "../ui/card";
+import { cn } from "~/lib/utils";
 
-interface ActivePoolsProps { }
+interface ActivePoolsProps extends HTMLAttributes<HTMLDivElement> { }
 
 export type Pool = {
 	tokenSymbol: string,
@@ -10,7 +12,18 @@ export type Pool = {
 	contractAddress: string,
 }
 
-const ActivePools: FC<ActivePoolsProps> = () => {
+export type PoolType = {
+	isNative: boolean;
+	tokenSymbol: string;
+	tokenLogo: string;
+	contractAddress: string;
+	tokenAddress: string;
+	participants: number;
+	poolPrice: number;
+	commissionPercentage: number;
+} | undefined;
+
+const ActivePools: FC<ActivePoolsProps> = ({ className }) => {
 
 	const pools: Pool[] = [
 		{
@@ -28,57 +41,17 @@ const ActivePools: FC<ActivePoolsProps> = () => {
 	]
 
 	return (
-		<>
-			<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
-
-				{pools.map((pool) => (
-					<PoolCard key={pool.tokenSymbol} pool={pool} />
-					// <Card key={pool.tokenSymbol}>
-					// 	<CardHeader className="p-2 flex-row items-center gap-2 space-y-0">
-					// 		<img src={pool.tokenLogo} alt={pool.tokenSymbol} className="shrink-0 w-8 h-8 rounded-full" />
-
-					// 		<div className="leading-[0.6] w-full">
-					// 			<h4 className="text-sm font-bold">{pool.tokenSymbol} Pool</h4>
-					// 			<span className="text-[0.75rem] text-neutral-500 truncate text-ellipsis">100 players</span>
-					// 		</div>
-					// 	</CardHeader>
-
-					// 	<Separator />
-
-					// 	<CardContent className="p-3">
-					// 		<div className="w-full flex items-center gap-6">
-					// 			<div className="flex-1">
-					// 				<div className="text-[0.6rem] text-neutral-500">Rewards reached</div>
-					// 				<div className="">
-					// 					<span className="text-xl font-semibold">100,000</span>
-					// 					<span className="text-xs uppercase"> {pool.tokenSymbol}</span>
-					// 				</div>
-					// 			</div>
-					// 		</div>
-					// 	</CardContent>
-
-					// 	<CardFooter className="p-3 pt-0">
-					// 		<Dialog>
-					// 			<DialogTrigger asChild>
-					// 				<Button size={"sm"} className="w-full">Join - 4,000 {pool.tokenSymbol}</Button>
-					// 			</DialogTrigger>
-					// 			<DialogContent className="max-sm:h-full max-sm:border-none">
-					// 				<DialogHeader>
-					// 					<VisuallyHidden>
-					// 						<DialogTitle />
-					// 						<DialogDescription />
-					// 					</VisuallyHidden>
-					// 				</DialogHeader>
-					// 				{pool.tokenSymbol}
-					// 				<PoolModal pool={pool} />
-					// 			</DialogContent>
-					// 		</Dialog>
-					// 	</CardFooter>
-
-					// </Card>
-				))}
-			</div>
-		</>
+		<div className={cn(className, "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-2")}>
+			{pools.map((pool) => (
+				<PoolCard key={pool.tokenSymbol} pool={pool} />
+			))}
+			<Card className="min-h-[160px] opacity-30" />
+			<Card className="min-h-[160px] opacity-30" />
+			<Card className="min-h-[160px] opacity-30" />
+			<Card className="min-h-[160px] opacity-30" />
+			<Card className="min-h-[160px] opacity-30" />
+			<Card className="min-h-[160px] opacity-30" />
+		</div>
 	)
 }
 

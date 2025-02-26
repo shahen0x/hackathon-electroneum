@@ -13,6 +13,8 @@ import Navbar from "./components/navigation/navbar";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+import { Toaster } from 'react-hot-toast';
+
 export const links: LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 	{
@@ -51,6 +53,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			</head>
 			<body>
 				<Background />
+				<Toaster />
 				<QueryClientProvider client={queryClient}>
 					<ConvexAuthProvider client={convex}>
 						<ThirdwebProvider>

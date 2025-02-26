@@ -6,7 +6,7 @@ import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { PiSpinnerGap, PiWallet } from "react-icons/pi";
 import { clientThirdweb } from "../client";
 import { Button } from "~/components/ui/button";
-import { avalancheFuji } from "thirdweb/chains";
+import { chain } from "~/config/chain";
 
 interface WalletConnectButtonProps { }
 
@@ -25,7 +25,7 @@ const WalletConnectButton: FC<WalletConnectButtonProps> = () => {
 				showThirdwebBranding: false,
 				size: "compact",
 				title: "Sign In",
-				chain: avalancheFuji,
+				chain,
 				wallets: [
 					inAppWallet({
 						auth: {
