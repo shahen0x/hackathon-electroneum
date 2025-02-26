@@ -1,5 +1,5 @@
 import { useAuthActions } from "@convex-dev/auth/react";
-import { api } from "convex/_generated/api";
+import { api } from "~/convex/_generated/api";
 import { useAction } from "convex/react";
 import { signLoginPayload } from "thirdweb/auth";
 import { useActiveAccount } from "thirdweb/react";
