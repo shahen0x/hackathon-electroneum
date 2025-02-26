@@ -1,4 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
+import CycleActive from "~/components/cycle/cycle.active";
 import ActivePools from "~/components/pools/pools.active";
 import { appConfig } from "~/config/app";
 
@@ -13,7 +14,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
 
 	return (
-		<div className="container space-y-4">
+		<div className="container space-y-8">
 			{/* BANNER */}
 			<div className="bg-primary/20 rounded-2xl p-6 lg:p-10 lg:flex items-center gap-12 lg:gap-24 bg-[url(/home/home-banner-mobile.png)] bg-no-repeat bg-right bg-contain xl:bg-[url(/home/home-banner.png)]">
 				<h1 className="mb-6 lg:mb-0 text-2xl sm:text-3xl font-bold font-pixel">Compete,<br />Climb,<br />Conquer</h1>
@@ -23,7 +24,10 @@ export default function Index() {
 				</div>
 			</div>
 
-			<ActivePools />
+			<div className="grid grid-cols-4 gap-8">
+				<CycleActive className="col-span-1" />
+				<ActivePools className="col-span-3" />
+			</div>
 
 
 		</div>

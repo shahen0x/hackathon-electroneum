@@ -1,7 +1,9 @@
-import { FC } from "react";
+import { FC, HTMLAttributes } from "react";
 import PoolCard from "./pool.card";
+import { Card } from "../ui/card";
+import { cn } from "~/lib/utils";
 
-interface ActivePoolsProps { }
+interface ActivePoolsProps extends HTMLAttributes<HTMLDivElement> { }
 
 export type Pool = {
 	tokenSymbol: string,
@@ -21,7 +23,7 @@ export type PoolType = {
 	commissionPercentage: number;
 } | undefined;
 
-const ActivePools: FC<ActivePoolsProps> = () => {
+const ActivePools: FC<ActivePoolsProps> = ({ className }) => {
 
 	const pools: Pool[] = [
 		{
@@ -39,10 +41,16 @@ const ActivePools: FC<ActivePoolsProps> = () => {
 	]
 
 	return (
-		<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
+		<div className={cn(className, "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-2")}>
 			{pools.map((pool) => (
 				<PoolCard key={pool.tokenSymbol} pool={pool} />
 			))}
+			<Card className="min-h-[160px] opacity-30" />
+			<Card className="min-h-[160px] opacity-30" />
+			<Card className="min-h-[160px] opacity-30" />
+			<Card className="min-h-[160px] opacity-30" />
+			<Card className="min-h-[160px] opacity-30" />
+			<Card className="min-h-[160px] opacity-30" />
 		</div>
 	)
 }
