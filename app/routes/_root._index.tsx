@@ -1,5 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import CycleActive from "~/components/cycle/cycle.active";
+import Leaderboard from "~/components/leaderboard/leaderboard";
 import ActivePools from "~/components/pools/pools.active";
 import { appConfig } from "~/config/app";
 
@@ -28,6 +29,8 @@ export default function Index() {
 				<CycleActive className="col-span-1" />
 				<ActivePools className="col-span-3" />
 			</div>
+
+			<Leaderboard />
 
 
 		</div>
