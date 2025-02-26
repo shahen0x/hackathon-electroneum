@@ -50,7 +50,8 @@ export default defineSchema({
 		tokenSymbol: v.string(),
 		tokenLogo: v.string(),
 		tokenAddress: v.string(),
-		payoutAddress: v.string()
+		payoutAddress: v.string(),
+		brandColor: v.optional(v.string()),
 	}),
 
 	pools: defineTable({
