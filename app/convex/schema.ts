@@ -64,11 +64,14 @@ export default defineSchema({
 	scorecards: defineTable({
 		userId: v.id("users"),
 		poolId: v.id("pools"),
+		walletAddress: v.string(),
 		gamertag: v.optional(v.string()),
 		totalPoints: v.number(),
-		gameData: v.any()
+		gameData: v.any(),
+		reward: v.optional(v.number())
 	})
-		.index("byUserAndPoolId", ["userId", "poolId"]),
+		.index("byUserAndPoolId", ["userId", "poolId"])
+		.index("byTotalPoints", ["totalPoints"]),
 
 	levelsBallsort: defineTable({
 		cycleId: v.id("cycles"),

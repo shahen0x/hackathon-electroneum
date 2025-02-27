@@ -115,7 +115,7 @@ export async function checkCompetitionPrerequisites(ctx: MutationCtx, gameName: 
     if (!user) throw new ConvexError({ message: "You must be authenticated first!" });
 
     // Get cycle
-    const activeCycle = await ctx.runQuery(api.cycles.getActiveCycle);
+    const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
     if (!activeCycle) throw new ConvexError({ message: "Active cycle not found." });
     
     // Check if game is in lineup
