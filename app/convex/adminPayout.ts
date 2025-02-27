@@ -69,22 +69,6 @@ export const createPoolPayouts = internalAction({
             scorecardIds,
             rewards: paytable
         });
-
-
-        // const blobreturned = await ctx.storage.get("kg2fk8w4ms4pw1gtf9d4pqte557b4chf" as Id<"_storage">);
-
-        // if (blobreturned) {
-        //     // Explicitly decode as UTF-8
-        //     const decoder = new TextDecoder('utf-8');
-        //     const jsonString = decoder.decode(await blobreturned.arrayBuffer());
-            
-        //     const merkleTree = StandardMerkleTree.load(JSON.parse(jsonString));
-        //     console.log('Merkle Root:', merkleTree.root);
-        //     const proofs = merkleTree.getProof(merkleEntries[0]);
-        //     console.log(proofs);
-        // }
-
-
     }
 });
 

@@ -17,6 +17,7 @@ import type * as adminCycles from "../adminCycles.js";
 import type * as adminPayout from "../adminPayout.js";
 import type * as auth from "../auth.js";
 import type * as authWallet from "../authWallet.js";
+import type * as claimReward from "../claimReward.js";
 import type * as compete from "../compete.js";
 import type * as http from "../http.js";
 import type * as levelsBallsort from "../levelsBallsort.js";
@@ -45,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   adminPayout: typeof adminPayout;
   auth: typeof auth;
   authWallet: typeof authWallet;
+  claimReward: typeof claimReward;
   compete: typeof compete;
   http: typeof http;
   levelsBallsort: typeof levelsBallsort;

@@ -75,3 +75,16 @@ export const getScorecards = query({
         return scorecards;
     },
 });
+
+export const getScorecard = query({
+    args: {
+        poolId: v.id("pools"),
+        userId: v.id("users")
+    },
+    handler: async (ctx, args) => {
+        const {poolId, userId} = args;
+        return await ctx.db.query("scorecards")
+        .withIndex("byUserAndPoolId", (q) => q.eq("userId", userId).eq("poolId", poolId))
+        .unique();
+    },
+});
