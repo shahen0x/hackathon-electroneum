@@ -43,7 +43,8 @@
     "react-unity-webgl": "^9.8.0",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
-    "thirdweb": "^5.88.7"
+    "thirdweb": "^5.88.7",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.15.3",

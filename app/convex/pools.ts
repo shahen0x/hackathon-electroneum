@@ -1,5 +1,4 @@
 import { v } from "convex/values";
-import { Doc } from "./_generated/dataModel";
 import { internalMutation, query } from "./_generated/server";
 import { asyncMap } from "convex-helpers";
 
@@ -15,30 +14,11 @@ export const getPool = query({
 		poolId: v.id("pools")
 	},
 	handler: async (ctx, args) => {
-		const {poolId} = args;
+		const { poolId } = args;
 		return await ctx.db.get(poolId);
 	},
 });
 
-export const createMockPools = internalMutation({
-	handler: async (ctx) => {
-		const pools = [
-			{
-				cycle: "jx71bdzv3fyr92v43yt7grmf857azcag",
-				poolOwner: "k97e0nzf8zxy634sd993vwthah7ayskc",
-				contractAddress: "0x0000000000000000000000000000000000000000",
-			},
-			{
-				cycle: "jx71bdzv3fyr92v43yt7grmf857azcag",
-				poolOwner: "k9725nd6wmv9myrtbbec29114n7aybbw",
-				contractAddress: "0x0000000000000000000000000000000000000000",
-			},
-		] as Doc<"pools">[];
-		for (const pool of pools) {
-			await ctx.db.insert("pools", pool);
-		}
-	},
-});
 
 export const createPool = internalMutation({
 	args: {
@@ -48,7 +28,7 @@ export const createPool = internalMutation({
 	},
 	handler: async (ctx, args) => {
 
-		const {cycleId, poolOwnerId, contractAddress} = args;
+		const { cycleId, poolOwnerId, contractAddress } = args;
 
 		return await ctx.db.insert("pools", {
 			cycle: cycleId,
@@ -80,18 +60,22 @@ export const getActiveCycleWithPools = query({
 		const activePools = await asyncMap(pools, async (pool) => {
 			const poolOwner = await ctx.db.get(pool.poolOwner);
 
-				return {
-					contractAddress: pool.contractAddress,
-					tokenSymbol: poolOwner?.tokenSymbol,
-					tokenLogo: poolOwner?.tokenLogo,
-					tokenAddress: poolOwner?.tokenAddress
-				}
+			return {
+				contractAddress: pool.contractAddress,
+				tokenSymbol: poolOwner?.tokenSymbol,
+				tokenLogo: poolOwner?.tokenLogo,
+				tokenAddress: poolOwner?.tokenAddress
+			}
 		});
+
+		// Convert game lineup object to array
+		const gameLineupArray = Object.keys(activeCycle.gameLineup)
+			.filter(key => activeCycle.gameLineup[key as keyof typeof activeCycle.gameLineup] === true);
 
 		return {
 			week: activeCycle.week,
 			schedule: activeCycle.schedule,
-			gameLineup: activeCycle.gameLineup,
+			gameLineup: gameLineupArray,
 			pools: activePools
 		}
 	}
