@@ -5,7 +5,7 @@ import { gameLineup, schedule } from "./schema";
 import { getActiveGameLineup } from "./utils/getActiveGameLineup";
 import { parseISO } from "date-fns";
 import { asyncMap } from "convex-helpers";
-import { generatePaytable } from "./paytable/paytable";
+import { generatePaytable } from "../lib/paytable/paytable";
 
 
 export const createCycle = internalMutation({
