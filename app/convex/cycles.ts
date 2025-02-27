@@ -1,38 +1,21 @@
 import { ConvexError, v } from "convex/values";
 import { api, internal } from "./_generated/api";
-import { internalAction, internalMutation, query} from "./_generated/server";
+import { internalAction, internalMutation, query } from "./_generated/server";
 import { gameLineup, schedule } from "./schema";
 import { getActiveGameLineup } from "./utils/getActiveGameLineup";
 import { parseISO } from "date-fns";
 import { asyncMap } from "convex-helpers";
 import { generatePaytable } from "./paytable/paytable";
 
-export const createMockCycle = internalMutation({
-	handler: async (ctx) => {
-		return await ctx.db.insert("cycles", {
-			active: true,
-			week: 0,
-			schedule: {
-				enroll: "2025-02-24T10:34:26.862Z",
-				playtime: "2025-02-24T10:34:26.862Z",
-				end: "2025-02-28T10:34:26.862Z",
-			},
-			gameLineup: {
-				ballsort: true,
-				matchtwo: true,
-			}
-		});
-	}
-})
 
 export const createCycle = internalMutation({
 	args: {
-		week : v.number(),
+		week: v.number(),
 		schedule,
 		gameLineup,
 	},
 	handler: async (ctx, args) => {
-		const {week, schedule, gameLineup} = args;
+		const { week, schedule, gameLineup } = args;
 
 		// Validate game lineup
 		const lineup = getActiveGameLineup(gameLineup);
@@ -42,12 +25,12 @@ export const createCycle = internalMutation({
 		const isEnrollISOFormat = isISODate(schedule.enroll);
 		const isPlaytimeISOFormat = isISODate(schedule.playtime);
 		const isEndISOFormat = isISODate(schedule.end);
-		
+
 		if (!isEnrollISOFormat || !isPlaytimeISOFormat || !isEndISOFormat) throw new ConvexError({ message: "Schedule must be in ISO format." });
 
-        const enrollDate = parseISO(schedule.enroll);
+		const enrollDate = parseISO(schedule.enroll);
 		const playtimeDate = parseISO(schedule.playtime);
-        const endDate = parseISO(schedule.end);
+		const endDate = parseISO(schedule.end);
 
 		if (enrollDate > playtimeDate) throw new ConvexError({ message: "Enrollment date cannot be after playtime date." });
 		if (enrollDate >= endDate) throw new ConvexError({ message: "Enrollment date must be before end date." });
@@ -58,7 +41,7 @@ export const createCycle = internalMutation({
 		if (activeCycle) throw new ConvexError({ message: "There is already an active cycle" });
 
 		// Create cycle
-		const cycleId =  await ctx.db.insert("cycles", {
+		const cycleId = await ctx.db.insert("cycles", {
 			active: true,
 			week,
 			schedule,
@@ -79,14 +62,14 @@ export const createCycle = internalMutation({
 			});
 		}
 
-        // 🛑🛑🛑 TODO: Schedule cycle closure 🛑🛑🛑
+		// 🛑🛑🛑 TODO: Schedule cycle closure 🛑🛑🛑
 
 		return cycleId;
 	}
 })
 
 export const endCycle = internalAction({
-	handler: async (ctx, args) => {
+	handler: async (ctx) => {
 		// Get active cycle
 		const activeCycle = await ctx.runQuery(api.cycles.getActiveCycle);
 		if (!activeCycle) throw new ConvexError({ message: "Active cycle not found." });
@@ -101,11 +84,11 @@ export const endCycle = internalAction({
 
 		await asyncMap(activeCycle.pools, async (poolId) => {
 			// Get pool
-			const pool = await ctx.runQuery(api.pools.getPool, {poolId});
+			const pool = await ctx.runQuery(api.pools.getPool, { poolId });
 			console.log(pool);
 
 			// 🛑🛑🛑 TODO: // Use contract address to fetch price, totalParticipants and prizePool 🛑🛑🛑
-			
+
 			const price = 2000000000000000000000; // in wei
 			const totalParticipants = 10;
 			const commission = 30;
@@ -113,7 +96,7 @@ export const endCycle = internalAction({
 
 			const paytable = await generatePaytable(price, totalParticipants, prizePoolShare);
 			console.log(paytable);
-		
+
 		});
 	}
 })
@@ -132,10 +115,10 @@ export const getActiveCycle = query({
 })
 
 function isISODate(str: string): boolean {
-    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(str)) {
-        return false;
-    }
-    
-    const timestamp = Date.parse(str);
-    return !isNaN(timestamp);
+	if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(str)) {
+		return false;
+	}
+
+	const timestamp = Date.parse(str);
+	return !isNaN(timestamp);
 }

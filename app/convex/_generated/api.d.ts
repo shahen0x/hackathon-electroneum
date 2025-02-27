@@ -20,6 +20,7 @@ import type * as cycles from "../cycles.js";
 import type * as http from "../http.js";
 import type * as levelsBallsort from "../levelsBallsort.js";
 import type * as levelsMatchtwo from "../levelsMatchtwo.js";
+import type * as mockData from "../mockData.js";
 import type * as paytable_paytable from "../paytable/paytable.js";
 import type * as paytable_shareBasedPaytable from "../paytable/shareBasedPaytable.js";
 import type * as paytable_utils_calculateOptimalToppers from "../paytable/utils/calculateOptimalToppers.js";
@@ -50,6 +51,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   levelsBallsort: typeof levelsBallsort;
   levelsMatchtwo: typeof levelsMatchtwo;
+  mockData: typeof mockData;
   "paytable/paytable": typeof paytable_paytable;
   "paytable/shareBasedPaytable": typeof paytable_shareBasedPaytable;
   "paytable/utils/calculateOptimalToppers": typeof paytable_utils_calculateOptimalToppers;

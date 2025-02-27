@@ -4,17 +4,24 @@ import { Progress } from "../ui/progress";
 import { cn } from "~/lib/utils";
 import { CountdownRenderer } from "../countdown-renderer";
 import { Button } from "../ui/button";
+import { useCycleStore } from "~/store/store.cycle";
+import { Skeleton } from "../ui/skeleton";
 
-interface CycleActiveProps extends HTMLAttributes<HTMLDivElement> {
-
-}
+interface CycleActiveProps extends HTMLAttributes<HTMLDivElement> { }
 
 const CycleActive: FC<CycleActiveProps> = ({ className }) => {
+
+	const { cycle, isLoading } = useCycleStore();
+
+
 	return (
 		<Card className={cn(className, "flex flex-col relative overflow-hidden")}>
-			{/* <Progress value={48} className="absolute top-0 left-0 w-full h-full rounded-none mt-auto" /> */}
 			<CardHeader className="relative z-10 space-y-3">
-				<CardTitle className="font-pixel">Gaming Week #1</CardTitle>
+				<CardTitle className="flex items-center gap-3 font-pixel text-md">
+					Gaming Week
+					{isLoading && <Skeleton className="h-6 w-8 rounded-md" />}
+					{!isLoading && ` #${cycle?.week}`}
+				</CardTitle>
 			</CardHeader>
 			<Progress value={48} className="h-[0.1rem] rounded-none" />
 
