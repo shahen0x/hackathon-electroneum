@@ -52,14 +52,9 @@ export const createPoolPayouts = internalAction({
 
         // Save tree to storage
         if (pool.storageId) throw new ConvexError("Merkle tree already stored for this pool");
-        const base64merkleTree = btoa(JSON.stringify(merkleTree.dump()));
-        const blob = base64ToBlob(base64merkleTree);
-        const storageId: Id<"_storage"> = await ctx.storage.store(blob);
-
-        // Save storage id to pool
         await ctx.scheduler.runAfter(0, internal.adminPayout.storeMerkleTree, {
             poolId,
-            storageId
+            merkleTreeString: JSON.stringify(merkleTree.dump()),
         });
 
         // Schedule function to set merkle root on contract
@@ -93,7 +88,27 @@ export const createPoolPayouts = internalAction({
     }
 });
 
-export const storeMerkleTree = internalMutation({
+export const storeMerkleTree = internalAction({
+    args: {
+        poolId: v.id('pools'),
+        merkleTreeString: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const { poolId, merkleTreeString } = args;
+
+        const base64merkleTree = btoa(merkleTreeString);
+        const blob = base64ToBlob(base64merkleTree);
+        const storageId: Id<"_storage"> = await ctx.storage.store(blob);
+
+        // Save storage id to pool
+        await ctx.scheduler.runAfter(0, internal.adminPayout.storeMerkleTreeId, {
+            poolId,
+            storageId
+        });
+    }
+});
+
+export const storeMerkleTreeId = internalMutation({
     args: {
         poolId : v.id('pools'),
         storageId: v.id('_storage')
