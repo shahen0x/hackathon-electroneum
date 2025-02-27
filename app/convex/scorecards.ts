@@ -2,21 +2,8 @@ import { ConvexError, v } from "convex/values";
 import { internalMutation, query } from "./_generated/server";
 import { gameLineup } from "./schema";
 import { getActiveGameLineup } from "./utils/getActiveGameLineup";
-
-// /** BALLSORT */
-export const ballsortGameData = {
-    finalTime: -1,
-    transfers: 0,
-    ballsMoved: 0,
-}
-export type GameDataBallsort = typeof ballsortGameData;
-
-// /** MATCH TWO */
-export const matchtwoGameData = {
-    finalTime: -1,
-    matchesAttempted: 0,
-}
-export type GameDataMatchtwo = typeof matchtwoGameData;
+import { ballsortGameData } from "./levelsBallsort";
+import { matchtwoGameData } from "./levelsMatchtwo";
 
 export const createScorecard = internalMutation({
     args: {

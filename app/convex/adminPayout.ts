@@ -51,7 +51,7 @@ export const createPoolPayouts = internalAction({
         // console.log('Merkle Root:', merkleTree.root);
 
         // Save tree to storage
-        if (pool.storageId) throw new ConvexError("Merkle tree already stored for this pool");
+        if (pool.storageId) throw new ConvexError("Merkle tree already stored for this pool.");
         await ctx.scheduler.runAfter(0, internal.adminPayout.storeMerkleTree, {
             poolId,
             merkleTreeString: JSON.stringify(merkleTree.dump()),

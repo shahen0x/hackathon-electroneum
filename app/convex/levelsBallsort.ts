@@ -1,8 +1,15 @@
 import { v } from "convex/values";
-import { internalMutation, internalQuery, MutationCtx, query } from "./_generated/server";
-import { api, internal } from "./_generated/api";
+import { internalMutation, MutationCtx } from "./_generated/server";
 import { shuffleString } from "./utils/shuffleString";
 import { Id } from "./_generated/dataModel";
+
+// /** BALLSORT */
+export const ballsortGameData = {
+    finalTime: -1,
+    transfers: 0,
+    ballsMoved: 0,
+}
+export type GameDataBallsort = typeof ballsortGameData;
 
 type LevelSpecBallsort = {
     ta: number,
@@ -99,23 +106,18 @@ export async function getBallsortDataForCycle(ctx: MutationCtx, cycleId: Id<"cyc
 
 }
 
-//   export const getLevelsForCycle = internalQuery({
-//     args: {
-//         cycleId: v.id("cycles"),
-//       },
-//     handler: async (ctx, args) => {
-//         const { cycleId } = args;
-
-//         const levels = await ctx.db
-//             .query("levelsBallsort")
-//             .withIndex("byCycleId", (q) =>
-//                 q.eq("cycleId", cycleId)
-//             )
-//             .unique();
-  
-//         return levels;
-  
-//     }
+export function isGameDataBallsort(data: any): data is GameDataBallsort {
+    return (
+        data !== null &&
+        typeof data === 'object' &&
+        'finalTime' in data &&
+        'transfers' in data &&
+        'ballsMoved' in data &&
+        typeof data.finalTime === 'number' &&
+        typeof data.transfers === 'number' &&
+        typeof data.ballsMoved === 'number'
+    );
+}
 
 
 

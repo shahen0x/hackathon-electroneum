@@ -3,6 +3,13 @@ import { internalMutation, internalQuery, MutationCtx } from "./_generated/serve
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 
+// /** MATCH TWO */
+export const matchtwoGameData = {
+    finalTime: -1,
+    matchesAttempted: 0,
+}
+export type GameDataMatchtwo = typeof matchtwoGameData;
+
 enum MatchtwoGridSize {
     FourByFour = 16,
     FourBySix = 24,
@@ -88,23 +95,16 @@ export async function getMatchtwoDataForCycle(ctx: MutationCtx, cycleId: Id<"cyc
 
 }
 
-// export const getLevelsForCycle = internalQuery({
-//   args: {
-//       cycleId: v.id("cycles"),
-//     },
-//   handler: async (ctx, args) => {
-//       const { cycleId } = args;
+export function isGameDataMatchtwo(data: any): data is GameDataMatchtwo {
+    return (
+        data !== null &&
+        typeof data === 'object' &&
+        'finalTime' in data &&
+        'matchesAttempted' in data &&
+        typeof data.finalTime === 'number' &&
+        typeof data.matchesAttempted === 'number'
+    );
+}
 
-//       const levels = await ctx.db
-//           .query("levelsMatchtwo")
-//           .withIndex("byCycleId", (q) =>
-//               q.eq("cycleId", cycleId)
-//           )
-//           .unique();
-
-//       return levels;
-
-//   }
-// })
 
 

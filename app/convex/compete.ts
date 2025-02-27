@@ -4,10 +4,9 @@ import { api, internal } from "./_generated/api";
 import { getActiveGameLineup } from "./utils/getActiveGameLineup";
 import { parseISO } from "date-fns";
 import { asyncMap } from "convex-helpers";
-import { getMatchtwoDataForCycle } from "./levelsMatchtwo";
-import { getBallsortDataForCycle } from "./levelsBallsort";
+import { getMatchtwoDataForCycle, isGameDataMatchtwo } from "./levelsMatchtwo";
+import { getBallsortDataForCycle, isGameDataBallsort } from "./levelsBallsort";
 import { Doc } from "./_generated/dataModel";
-import { GameDataBallsort, GameDataMatchtwo } from "./poolsJoin";
 
 type GameName = "ballsort" | "matchtwo";
 
@@ -194,26 +193,5 @@ export async function calculateTotalPoints(gameLineup: string[], newGameData: an
 	return totalPoints;
 }
 
-export function isGameDataBallsort(data: any): data is GameDataBallsort {
-    return (
-        data !== null &&
-        typeof data === 'object' &&
-        'finalTime' in data &&
-        'transfers' in data &&
-        'ballsMoved' in data &&
-        typeof data.finalTime === 'number' &&
-        typeof data.transfers === 'number' &&
-        typeof data.ballsMoved === 'number'
-    );
-}
 
-export function isGameDataMatchtwo(data: any): data is GameDataMatchtwo {
-    return (
-        data !== null &&
-        typeof data === 'object' &&
-        'finalTime' in data &&
-        'matchesAttempted' in data &&
-        typeof data.finalTime === 'number' &&
-        typeof data.matchesAttempted === 'number'
-    );
-}
+
