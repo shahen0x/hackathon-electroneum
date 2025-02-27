@@ -80,7 +80,7 @@ const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 
 	return (
 		<Card>
-			<CardHeader className="p-2 flex-row items-center gap-2 space-y-0">
+			<CardHeader className="sm:p-3 sm:pr-2 flex-row items-center gap-2 space-y-0">
 				<img src={pool.tokenLogo} alt={pool.tokenSymbol} className="shrink-0 w-8 h-8 rounded-full" />
 
 				<div className="leading-[0.6] w-full">

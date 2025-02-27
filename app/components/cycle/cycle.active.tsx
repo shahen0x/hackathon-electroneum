@@ -1,63 +1,78 @@
 import { FC, HTMLAttributes } from "react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { Progress } from "../ui/progress";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { cn } from "~/lib/utils";
-import { CountdownRenderer } from "../countdown-renderer";
-import { Button } from "../ui/button";
 import { useCycleStore } from "~/store/store.cycle";
-import { Skeleton } from "../ui/skeleton";
+import { formatDate } from "~/lib/format.date";
+import { Link } from "@remix-run/react";
+import useCyclePhase from "~/hooks/hook.cycle.phase";
+import { CountdownRenderer } from "../countdown-renderer";
+import { CyclePhase } from "~/types/types.cycle";
+import { Badge } from "../ui/badge";
+import { CgArrowLongRight } from "react-icons/cg";
 
 interface CycleActiveProps extends HTMLAttributes<HTMLDivElement> { }
 
 const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 
-	const { cycle, isLoading } = useCycleStore();
+	const { cycle } = useCycleStore();
 
+	const { currentPhase } = useCyclePhase();
 
 	return (
 		<Card className={cn(className, "flex flex-col relative overflow-hidden")}>
-			<CardHeader className="relative z-10 space-y-3">
+
+			<CardHeader className="relative z-10 space-y-1 border-b">
 				<CardTitle className="flex items-center gap-3 font-pixel text-md">
-					Gaming Week
-					{isLoading && <Skeleton className="h-6 w-8 rounded-md" />}
-					{!isLoading && ` #${cycle?.week}`}
+					Gaming Week #{cycle?.week}
 				</CardTitle>
+				<CardDescription className="flex items-center gap-2 text-sm">
+					{formatDate(cycle?.schedule.enroll)} <CgArrowLongRight size={20} className="opacity-20" /> {formatDate(cycle?.schedule.end)}
+				</CardDescription>
 			</CardHeader>
-			<Progress value={48} className="h-[0.1rem] rounded-none" />
 
-			{/* <Separator /> */}
-			<CardContent className="px-6 py-4">
-				<div className="space-y-3">
-					<div className="w-full flex items-center justify-between">
-						<div className="text-xs text-muted-foreground">This week&apos;s game linup</div>
-						<Button size={"sm"} variant={"outline"} className="w-5 h-6 text-[0.7rem]">?</Button>
-					</div>
+			<CardContent className="pt-4 flex-1">
 
-					<div className="grid grid-cols-2 gap-4 ">
-						<img
-							src={`/games/ballsort/media/poster.jpg`}
-							alt={"Ballsort"}
-							className="rounded-md"
-						/>
-						<img
-							src={`/games/matchtwo/media/poster.jpg`}
-							alt={"Ballsort"}
-							className="rounded-md"
-						/>
+				<div className="mb-3 w-full flex items-center justify-between">
+					<div className="text-xs text-muted-foreground">
+						{currentPhase === CyclePhase.NotOpenYet ? "Pools opening in:" :
+							currentPhase === CyclePhase.Enroll ? "Playtime starting in:" :
+								currentPhase === CyclePhase.Playtime ? "Playtime ending in:" :
+									"Gaming Week Closed"
+						}
 					</div>
+					<Badge variant={"secondary"}>View Schedule</Badge>
 				</div>
+
+				{cycle &&
+					<CountdownRenderer
+						className="w-full justify-around"
+						layout="cards-sm"
+						date={
+							currentPhase === CyclePhase.NotOpenYet ? cycle.schedule.enroll :
+								currentPhase === CyclePhase.Enroll ? cycle.schedule.playtime :
+									cycle.schedule.end
+						}
+					/>
+				}
 			</CardContent>
-			<CardFooter className="flex-col items-start mt-auto border-t pt-4 pb-3 space-y-2">
 
-				<div className="w-full flex items-center justify-between">
-					<div className="text-xs text-muted-foreground">Playtime starts in</div>
-					<Button size={"sm"} variant={"outline"} className="h-5 text-[0.7rem]">Schedule</Button>
+			<CardFooter className="pt-4 flex-col border-t">
+				<div className="mb-3 w-full flex items-center justify-between">
+					<div className="text-xs text-muted-foreground">This week&apos;s game linup</div>
+					<Badge variant={"secondary"} className="h-5">?</Badge>
 				</div>
 
-				<div className="">
-					<CountdownRenderer layout="cards-sm" date="2025-02-27T19:14:01.000Z" />
+				<div className="grid grid-cols-2 gap-4 ">
+					{cycle?.gameLineup.map((game) => (
+						<Link to={`/games/${game}`} key={game}>
+							<img
+								src={`/games/${game}/media/poster.jpg`}
+								alt="Ballsort"
+								className="border rounded-lg aspect-video"
+							/>
+						</Link>
+					))}
 				</div>
-
 			</CardFooter>
 		</Card>
 	)
