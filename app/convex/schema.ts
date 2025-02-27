@@ -58,6 +58,7 @@ export default defineSchema({
 		cycle: v.id("cycles"),
 		poolOwner: v.id("poolOwners"),
 		contractAddress: v.string(),
+		storageId: v.optional(v.id("_storage")),
 	})
 		.index("byCycle", ["cycle"]),
 

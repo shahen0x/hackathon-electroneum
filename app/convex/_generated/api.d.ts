@@ -27,6 +27,7 @@ import type * as pools from "../pools.js";
 import type * as poolsJoin from "../poolsJoin.js";
 import type * as scorecards from "../scorecards.js";
 import type * as users from "../users.js";
+import type * as utils_base64toBlob from "../utils/base64toBlob.js";
 import type * as utils_getActiveGameLineup from "../utils/getActiveGameLineup.js";
 import type * as utils_isISODate from "../utils/isISODate.js";
 import type * as utils_shuffleString from "../utils/shuffleString.js";
@@ -54,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   poolsJoin: typeof poolsJoin;
   scorecards: typeof scorecards;
   users: typeof users;
+  "utils/base64toBlob": typeof utils_base64toBlob;
   "utils/getActiveGameLineup": typeof utils_getActiveGameLineup;
   "utils/isISODate": typeof utils_isISODate;
   "utils/shuffleString": typeof utils_shuffleString;
