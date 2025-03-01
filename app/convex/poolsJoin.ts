@@ -1,24 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { api, internal } from "./_generated/api";
-import { action, internalMutation } from "./_generated/server";
+import { action } from "./_generated/server";
 import { parseISO } from "date-fns";
-import { gameLineup } from "./schema";
-import { getActiveGameLineup } from "./utils/getActiveGameLineup";
-
-// /** BALLSORT */
-export const ballsortGameData = {
-    finalTime: -1,
-    transfers: 0,
-    ballsMoved: 0,
-}
-export type GameDataBallsort = typeof ballsortGameData;
-
-// /** MATCH TWO */
-export const matchtwoGameData = {
-    finalTime: -1,
-    matchesAttempted: 0,
-}
-export type GameDataMatchtwo = typeof matchtwoGameData;
 
 export const joinPool = action({
     args: {
@@ -31,8 +14,11 @@ export const joinPool = action({
         const user = await ctx.runQuery(api.users.getCurrentUser);
         if (!user) throw new ConvexError({ message: "You must be authenticated first!" });
 
+        // Check wallet
+        if (!user.walletAddress) throw new ConvexError({ message: "Wallet address not linked to account." });
+
         // Check active cycle
-        const activeCycle = await ctx.runQuery(api.cycles.getActiveCycle);
+        const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
         if (!activeCycle) throw new ConvexError({ message: "Active cycle not found." });
 
         // Check if pool is in active cycle
@@ -52,9 +38,10 @@ export const joinPool = action({
         // 🛑🛑🛑 TODO: Check user participation in pool on smart contract 🛑🛑🛑
 
         // Create scorecard, IF NOT ALREADY CREATED in an internal mutation
-        const res: string = await ctx.runMutation(internal.poolsJoin.createScorecard, {
+        const res: string = await ctx.runMutation(internal.scorecards.createScorecard, {
             userId: user._id,
             poolId: poolId,
+            walletAddress: user.walletAddress,
             gamertag: user.gamertag || undefined,
             gameLineup: activeCycle.gameLineup
         });
@@ -64,53 +51,3 @@ export const joinPool = action({
     },
 })
 
-export const createScorecard = internalMutation({
-    args: {
-        userId: v.id("users"),
-        poolId: v.id("pools"),
-        gamertag: v.optional(v.string()),
-        gameLineup,
-    },
-    handler: async (ctx, args) => {
-        const { userId, poolId, gamertag, gameLineup } = args;
-
-        // Check if user scorecard already exists
-        const userScorecard = await ctx.db.query("scorecards")
-            .withIndex("byUserAndPoolId", (q) => q.eq("userId", userId).eq("poolId", poolId))
-            .unique();
-
-        if (userScorecard) throw new ConvexError({ message: "You have already joined this pool." });
-
-        // Create empty gameData based on game lineup
-        // @ts-ignore
-        const gameData: any = {};
-
-        // Only take keys that are true
-        const gameLineupArray = getActiveGameLineup(gameLineup);
-
-        gameLineupArray.forEach((game: string) => {
-            gameData[game] = emptyScorecard(game);
-        });
-
-        // Create empty scorecard
-        await ctx.db.insert("scorecards", {
-            userId,
-            poolId,
-            gamertag: gamertag ? gamertag : undefined,
-            totalPoints: 0,
-            gameData
-        });
-
-        return 'Pool joined successfully!';
-    }
-});
-
-function emptyScorecard(game: string) {
-    switch (game) {
-        case "ballsort":
-            return ballsortGameData;
-        case "matchtwo":
-            return matchtwoGameData;
-    }
-
-}

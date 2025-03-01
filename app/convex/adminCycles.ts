@@ -5,8 +5,8 @@ import { gameLineup, schedule } from "./schema";
 import { getActiveGameLineup } from "./utils/getActiveGameLineup";
 import { parseISO } from "date-fns";
 import { asyncMap } from "convex-helpers";
-import { generatePaytable } from "./paytable/paytable";
-
+import { generatePaytable } from "../lib/paytable/paytable";
+import { isISODate } from "./utils/isISODate";
 
 export const createCycle = internalMutation({
 	args: {
@@ -37,7 +37,7 @@ export const createCycle = internalMutation({
 		if (playtimeDate >= endDate) throw new ConvexError({ message: "Playtime date must be before end date." });
 
 		// Check for active cycle
-		const activeCycle = await ctx.runQuery(api.cycles.getActiveCycle);
+		const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
 		if (activeCycle) throw new ConvexError({ message: "There is already an active cycle" });
 
 		// Create cycle
@@ -71,7 +71,7 @@ export const createCycle = internalMutation({
 export const endCycle = internalAction({
 	handler: async (ctx) => {
 		// Get active cycle
-		const activeCycle = await ctx.runQuery(api.cycles.getActiveCycle);
+		const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
 		if (!activeCycle) throw new ConvexError({ message: "Active cycle not found." });
 
 		// Check if pool is in active cycle
@@ -82,21 +82,9 @@ export const endCycle = internalAction({
 		// const endDate = parseISO(activeCycle.schedule.end);
 		// if (now < endDate) throw new ConvexError({ message: "Playtime is not over yet." });
 
+		// Create payouts for each pool
 		await asyncMap(activeCycle.pools, async (poolId) => {
-			// Get pool
-			const pool = await ctx.runQuery(api.pools.getPool, { poolId });
-			console.log(pool);
-
-			// 🛑🛑🛑 TODO: // Use contract address to fetch price, totalParticipants and prizePool 🛑🛑🛑
-
-			const price = 2000000000000000000000; // in wei
-			const totalParticipants = 10;
-			const commission = 30;
-			const prizePoolShare = (100 - commission) / 100;
-
-			const paytable = await generatePaytable(price, totalParticipants, prizePoolShare);
-			console.log(paytable);
-
+			await ctx.scheduler.runAfter(0, internal.adminPayout.createPoolPayouts, { poolId });
 		});
 	}
 })
@@ -114,11 +102,4 @@ export const getActiveCycle = query({
 	}
 })
 
-function isISODate(str: string): boolean {
-	if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(str)) {
-		return false;
-	}
 
-	const timestamp = Date.parse(str);
-	return !isNaN(timestamp);
-}

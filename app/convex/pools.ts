@@ -1,6 +1,7 @@
 import { v } from "convex/values";
-import { internalMutation, query } from "./_generated/server";
+import { internalAction, internalMutation, query } from "./_generated/server";
 import { asyncMap } from "convex-helpers";
+import { schedule } from "./schema";
 
 export const getAllPools = query({
 	args: {},
@@ -16,6 +17,27 @@ export const getPool = query({
 	handler: async (ctx, args) => {
 		const { poolId } = args;
 		return await ctx.db.get(poolId);
+	},
+});
+
+
+export const deployPoolContract = internalAction({
+	args: {
+		poolPrice: v.number(),
+		commissionPercentage: v.number(),
+		withdrawAddress: v.string(),
+		tokenAddress: v.optional(v.string()),
+		schedule
+	},
+	handler: async (ctx, args) => {
+		// canJoinPool, poolPrice, commissionPercentage, withdrawAddress, enrollStartTime, playEndTime
+		// convert price to wei
+		// canJoinPool = true
+		// commissionPercentage = 30;
+		// tokenAddress, poolprice & payoutAddress from pool owners
+		// schedule from cycle
+		// based on token symbol "ETN" - deploy native, else deploy erc20
+
 	},
 });
 

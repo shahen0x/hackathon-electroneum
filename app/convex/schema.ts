@@ -14,6 +14,12 @@ export const schedule = v.object({
 	end: v.string(),
 });
 
+export const poolStatus = v.union(
+	v.literal("active"), 
+	v.literal("upcoming"),
+	v.literal("disabled"),
+);
+
 
 export default defineSchema({
 
@@ -47,6 +53,8 @@ export default defineSchema({
 		.index("byActive", ["active"]),
 
 	poolOwners: defineTable({
+		status: poolStatus,
+		poolPrice: v.number(), // in ether
 		tokenSymbol: v.string(),
 		tokenLogo: v.string(),
 		tokenAddress: v.string(),
@@ -58,17 +66,21 @@ export default defineSchema({
 		cycle: v.id("cycles"),
 		poolOwner: v.id("poolOwners"),
 		contractAddress: v.string(),
+		storageId: v.optional(v.id("_storage")),
 	})
 		.index("byCycle", ["cycle"]),
 
 	scorecards: defineTable({
 		userId: v.id("users"),
 		poolId: v.id("pools"),
+		walletAddress: v.string(),
 		gamertag: v.optional(v.string()),
 		totalPoints: v.number(),
-		gameData: v.any()
+		gameData: v.any(),
+		reward: v.optional(v.number())
 	})
-		.index("byUserAndPoolId", ["userId", "poolId"]),
+		.index("byUserAndPoolId", ["userId", "poolId"])
+		.index("byTotalPoints", ["totalPoints"]),
 
 	levelsBallsort: defineTable({
 		cycleId: v.id("cycles"),
