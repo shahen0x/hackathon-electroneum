@@ -83,6 +83,8 @@ export const getActiveCycleWithPools = query({
 			const poolOwner = await ctx.db.get(pool.poolOwner);
 
 			return {
+				status: poolOwner?.status,
+				brandColor: poolOwner?.brandColor,
 				contractAddress: pool.contractAddress,
 				tokenSymbol: poolOwner?.tokenSymbol,
 				tokenLogo: poolOwner?.tokenLogo,
