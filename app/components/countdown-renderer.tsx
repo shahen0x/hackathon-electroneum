@@ -19,7 +19,7 @@ export const CountdownRenderer: FC<CountdownRendererProps> = ({ className, date,
 	}, []);
 
 	const styles = {
-		container: " bg-background/70 text-white flex flex-col items-center justify-center",
+		container: "bg-secondary/20 text-white flex flex-col items-center justify-center",
 		title: "text-[0.7rem] text-muted-foreground",
 		colon: "text-white text-xl animate-ping",
 	}
@@ -57,7 +57,7 @@ export const CountdownRenderer: FC<CountdownRendererProps> = ({ className, date,
 
 		if (layout === "cards-sm") {
 			return (
-				<div className={cn("flex gap-1 items-center w-", className)} {...props}>
+				<div className={cn("flex gap-1 items-center", className)} {...props}>
 
 					{timeUnits.map((unit, index) => (
 						<Fragment key={index}>

@@ -10,8 +10,8 @@ const Background: FC<BackgroundProps> = () => {
 			{/* GRID */}
 			<div className="absolute inset-0 h-full w-full bg-background/30 bg-[radial-gradient(#1a1a1c_1px,transparent_1px)] [background-size:16px_16px]" />
 
-			<div className="absolute -top-96 -right-96 w-[60rem] h-[60rem] bg-etn/5 rounded-full blur-3xl" />
-			<div className="absolute -bottom-96 -left-96 w-[40rem] h-[40rem] bg-etn/15 rounded-full blur-3xl" />
+			<div className="hidden lg:block absolute -top-96 -right-96 w-[50rem] h-[50rem] bg-etn/5 rounded-full blur-3xl" />
+			<div className="hidden lg:block absolute -bottom-96 -left-96 w-[40rem] h-[40rem] bg-etn/15 rounded-full blur-3xl" />
 		</div>
 	)
 }
