@@ -1,27 +1,5 @@
 import { create } from 'zustand';
-
-
-export type PoolStatus = "active" | "upcoming" | "disabled";
-
-export type Pool = {
-	status: PoolStatus;
-	brandColor: string | undefined;
-	contractAddress: string;
-	tokenSymbol: string;
-	tokenLogo: string;
-	tokenAddress: string;
-}
-
-export type Cycle = {
-	week: number;
-	schedule: {
-		enroll: string;
-		playtime: string;
-		end: string;
-	};
-	gameLineup: string[];
-	pools: Pool[];
-} | null
+import { Cycle } from '~/types/types.cycle';
 
 interface CycleStore {
 
