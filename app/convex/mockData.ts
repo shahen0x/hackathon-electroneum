@@ -8,9 +8,10 @@ export const createMockCycle = internalMutation({
 			active: true,
 			week: 0,
 			schedule: {
-				enroll: "2025-02-24T10:34:26.862Z",
-				playtime: "2025-02-24T10:34:26.862Z",
-				end: "2025-02-28T10:34:26.862Z",
+				cycleStart: "2025-02-24T10:34:26.862Z",
+				playtimeStart: "2025-02-24T10:34:26.862Z",
+				playtimeEnd: "2025-03-01T12:45:44+00:00",
+				cycleEnd: "2025-03-02T12:45:44+00:00",
 			},
 			gameLineup: {
 				ballsort: true,
@@ -40,7 +41,7 @@ export const createMockPoolOwners = mutation({
 				poolPrice: 1000,
 				tokenSymbol: "MEME",
 				tokenLogo: "https://wary-raccoon-546.convex.cloud/api/storage/48404d7f-ec8b-4830-9293-cb3155cfc0ba",
-				tokenAddress: "0xdbE388e37794646461b1c3560838a1453001d1ef",
+				tokenAddress: "0xf1010CcbD24017a0e76988AF962f54C6EF4a090b",
 				payoutAddress: "0x37E5831239785039Ce8A76AfF44AD0E53AA25c8C"
 			},
 			{
@@ -96,7 +97,7 @@ export const createMockPools = internalMutation({
 
 		for (const owner of poolOwners) {
 			await ctx.db.insert("pools", {
-				cycle: activeCycle._id,
+				cycleId: activeCycle._id,
 				poolOwner: owner._id,
 				contractAddress: "0x0000000000000000000000000000000000000000",
 			});

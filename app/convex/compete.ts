@@ -123,11 +123,11 @@ export async function checkCompetitionPrerequisites(ctx: MutationCtx, gameName: 
 
     // Check within playtime
     const now = new Date();
-    const playtimeDate = parseISO(activeCycle.schedule.playtime);
-    if (now < playtimeDate) throw new ConvexError({ message: "Playtime phase hasn't started yet." });
+    const playtimeStart = parseISO(activeCycle.schedule.playtimeStart);
+    if (now < playtimeStart) throw new ConvexError({ message: "Playtime phase hasn't started yet." });
 
-    const endDate = parseISO(activeCycle.schedule.end);
-    if (now >= endDate) throw new ConvexError({ message: "Playtime phase is over." });
+    const playtimeEnd = parseISO(activeCycle.schedule.playtimeEnd);
+    if (now >= playtimeEnd) throw new ConvexError({ message: "Playtime phase is over." });
 
     // Check if pool is in active cycle
     if (!activeCycle.pools || activeCycle.pools.length === 0) throw new ConvexError({ message: "No pools found in active cycle." });

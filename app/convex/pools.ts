@@ -2,9 +2,9 @@ import { ConvexError, v } from "convex/values";
 import { internalAction, internalMutation, query } from "./_generated/server";
 import { schedule } from "./schema";
 import { thirdwebClient, adminAccount } from "./authWallet";
-import { deployPublishedContract, getOrDeployInfraForPublishedContract } from "thirdweb/deploys";
+import { deployPublishedContract } from "thirdweb/deploys";
 import { chain } from "~/config/chain";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { toWei } from "thirdweb";
 import { asyncMap } from "convex-helpers";
 
@@ -12,6 +12,20 @@ export const getAllPools = query({
 	args: {},
 	handler: async (ctx) => {
 		return await ctx.db.query("pools").collect();
+	},
+});
+
+export const getPoolsByCycleAndOwner = query({
+	args: {
+		cycleId: v.id("cycles"),
+		poolOwnerId: v.id("poolOwners")
+	},
+	handler: async (ctx, args) => {
+		const { cycleId, poolOwnerId } = args;
+		return await ctx.db.query("pools")
+		.withIndex("byCycleId", (q) => q.eq("cycleId", cycleId))
+		.filter(q => q.eq(q.field('poolOwner'), poolOwnerId))
+		.unique();
 	},
 });
 
@@ -27,27 +41,34 @@ export const getPool = query({
 
 
 export const deployPoolContracts = internalAction({
-	args: {
-		// schedule
+    args: {
+		cycleId: v.id("cycles"),
+		schedule
 	},
-	handler: async (ctx, args) => {
-		// const { schedule } = args;
+    handler: async (ctx, args) => {
+		const { cycleId, schedule } = args;
 
-		const poolOwners = await ctx.runQuery(api.poolOwners.getActivePoolOwners);
-		if (poolOwners.length === 0) throw new ConvexError({ message: "No active pool owners found." });
+		const activePoolOwners = await ctx.runQuery(api.poolOwners.getActivePoolOwners);
+		if (activePoolOwners.length === 0) throw new ConvexError({ message: "No active pool owners found." });
 
-		console.log(poolOwners);
-		await asyncMap(poolOwners, async (poolOwner) => {
+		await asyncMap(activePoolOwners, async (poolOwner) => {
+			// Check if their pool already exist in this cycle
+			const pool = await ctx.runQuery(api.pools.getPoolsByCycleAndOwner, { cycleId, poolOwnerId: poolOwner._id });
+			
+			if (pool) {
+				console.log(`Pool for ${poolOwner.tokenSymbol} already exists in cycle ${cycleId}`);
+				return;
+			}
 
-			const contractParams: any = {
-				canJoinPool_: true,
-				poolPrice_: toWei(poolOwner.poolPrice.toString()),
-				commissionPercentage_: 30,
-				withdrawAddress_: poolOwner.payoutAddress,
-				// enrollStartTime_: schedule.enroll,
-				// playEndTime_: schedule.end,
-				enrollStartTime_: 1740840749,
-				playEndTime_: 1740927149,
+			const contractParams : any = {
+					canJoinPool_: true,
+					poolPrice_: toWei(poolOwner.poolPrice.toString()),
+					commissionPercentage_: 30,
+					withdrawAddress_: poolOwner.payoutAddress,
+					enrollStartTime_: schedule.cycleStart,
+					playEndTime_: schedule.playtimeEnd,
+					// enrollStartTime_: 1740919142,
+					// playEndTime_: 1741005542,
 			}
 
 			// If not ETN, deploy erc20
@@ -55,18 +76,28 @@ export const deployPoolContracts = internalAction({
 				contractParams.erc20TokenAddress_ = poolOwner.tokenAddress;
 			}
 
-			// Deploy contract
-			const address = await deployPublishedContract({
-				client: thirdwebClient,
-				chain,
-				account: adminAccount,
-				contractId: poolOwner.tokenSymbol === "ETN" ? "GamePoolNative" : "GamePoolERC20",
-				contractParams,
-				version: "v1.0.1",
-				publisher: adminAccount.address
-			});
-
-			console.log(address);
+			try {
+				// Deploy contract
+				const contractAddress = await deployPublishedContract({
+					client: thirdwebClient,
+					chain,
+					account: adminAccount,
+					contractId: poolOwner.tokenSymbol === "ETN" ? "GamePoolNative" : "GamePoolERC20",
+					contractParams,
+					version: "1.0.1",
+					publisher: adminAccount.address
+				});
+				
+				// Create pool
+				await ctx.scheduler.runAfter(0, internal.pools.createPool, {
+					cycleId, 
+					poolOwnerId: poolOwner._id, 
+					contractAddress
+				});
+			} 
+			catch (error) {
+				console.log(error);	
+			}
 		});
 	}
 });
@@ -82,7 +113,7 @@ export const createPool = internalMutation({
 		const { cycleId, poolOwnerId, contractAddress } = args;
 
 		return await ctx.db.insert("pools", {
-			cycle: cycleId,
+			cycleId,
 			poolOwner: poolOwnerId,
 			contractAddress
 		});
@@ -119,7 +150,7 @@ export const getActiveCycleWithPools = query({
 		// Get pools for the active cycle
 		const pools = await ctx.db
 			.query("pools")
-			.withIndex("byCycle", (q) => q.eq("cycle", activeCycle._id))
+			.withIndex("byCycleId", (q) => q.eq("cycleId", activeCycle._id))
 			.collect();
 		if (pools.length === 0) throw new ConvexError("An error occured while fetching pool.");
 
