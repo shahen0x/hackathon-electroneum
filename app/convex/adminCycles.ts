@@ -68,6 +68,70 @@ export const createCycle = internalMutation({
 	}
 })
 
+export const createCycleWithPools = internalMutation({
+	args: {
+		week: v.number(),
+		schedule,
+		gameLineup,
+	},
+	handler: async (ctx, args) => {
+		const { week, schedule, gameLineup } = args;
+
+		// Validate game lineup
+		const lineup = getActiveGameLineup(gameLineup);
+		if (lineup.length === 0) throw new ConvexError({ message: "Game lineup must have at least 1 active game." });
+
+		// Validate schedule
+		const isEnrollISOFormat = isISODate(schedule.enroll);
+		const isPlaytimeISOFormat = isISODate(schedule.playtime);
+		const isEndISOFormat = isISODate(schedule.end);
+
+		if (!isEnrollISOFormat || !isPlaytimeISOFormat || !isEndISOFormat) throw new ConvexError({ message: "Schedule must be in ISO format." });
+
+		const enrollDate = parseISO(schedule.enroll);
+		const playtimeDate = parseISO(schedule.playtime);
+		const endDate = parseISO(schedule.end);
+
+		if (enrollDate > playtimeDate) throw new ConvexError({ message: "Enrollment date cannot be after playtime date." });
+		if (enrollDate >= endDate) throw new ConvexError({ message: "Enrollment date must be before end date." });
+		if (playtimeDate >= endDate) throw new ConvexError({ message: "Playtime date must be before end date." });
+
+		// Check for active cycle
+		const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
+		if (activeCycle) throw new ConvexError({ message: "There is already an active cycle" });
+
+		// Create cycle
+		const cycleId = await ctx.db.insert("cycles", {
+			active: true,
+			week,
+			schedule,
+			gameLineup
+		});
+
+		// Create ball sort levels, if needed
+		if (gameLineup.ballsort) {
+			await ctx.scheduler.runAfter(0, internal.levelsBallsort.generateBallsortLevels, {
+				cycleId: cycleId,
+			});
+		}
+
+		// Create match two levels, if needed
+		if (gameLineup.matchtwo) {
+			await ctx.scheduler.runAfter(0, internal.levelsMatchtwo.generateMatchtwoLevels, {
+				cycleId: cycleId,
+			});
+		}
+
+		// Create pools with contracts
+
+		// 🛑🛑🛑 TODO: Schedule cycle closure 🛑🛑🛑
+
+		return cycleId;
+	}
+})
+
+
+
 export const endCycle = internalAction({
 	handler: async (ctx) => {
 		// Get active cycle
