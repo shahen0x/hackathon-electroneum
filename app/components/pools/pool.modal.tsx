@@ -9,7 +9,7 @@ import { useActiveAccount, useWalletBalance } from "thirdweb/react";
 import { clientThirdweb } from "~/thirdweb/client";
 import { Separator } from "../ui/separator";
 import { chain } from "~/config/chain";
-import { PoolType } from "./pools.active";
+import { PoolType } from "./pools";
 import PoolJoin from "./pool.join";
 
 interface PoolModalProps {

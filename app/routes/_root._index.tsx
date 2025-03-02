@@ -1,7 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 import CycleActive from "~/components/cycle/cycle.active";
 import Leaderboard from "~/components/leaderboard/leaderboard";
-import ActivePools from "~/components/pools/pools.active";
+import Pools from "~/components/pools/pools";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { appConfig } from "~/config/app";
@@ -40,7 +40,7 @@ export default function Index() {
 			</div> */}
 			<div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-[19rem_1fr] xl:grid-cols-[22rem_1fr] lg:gap-8">
 				{isLoading ? <LoadingCycle /> : <CycleActive />}
-				{/* <ActivePools /> */}
+				<Pools />
 			</div>
 
 			<Leaderboard />

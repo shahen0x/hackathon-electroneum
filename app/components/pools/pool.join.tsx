@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Button } from "../ui/button";
 import { useActiveAccount } from "thirdweb/react";
-import { PoolType } from "./pools.active";
+import { PoolType } from "./pools";
 import { PiWallet } from "react-icons/pi";
 import { getContract, prepareContractCall, sendTransaction, toWei, waitForReceipt } from "thirdweb";
 import { clientThirdweb as client } from "~/thirdweb/client";

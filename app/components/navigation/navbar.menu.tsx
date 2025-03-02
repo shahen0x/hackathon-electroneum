@@ -3,13 +3,13 @@ import { Link, useLocation } from "@remix-run/react";
 
 import { navbarMenuItems } from "~/config/menus";
 
-import { PiListLight } from "react-icons/pi";
+import { PiListLight, PiSkullDuotone, PiSkullFill } from "react-icons/pi";
 
 import { Button } from "~/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "~/components/ui/navigation-menu";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu";
 import { appSocials } from "~/config/app";
-import { FaTelegram, FaXTwitter } from "react-icons/fa6";
+import { FaTelegram, FaXTwitter, FaSkullCrossbones } from "react-icons/fa6";
 
 interface NavbarMenuProps { }
 
@@ -96,6 +96,15 @@ const NavbarMenu: FC<NavbarMenuProps> = () => {
 							</Link>
 						</NavigationMenuItem >
 					))}
+
+					<NavigationMenuItem>
+						<button className={`
+								px-3 py-2 flex items-center gap-2 rounded-lg text-xs transition-colors
+								bg-transparent text-orange-400 hover:bg-accent/50 hover:text-white
+							`}>
+							<FaSkullCrossbones size={16} /> <span className="">ROYALE</span>
+						</button>
+					</NavigationMenuItem >
 				</NavigationMenuList>
 			</NavigationMenu>
 		</>

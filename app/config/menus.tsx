@@ -10,5 +10,5 @@ const menuIconSize = 18;
 export const navbarMenuItems: MenuItem[] = [
 	{ name: "Dashboard", href: "/", icon: <PiHouseDuotone size={menuIconSize} /> },
 	{ name: "Games", href: "/games", icon: <PiGameControllerDuotone size={menuIconSize} /> },
-	{ name: "Rankings", href: "/rankings", icon: <PiRankingDuotone size={menuIconSize} /> },
+	// { name: "Rankings", href: "/rankings", icon: <PiRankingDuotone size={menuIconSize} /> },
 ]
