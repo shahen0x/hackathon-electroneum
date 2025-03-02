@@ -7,6 +7,9 @@ import { Id } from "./_generated/dataModel";
 import { base64ToBlob } from "./utils/base64toBlob";
 import { asyncMap } from "convex-helpers";
 import { parseISO } from "date-fns";
+import { poolContract } from "./web3";
+import { prepareContractCall, sendTransaction } from "thirdweb";
+import { adminAccount } from "./authWallet";
 
 export const generatePayouts = internalAction({
 	handler: async (ctx) => {
@@ -136,8 +139,24 @@ export const setMerkleRootOnContract = internalAction({
     },
     handler: async (ctx, args) => {
         const {contractAddress, merkleRoot } = args;
+        
+        // Get contract
+        const contract = poolContract(contractAddress);
 
-        // 🛑🛑🛑 TODO: // Update merkle root on smart contract 🛑🛑🛑
+        // Prepare tx
+        const transaction = prepareContractCall({
+            contract,
+            method: "setPrizeMerkleRoot",
+            params: [merkleRoot as `0x${string}`],
+        });
+
+        // Send tx
+        const transactionResult = await sendTransaction({
+            transaction,
+            account: adminAccount,
+        });
+
+        console.log(transactionResult);
     }
 });
 

@@ -32,6 +32,7 @@ import type * as utils_base64toBlob from "../utils/base64toBlob.js";
 import type * as utils_getActiveGameLineup from "../utils/getActiveGameLineup.js";
 import type * as utils_isISODate from "../utils/isISODate.js";
 import type * as utils_shuffleString from "../utils/shuffleString.js";
+import type * as web3 from "../web3.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -61,6 +62,7 @@ declare const fullApi: ApiFromModules<{
   "utils/getActiveGameLineup": typeof utils_getActiveGameLineup;
   "utils/isISODate": typeof utils_isISODate;
   "utils/shuffleString": typeof utils_shuffleString;
+  web3: typeof web3;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

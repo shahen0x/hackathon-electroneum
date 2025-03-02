@@ -2,6 +2,8 @@ import { ConvexError, v } from "convex/values";
 import { api, internal } from "./_generated/api";
 import { action } from "./_generated/server";
 import { parseISO } from "date-fns";
+import { poolContract } from "./web3";
+import { readContract } from "thirdweb";
 
 export const joinPool = action({
     args: {
@@ -35,9 +37,23 @@ export const joinPool = action({
             throw new ConvexError({ message: "Enrollment phase is over." });
         }
 
-        // 🛑🛑🛑 TODO: Check user participation in pool on smart contract 🛑🛑🛑
+        // Get pool
+        const pool = await ctx.runQuery(api.pools.getPool, { poolId });
+        if (!pool) throw new ConvexError({ message: "Pool not found." });
 
-        // Create scorecard, IF NOT ALREADY CREATED in an internal mutation
+        // Get contract
+        const contract = poolContract(pool.contractAddress);
+        
+        // Check if user is a participant
+        const isParticipant = await readContract({
+            contract: contract,
+            method: "getUserRecorded",
+            params: [user.walletAddress],
+          });
+
+        if (!isParticipant) throw new ConvexError({ message: "Address not recorded on contract." });
+
+        // Create scorecard
         const res: string = await ctx.runMutation(internal.scorecards.createScorecard, {
             userId: user._id,
             poolId: poolId,
