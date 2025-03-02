@@ -6,7 +6,6 @@ import { parseISO } from "date-fns";
 import { asyncMap } from "convex-helpers";
 import { getMatchtwoDataForCycle, isGameDataMatchtwo } from "./levelsMatchtwo";
 import { getBallsortDataForCycle, isGameDataBallsort } from "./levelsBallsort";
-import { Doc } from "./_generated/dataModel";
 
 type GameName = "ballsort" | "matchtwo";
 

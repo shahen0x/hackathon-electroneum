@@ -75,7 +75,6 @@ export const createCycleWithPools = internalMutation({
 
 
 		// Schedule next cycle
-
 		// Find time difference between cycle start and end
 		const cycleDuration = cycleEndDate.getTime() - cycleStartDate.getTime(); // Difference in milliseconds
 		const nextCycleEnd = new Date(cycleEndDate.getTime() + cycleDuration);

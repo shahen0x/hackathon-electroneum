@@ -27,11 +27,11 @@ export const joinPool = action({
 
         // Check schedule
         const now = new Date();
-        const enrollDate = parseISO(activeCycle.schedule.cycleStart);
-        const endDate = parseISO(activeCycle.schedule.cycleEnd);
+        const cycleStart = parseISO(activeCycle.schedule.cycleStart);
+        const playtimeEnd = parseISO(activeCycle.schedule.playtimeEnd);
 
         // Now has to be within enroll and end
-        if (now < enrollDate || now >= endDate) {
+        if (now < cycleStart || now >= playtimeEnd) {
             throw new ConvexError({ message: "Enrollment phase is over." });
         }
 
