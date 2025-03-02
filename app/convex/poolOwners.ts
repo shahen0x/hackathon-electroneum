@@ -8,4 +8,13 @@ export const getPoolOwners = query({
 	},
 });
 
+export const getActivePoolOwners = query({
+	args: {},
+	handler: async (ctx) => {
+		return await ctx.db.query("poolOwners")
+		.filter(q => q.eq(q.field('status'), 'active'))
+		.collect();
+	},
+});
+
 

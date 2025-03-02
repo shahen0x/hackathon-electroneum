@@ -1,7 +1,12 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { internalAction, internalMutation, query } from "./_generated/server";
 import { asyncMap } from "convex-helpers";
 import { schedule } from "./schema";
+import { thirdwebClient, adminAccount } from "./authWallet";
+import { deployPublishedContract, getOrDeployInfraForPublishedContract } from "thirdweb/deploys";
+import { chain } from "~/config/chain";
+import { api } from "./_generated/api";
+import { toWei } from "thirdweb";
 
 export const getAllPools = query({
 	args: {},
@@ -21,26 +26,50 @@ export const getPool = query({
 });
 
 
-export const deployPoolContract = internalAction({
-	args: {
-		poolPrice: v.number(),
-		commissionPercentage: v.number(),
-		withdrawAddress: v.string(),
-		tokenAddress: v.optional(v.string()),
-		schedule
-	},
-	handler: async (ctx, args) => {
-		// canJoinPool, poolPrice, commissionPercentage, withdrawAddress, enrollStartTime, playEndTime
-		// convert price to wei
-		// canJoinPool = true
-		// commissionPercentage = 30;
-		// tokenAddress, poolprice & payoutAddress from pool owners
-		// schedule from cycle
-		// based on token symbol "ETN" - deploy native, else deploy erc20
+export const deployPoolContracts = internalAction({
+    args: {
+        // schedule
+    },
+    handler: async (ctx, args) => {
+		// const { schedule } = args;
 
-	},
+		const poolOwners = await ctx.runQuery(api.poolOwners.getActivePoolOwners);
+		if (poolOwners.length === 0) throw new ConvexError({ message: "No active pool owners found." });
+
+		console.log(poolOwners);
+		await asyncMap(poolOwners, async (poolOwner) => {
+
+			const contractParams : any = {
+					canJoinPool_: true,
+					poolPrice_: toWei(poolOwner.poolPrice.toString()),
+					commissionPercentage_: 30,
+					withdrawAddress_: poolOwner.payoutAddress,
+					// enrollStartTime_: schedule.enroll,
+					// playEndTime_: schedule.end,
+					enrollStartTime_: 1740840749,
+					playEndTime_: 1740927149,
+			}
+
+			// If not ETN, deploy erc20
+			if (poolOwner.tokenSymbol !== "ETN") {
+				contractParams.erc20TokenAddress_ = poolOwner.tokenAddress;
+			}
+
+			// Deploy contract
+			const address = await deployPublishedContract({
+				client: thirdwebClient,
+				chain,
+				account: adminAccount,
+				contractId: poolOwner.tokenSymbol === "ETN" ? "GamePoolNative" : "GamePoolERC20",
+				contractParams,
+				version: "v1.0.1",
+				publisher: adminAccount.address
+			});
+
+			console.log(address);
+		});
+	}
 });
-
 
 export const createPool = internalMutation({
 	args: {

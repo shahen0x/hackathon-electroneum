@@ -25,6 +25,11 @@ export const thirdwebAuth = createAuth({
 	adminAccount: privateKeyToAccount({ client: thirdwebClient, privateKey })
 });
 
+export const adminAccount = privateKeyToAccount({
+    client: thirdwebClient,
+    privateKey: process.env.THIRDWEB_ADMIN_WALLET as string,
+});
+
 
 // Generate a login payload for SIWE
 export const generatePayload = action({
