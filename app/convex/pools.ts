@@ -69,6 +69,9 @@ export const getActiveCycleWithPools = query({
 			.unique();
 		if (!activeCycle) throw new ConvexError("No active cycle found.");
 
+		// Filter active cycle
+		const { _id, active, _creationTime, ...filteredActiveCycle } = activeCycle;
+
 		// Get pool owners that are not disabled
 		const poolOwners = await ctx.db
 			.query("poolOwners")
@@ -112,7 +115,7 @@ export const getActiveCycleWithPools = query({
 		}));
 
 		return {
-			activeCycle,
+			activeCycle: filteredActiveCycle,
 			activePools,
 			upcomingPools
 		}
