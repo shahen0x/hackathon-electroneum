@@ -1,6 +1,5 @@
 import { ConvexError, v } from "convex/values";
 import { internalAction, internalMutation, query } from "./_generated/server";
-import { asyncMap } from "convex-helpers";
 import { schedule } from "./schema";
 import { thirdwebClient, adminAccount } from "./authWallet";
 import { deployPublishedContract, getOrDeployInfraForPublishedContract } from "thirdweb/deploys";
@@ -91,45 +90,63 @@ export const createPool = internalMutation({
 
 export const getActiveCycleWithPools = query({
 	handler: async (ctx) => {
+
+		// Get the active cycle
 		const activeCycle = await ctx.db
 			.query("cycles")
-			.withIndex("byActive", (q) =>
-				q.eq("active", true)
-			)
+			.withIndex("byActive", (q) => q.eq("active", true))
 			.unique();
+		if (!activeCycle) throw new ConvexError("No active cycle found.");
 
+		// Filter active cycle
+		const { _id, active, _creationTime, ...filteredActiveCycle } = activeCycle;
 
-		if (!activeCycle) return null;
+		// Get pool owners that are not disabled
+		const poolOwners = await ctx.db
+			.query("poolOwners")
+			.withIndex("byDisabled", (q) => q.eq("disabled", false))
+			.collect();
+		if (!poolOwners) throw new ConvexError("An error occured while fetching pool owners.");
 
+		// Filter active and upcoming pool owners
+		const activePoolOwners = poolOwners.filter(poolOwner => poolOwner.status === "active");
+		const upcomingPoolOwners = poolOwners.filter(poolOwner => poolOwner.status === "upcoming");
+
+		// Lookup map for active pool owners
+		const activePoolOwnersMap = new Map(activePoolOwners.map(poolOwner => [poolOwner._id, poolOwner]));
+
+		// Get pools for the active cycle
 		const pools = await ctx.db
 			.query("pools")
-			.withIndex("byCycle", (q) =>
-				q.eq("cycle", activeCycle._id)
-			)
+			.withIndex("byCycle", (q) => q.eq("cycle", activeCycle._id))
 			.collect();
+		if (pools.length === 0) throw new ConvexError("An error occured while fetching pool.");
 
-		const activePools = await asyncMap(pools, async (pool) => {
-			const poolOwner = await ctx.db.get(pool.poolOwner);
+		// Filter pools to only include those with an active pool owner
+		const activePools = pools
+			.filter(pool => activePoolOwnersMap.has(pool.poolOwner))
+			.map(pool => {
+				const poolOwner = activePoolOwnersMap.get(pool.poolOwner);
+				return {
+					contractAddress: pool.contractAddress,
+					tokenAddress: poolOwner?.tokenAddress,
+					tokenLogo: poolOwner?.tokenLogo,
+					tokenSymbol: poolOwner?.tokenSymbol,
+					brandColor: poolOwner?.brandColor
+				};
+			});
 
-			return {
-				status: poolOwner?.status,
-				brandColor: poolOwner?.brandColor,
-				contractAddress: pool.contractAddress,
-				tokenSymbol: poolOwner?.tokenSymbol,
-				tokenLogo: poolOwner?.tokenLogo,
-				tokenAddress: poolOwner?.tokenAddress
-			}
-		});
-
-		// Convert game lineup object to array
-		const gameLineupArray = Object.keys(activeCycle.gameLineup)
-			.filter(key => activeCycle.gameLineup[key as keyof typeof activeCycle.gameLineup] === true);
+		// Format upcomingPools with only required fields
+		const upcomingPools = upcomingPoolOwners.map(poolOwner => ({
+			tokenLogo: poolOwner.tokenLogo,
+			tokenSymbol: poolOwner.tokenSymbol,
+			brandColor: poolOwner.brandColor
+		}));
 
 		return {
-			week: activeCycle.week,
-			schedule: activeCycle.schedule,
-			gameLineup: gameLineupArray,
-			pools: activePools
+			activeCycle: filteredActiveCycle,
+			activePools,
+			upcomingPools
 		}
 	}
-})
+});

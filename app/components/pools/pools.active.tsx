@@ -2,15 +2,21 @@ import { FC, HTMLAttributes } from "react";
 import PoolCard from "./pool.card";
 import { Card } from "../ui/card";
 import { cn } from "~/lib/utils";
+import { useCycleStore } from "~/store/store.cycle";
 
 interface ActivePoolsProps extends HTMLAttributes<HTMLDivElement> { }
 
-export type Pool = {
-	tokenSymbol: string,
-	tokenLogo: string,
-	tokenAddress: string,
-	contractAddress: string,
-}
+export type PoolStatus = "active" | "upcoming" | "disabled";
+
+// export type Pool = {
+// 	status: PoolStatus;
+// 	poolPrice: number;
+// 	tokenSymbol: string,
+// 	tokenLogo: string,
+// 	tokenAddress: string,
+// 	contractAddress: string,
+// 	brandColor?: string;
+// }
 
 export type PoolType = {
 	isNative: boolean;
@@ -25,29 +31,13 @@ export type PoolType = {
 
 const ActivePools: FC<ActivePoolsProps> = ({ className }) => {
 
-	const pools: Pool[] = [
-		{
-			tokenSymbol: "ETN",
-			tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/2137.png",
-			tokenAddress: "0x0000000000000000000000000000000000000000",
-			contractAddress: "0x7d78D8884391D5a19c711A1e681006eFAd4c389e",
-		},
-		{
-			tokenSymbol: "MEME",
-			tokenLogo: "https://wary-raccoon-546.convex.cloud/api/storage/48404d7f-ec8b-4830-9293-cb3155cfc0ba",
-			tokenAddress: "0xdbE388e37794646461b1c3560838a1453001d1ef",
-			contractAddress: "0x56c6f06Db97EE405FFab59e843De7FeA7eDF55A8",
-		},
-	]
+	const { cycle } = useCycleStore();
 
 	return (
 		<div className={cn(className, "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-2")}>
-			{pools.map((pool) => (
-				<PoolCard key={pool.tokenSymbol} pool={pool} />
+			{cycle?.pools.map((pool) => (
+				<PoolCard key={pool?.tokenSymbol} pool={pool} />
 			))}
-			<Card className="min-h-[160px] opacity-30" />
-			<Card className="min-h-[160px] opacity-30" />
-			<Card className="min-h-[160px] opacity-30" />
 			<Card className="min-h-[160px] opacity-30" />
 			<Card className="min-h-[160px] opacity-30" />
 			<Card className="min-h-[160px] opacity-30" />

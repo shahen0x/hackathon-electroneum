@@ -15,9 +15,8 @@ export const schedule = v.object({
 });
 
 export const poolStatus = v.union(
-	v.literal("active"), 
-	v.literal("upcoming"),
-	v.literal("disabled"),
+	v.literal("active"),
+	v.literal("upcoming")
 );
 
 
@@ -54,13 +53,16 @@ export default defineSchema({
 
 	poolOwners: defineTable({
 		status: poolStatus,
+		disabled: v.boolean(),
 		poolPrice: v.number(), // in ether
 		tokenSymbol: v.string(),
 		tokenLogo: v.string(),
 		tokenAddress: v.string(),
 		payoutAddress: v.string(),
 		brandColor: v.optional(v.string()),
-	}),
+	})
+		.index("byStatus", ["status"])
+		.index("byDisabled", ["disabled"]),
 
 	pools: defineTable({
 		cycle: v.id("cycles"),

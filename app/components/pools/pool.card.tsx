@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
-import { Pool } from "./pools.active";
 import { getContract, readContract, toEther } from "thirdweb";
 import { clientThirdweb } from "~/thirdweb/client";
 import { abiPoolNative } from "~/thirdweb/abi/abi.pool.native";
@@ -12,6 +11,7 @@ import { formatEth } from "~/lib/format.eth";
 import PoolModal from "./pool.modal";
 import { chain } from "~/config/chain";
 import { useActiveAccount } from "thirdweb/react";
+import { Pool } from "~/store/store.cycle";
 
 interface PoolCardProps {
 	pool: Pool;

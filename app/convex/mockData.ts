@@ -26,14 +26,17 @@ export const createMockPoolOwners = mutation({
 		const poolOwners = [
 			{
 				status: "active",
+				disabled: false,
 				poolPrice: 2500,
 				tokenSymbol: "ETN",
 				tokenLogo: "https://s2.coinmarketcap.com/static/img/coins/64x64/2137.png",
 				tokenAddress: "0x0000000000000000000000000000000000000000",
-				payoutAddress: "0x37E5831239785039Ce8A76AfF44AD0E53AA25c8C"
+				payoutAddress: "0x37E5831239785039Ce8A76AfF44AD0E53AA25c8C",
+				brandColor: "#00ff00"
 			},
 			{
 				status: "active",
+				disabled: false,
 				poolPrice: 1000,
 				tokenSymbol: "MEME",
 				tokenLogo: "https://wary-raccoon-546.convex.cloud/api/storage/48404d7f-ec8b-4830-9293-cb3155cfc0ba",
@@ -42,6 +45,7 @@ export const createMockPoolOwners = mutation({
 			},
 			{
 				status: "upcoming",
+				disabled: false,
 				poolPrice: 0,
 				tokenSymbol: "Buddy",
 				tokenLogo: "https://app.electroswap.io/images/0x38B54f147303887BD2E932373432FfCBD11Ff6a5.png",
@@ -50,6 +54,7 @@ export const createMockPoolOwners = mutation({
 			},
 			{
 				status: "upcoming",
+				disabled: false,
 				poolPrice: 0,
 				tokenSymbol: "PDY",
 				tokenLogo: "https://app.electroswap.io/images/0xc20d02538368D8F7deBeAeB99D9a8b4d4D1DDC1C.png",
@@ -58,6 +63,7 @@ export const createMockPoolOwners = mutation({
 			},
 			{
 				status: "upcoming",
+				disabled: false,
 				poolPrice: 0,
 				tokenSymbol: "MEGA",
 				tokenLogo: "https://pbs.twimg.com/profile_images/1889018389420777472/YIOt0clC_400x400.jpg",
@@ -82,7 +88,11 @@ export const createMockPools = internalMutation({
 
 		if (!activeCycle) return;
 
-		const poolOwners = await ctx.db.query("poolOwners").collect();
+		const poolOwners = await ctx.db.query("poolOwners")
+			.withIndex("byStatus", (q) =>
+				q.eq("status", "active")
+			)
+			.collect();
 
 		for (const owner of poolOwners) {
 			await ctx.db.insert("pools", {

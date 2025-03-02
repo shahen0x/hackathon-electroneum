@@ -17,7 +17,8 @@ const DataCycle = () => {
 	// Fetch data function
 	const fetchCycleWithPools = async () => {
 		console.log("🔃 Fetching cycle data...");
-		return await convex.query(api.pools.getActiveCycleWithPools);
+		const cyc = await convex.query(api.pools.getActiveCycleWithPools);
+		return cyc;
 	}
 
 	const { data: cycleData, error: cycleError, isError: isCycleError } = useQuery({
