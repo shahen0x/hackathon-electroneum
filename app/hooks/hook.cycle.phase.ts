@@ -10,9 +10,9 @@ const useCyclePhase = () => {
 	useEffect(() => {
 		if (!cycle) return;
 
-		const enrollTime = parseISO(cycle.schedule.enroll);
-		const playTime = parseISO(cycle.schedule.playtime);
-		const endTime = parseISO(cycle.schedule.end);
+		const enrollTime = parseISO(cycle.activeCycle.schedule.enroll);
+		const playTime = parseISO(cycle.activeCycle.schedule.playtime);
+		const endTime = parseISO(cycle.activeCycle.schedule.end);
 
 		const updatePhase = () => {
 			const now = new Date();

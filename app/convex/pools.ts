@@ -6,6 +6,7 @@ import { deployPublishedContract, getOrDeployInfraForPublishedContract } from "t
 import { chain } from "~/config/chain";
 import { api } from "./_generated/api";
 import { toWei } from "thirdweb";
+import { asyncMap } from "convex-helpers";
 
 export const getAllPools = query({
 	args: {},
@@ -26,10 +27,10 @@ export const getPool = query({
 
 
 export const deployPoolContracts = internalAction({
-    args: {
-        // schedule
-    },
-    handler: async (ctx, args) => {
+	args: {
+		// schedule
+	},
+	handler: async (ctx, args) => {
 		// const { schedule } = args;
 
 		const poolOwners = await ctx.runQuery(api.poolOwners.getActivePoolOwners);
@@ -38,15 +39,15 @@ export const deployPoolContracts = internalAction({
 		console.log(poolOwners);
 		await asyncMap(poolOwners, async (poolOwner) => {
 
-			const contractParams : any = {
-					canJoinPool_: true,
-					poolPrice_: toWei(poolOwner.poolPrice.toString()),
-					commissionPercentage_: 30,
-					withdrawAddress_: poolOwner.payoutAddress,
-					// enrollStartTime_: schedule.enroll,
-					// playEndTime_: schedule.end,
-					enrollStartTime_: 1740840749,
-					playEndTime_: 1740927149,
+			const contractParams: any = {
+				canJoinPool_: true,
+				poolPrice_: toWei(poolOwner.poolPrice.toString()),
+				commissionPercentage_: 30,
+				withdrawAddress_: poolOwner.payoutAddress,
+				// enrollStartTime_: schedule.enroll,
+				// playEndTime_: schedule.end,
+				enrollStartTime_: 1740840749,
+				playEndTime_: 1740927149,
 			}
 
 			// If not ETN, deploy erc20

@@ -17,17 +17,16 @@ const DataCycle = () => {
 	// Fetch data function
 	const fetchCycleWithPools = async () => {
 		console.log("🔃 Fetching cycle data...");
-		const cyc = await convex.query(api.pools.getActiveCycleWithPools);
-		return cyc;
+		return await convex.query(api.pools.getActiveCycleWithPools);
 	}
 
+	// Fetch and set cycle store
 	const { data: cycleData, error: cycleError, isError: isCycleError } = useQuery({
 		queryKey: ["cycleData"],
 		queryFn: fetchCycleWithPools,
 		enabled: !cycle,
 		staleTime: 1000 * 60 * 30, // 30mins
 	});
-
 
 	useEffect(() => {
 		if (cycleData) {
