@@ -1,8 +1,9 @@
 export type ActiveCycle = {
 	schedule: {
-		enroll: string;
-		playtime: string;
-		end: string;
+		cycleStart: string;
+		playtimeStart: string;
+		playtimeEnd: string;
+		cycleEnd: string;
 	};
 	gameLineup: {
 		ballsort?: boolean | undefined;

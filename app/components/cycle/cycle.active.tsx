@@ -31,7 +31,7 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 					Gaming Week #{cycle?.activeCycle.week}
 				</CardTitle>
 				<CardDescription className="flex items-center gap-2 text-sm">
-					{formatDate(cycle?.activeCycle.schedule.enroll)} <CgArrowLongRight size={20} className="opacity-20" /> {formatDate(cycle?.activeCycle.schedule.end)}
+					{formatDate(cycle?.activeCycle.schedule.cycleStart)} <CgArrowLongRight size={20} className="opacity-20" /> {formatDate(cycle?.activeCycle.schedule.playtimeEnd)}
 				</CardDescription>
 			</CardHeader>
 
@@ -39,10 +39,16 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 
 				<div className="mb-3 w-full flex items-center justify-between">
 					<div className="text-xs text-muted-foreground">
-						{currentPhase === CyclePhase.NotOpenYet ? "Pools opening in:" :
-							currentPhase === CyclePhase.Enroll ? "Playtime starting in:" :
-								currentPhase === CyclePhase.Playtime ? "Playtime ending in:" :
-									"Gaming Week Closed"
+						{
+							currentPhase === CyclePhase.NotOpenYet
+								? "Pools opening in:"
+								: currentPhase === CyclePhase.Enroll
+									? "Playtime starting in:"
+									: currentPhase === CyclePhase.Playtime
+										? "Playtime ending in:"
+										: currentPhase === CyclePhase.Ended
+											? "Pools closed for the week"
+											: null
 						}
 					</div>
 
@@ -58,18 +64,20 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 
 							<div className="flex justify-between text-sm bg-neutral-700 px-4 py-2 rounded-lg">
 								<span className="text-muted-foreground">Pools open</span>
-								<span>{formatDate(cycle?.activeCycle.schedule.enroll, "dd MMM - HH:mm")}</span>
+								<span>{formatDate(cycle?.activeCycle.schedule.cycleStart, "dd MMM - HH:mm")}</span>
 							</div>
 
 							<div className="flex justify-between text-sm bg-neutral-700 px-4 py-2 rounded-lg">
 								<span className="text-muted-foreground">Playtime start</span>
-								<span>{formatDate(cycle?.activeCycle.schedule.playtime, "dd MMM - HH:mm")}</span>
+								<span>{formatDate(cycle?.activeCycle.schedule.playtimeStart, "dd MMM - HH:mm")}</span>
 							</div>
 
 							<div className="flex justify-between text-sm bg-neutral-700 px-4 py-2 rounded-lg">
-								<span className="text-muted-foreground">Ends</span>
-								<span>{formatDate(cycle?.activeCycle.schedule.end, "dd MMM - HH:mm")}</span>
+								<span className="text-muted-foreground">Playtime end</span>
+								<span>{formatDate(cycle?.activeCycle.schedule.playtimeEnd, "dd MMM - HH:mm")}</span>
 							</div>
+
+							<p className="text-xs text-center text-muted-foreground">Next gaming cycle starts: {formatDate(cycle?.activeCycle.schedule.cycleEnd, "dd MMM - HH:mm")}</p>
 						</PopoverContent>
 					</Popover>
 				</div>
@@ -80,9 +88,9 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 						className="w-full justify-around"
 						layout="cards-sm"
 						date={
-							currentPhase === CyclePhase.NotOpenYet ? cycle?.activeCycle.schedule.enroll :
-								currentPhase === CyclePhase.Enroll ? cycle?.activeCycle.schedule.playtime :
-									cycle?.activeCycle.schedule.end
+							currentPhase === CyclePhase.NotOpenYet ? cycle?.activeCycle.schedule.cycleStart :
+								currentPhase === CyclePhase.Enroll ? cycle?.activeCycle.schedule.playtimeStart :
+									cycle?.activeCycle.schedule.playtimeEnd
 						}
 					/>
 				}
