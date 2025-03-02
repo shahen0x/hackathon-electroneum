@@ -27,8 +27,8 @@ export const joinPool = action({
 
         // Check schedule
         const now = new Date();
-        const enrollDate = parseISO(activeCycle.schedule.enroll);
-        const endDate = parseISO(activeCycle.schedule.end);
+        const enrollDate = parseISO(activeCycle.schedule.cycleStart);
+        const endDate = parseISO(activeCycle.schedule.cycleEnd);
 
         // Now has to be within enroll and end
         if (now < enrollDate || now >= endDate) {

@@ -23,7 +23,7 @@ export const getPoolsByCycleAndOwner = query({
 	handler: async (ctx, args) => {
 		const { cycleId, poolOwnerId } = args;
 		return await ctx.db.query("pools")
-		.withIndex("byCycle", (q) => q.eq("cycle", cycleId))
+		.withIndex("byCycleId", (q) => q.eq("cycleId", cycleId))
 		.filter(q => q.eq(q.field('poolOwner'), poolOwnerId))
 		.unique();
 	},
@@ -43,10 +43,10 @@ export const getPool = query({
 export const deployPoolContracts = internalAction({
     args: {
 		cycleId: v.id("cycles"),
-		// schedule
+		schedule
 	},
     handler: async (ctx, args) => {
-		const { cycleId } = args;
+		const { cycleId, schedule } = args;
 
 		const activePoolOwners = await ctx.runQuery(api.poolOwners.getActivePoolOwners);
 		if (activePoolOwners.length === 0) throw new ConvexError({ message: "No active pool owners found." });
@@ -65,10 +65,10 @@ export const deployPoolContracts = internalAction({
 					poolPrice_: toWei(poolOwner.poolPrice.toString()),
 					commissionPercentage_: 30,
 					withdrawAddress_: poolOwner.payoutAddress,
-					// enrollStartTime_: schedule.enroll,
-					// playEndTime_: schedule.end,
-					enrollStartTime_: 1740919142,
-					playEndTime_: 1741005542,
+					enrollStartTime_: schedule.cycleStart,
+					playEndTime_: schedule.playtimeEnd,
+					// enrollStartTime_: 1740919142,
+					// playEndTime_: 1741005542,
 			}
 
 			// If not ETN, deploy erc20
@@ -113,7 +113,7 @@ export const createPool = internalMutation({
 		const { cycleId, poolOwnerId, contractAddress } = args;
 
 		return await ctx.db.insert("pools", {
-			cycle: cycleId,
+			cycleId,
 			poolOwner: poolOwnerId,
 			contractAddress
 		});
@@ -150,7 +150,7 @@ export const getActiveCycleWithPools = query({
 		// Get pools for the active cycle
 		const pools = await ctx.db
 			.query("pools")
-			.withIndex("byCycle", (q) => q.eq("cycle", activeCycle._id))
+			.withIndex("byCycleId", (q) => q.eq("cycleId", activeCycle._id))
 			.collect();
 		if (pools.length === 0) throw new ConvexError("An error occured while fetching pool.");
 

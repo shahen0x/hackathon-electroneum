@@ -8,9 +8,10 @@ export const createMockCycle = internalMutation({
 			active: true,
 			week: 0,
 			schedule: {
-				enroll: "2025-02-24T10:34:26.862Z",
-				playtime: "2025-02-24T10:34:26.862Z",
-				end: "2025-02-28T10:34:26.862Z",
+				cycleStart: "2025-02-24T10:34:26.862Z",
+				playtimeStart: "2025-02-24T10:34:26.862Z",
+				playtimeEnd: "2025-03-01T12:45:44+00:00",
+				cycleEnd: "2025-03-02T12:45:44+00:00",
 			},
 			gameLineup: {
 				ballsort: true,
@@ -96,7 +97,7 @@ export const createMockPools = internalMutation({
 
 		for (const owner of poolOwners) {
 			await ctx.db.insert("pools", {
-				cycle: activeCycle._id,
+				cycleId: activeCycle._id,
 				poolOwner: owner._id,
 				contractAddress: "0x0000000000000000000000000000000000000000",
 			});

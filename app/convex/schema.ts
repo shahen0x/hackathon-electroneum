@@ -9,9 +9,10 @@ export const gameLineup = v.object({
 });
 
 export const schedule = v.object({
-	enroll: v.string(),
-	playtime: v.string(),
-	end: v.string(),
+	cycleStart: v.string(),
+	playtimeStart: v.string(),
+	playtimeEnd: v.string(),
+	cycleEnd: v.string()
 });
 
 export const poolStatus = v.union(
@@ -65,12 +66,12 @@ export default defineSchema({
 		.index("byDisabled", ["disabled"]),
 
 	pools: defineTable({
-		cycle: v.id("cycles"),
+		cycleId: v.id("cycles"),
 		poolOwner: v.id("poolOwners"),
 		contractAddress: v.string(),
 		storageId: v.optional(v.id("_storage")),
 	})
-		.index("byCycle", ["cycle"]),
+		.index("byCycleId", ["cycleId"]),
 
 	scorecards: defineTable({
 		userId: v.id("users"),
