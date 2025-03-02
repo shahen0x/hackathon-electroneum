@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import { internalQuery, mutation, MutationCtx} from "./_generated/server";
+import { mutation, MutationCtx} from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import { getActiveGameLineup } from "./utils/getActiveGameLineup";
 import { parseISO } from "date-fns";
@@ -133,7 +133,7 @@ export async function checkCompetitionPrerequisites(ctx: MutationCtx, gameName: 
     if (!activeCycle.pools || activeCycle.pools.length === 0) throw new ConvexError({ message: "No pools found in active cycle." });
 
     // Check if user has at least 1 scorecard in a pool
-    const scorecards = await ctx.runQuery(internal.compete.getUserScorecards, {
+    const scorecards = await ctx.runQuery(internal.scorecards.getUserScorecards, {
         userId: user._id,
         pools: activeCycle.pools
     });
@@ -144,27 +144,6 @@ export async function checkCompetitionPrerequisites(ctx: MutationCtx, gameName: 
 
 }
 
-export const getUserScorecards = internalQuery({
-	args: {
-		userId: v.id("users"),
-        pools: v.array(v.id("pools"))
-	},
-	handler: async (ctx, args) => {
-        const {userId, pools} = args;
-
-        const scorecards : Doc<"scorecards">[] = [];
-
-		await asyncMap(pools, async (pool) => {
-            const scorecard = await ctx.db.query("scorecards")
-                .withIndex("byUserAndPoolId", (q) => q.eq("userId", userId).eq("poolId", pool))
-                .unique();
-
-            if (scorecard) scorecards.push(scorecard);
-        });
-
-        return scorecards;
-	}
-});
 
 export async function calculateTotalPoints(gameLineup: string[], newGameData: any) {
 	let allScores = 0;

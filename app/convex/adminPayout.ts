@@ -5,8 +5,31 @@ import { generatePaytable } from "~/lib/paytable/paytable";
 import { StandardMerkleTree } from '@openzeppelin/merkle-tree'
 import { Id } from "./_generated/dataModel";
 import { base64ToBlob } from "./utils/base64toBlob";
+import { asyncMap } from "convex-helpers";
+import { parseISO } from "date-fns";
 
-export const createPoolPayouts = internalAction({
+export const generatePayouts = internalAction({
+	handler: async (ctx) => {
+		// Get active cycle
+		const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
+		if (!activeCycle) throw new ConvexError({ message: "Active cycle not found." });
+
+		// Check if pool is in active cycle
+		if (!activeCycle.pools || activeCycle.pools.length === 0) throw new ConvexError({ message: "No pools found in active cycle." });
+
+		// Check playtime is over
+		const now = new Date();
+		const playtimeEndDate = parseISO(activeCycle.schedule.playtimeEnd);
+		if (now < playtimeEndDate) throw new ConvexError({ message: "Playtime is not over yet." });
+
+		// Create payouts for each pool
+		await asyncMap(activeCycle.pools, async (poolId) => {
+			await ctx.scheduler.runAfter(0, internal.adminPayout.generatePoolPayoutInstructions, { poolId });
+		});
+	}
+})
+
+export const generatePoolPayoutInstructions = internalAction({
     args: {
 		poolId: v.id("pools")
 	},
@@ -29,7 +52,7 @@ export const createPoolPayouts = internalAction({
         // console.log(paytable);
 
         // Get scorecards for this pool
-        const scorecards = await ctx.runQuery(api.scorecards.getScorecards, {
+        const scorecards = await ctx.runQuery(api.scorecards.getNonZeroScorecards, {
             poolId, 
             amount : paytable.length
         });

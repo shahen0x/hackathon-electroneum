@@ -1,9 +1,11 @@
 import { ConvexError, v } from "convex/values";
-import { internalMutation, query } from "./_generated/server";
+import { internalMutation, internalQuery, query } from "./_generated/server";
 import { gameLineup } from "./schema";
 import { getActiveGameLineup } from "./utils/getActiveGameLineup";
 import { ballsortGameData } from "./levelsBallsort";
 import { matchtwoGameData } from "./levelsMatchtwo";
+import { Doc } from "./_generated/dataModel";
+import { asyncMap } from "convex-helpers";
 
 export const createScorecard = internalMutation({
     args: {
@@ -58,7 +60,7 @@ function emptyScorecard(game: string) {
 }
 
 
-export const getScorecards = query({
+export const getNonZeroScorecards = query({
     args: {
         poolId: v.id("pools"),
         amount: v.number()
@@ -69,6 +71,7 @@ export const getScorecards = query({
         const scorecards = await ctx.db.query("scorecards")
 			.withIndex("byTotalPoints")
 			.filter(q => q.eq(q.field('poolId'), poolId))
+            .filter(q => q.gt(q.field('totalPoints'), 0))
 			.order("desc")
             .take(amount);
 
@@ -87,4 +90,26 @@ export const getScorecard = query({
         .withIndex("byUserAndPoolId", (q) => q.eq("userId", userId).eq("poolId", poolId))
         .unique();
     },
+});
+
+export const getUserScorecards = internalQuery({
+	args: {
+		userId: v.id("users"),
+        pools: v.array(v.id("pools"))
+	},
+	handler: async (ctx, args) => {
+        const {userId, pools} = args;
+
+        const scorecards : Doc<"scorecards">[] = [];
+
+		await asyncMap(pools, async (pool) => {
+            const scorecard = await ctx.db.query("scorecards")
+                .withIndex("byUserAndPoolId", (q) => q.eq("userId", userId).eq("poolId", pool))
+                .unique();
+
+            if (scorecard) scorecards.push(scorecard);
+        });
+
+        return scorecards;
+	}
 });
