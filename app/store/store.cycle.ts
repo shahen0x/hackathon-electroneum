@@ -1,6 +1,18 @@
 import { create } from 'zustand';
 
-type Cycle = {
+
+export type PoolStatus = "active" | "upcoming" | "disabled";
+
+export type Pool = {
+	status: PoolStatus;
+	brandColor: string | undefined;
+	contractAddress: string;
+	tokenSymbol: string;
+	tokenLogo: string;
+	tokenAddress: string;
+}
+
+export type Cycle = {
 	week: number;
 	schedule: {
 		enroll: string;
@@ -8,12 +20,7 @@ type Cycle = {
 		end: string;
 	};
 	gameLineup: string[];
-	pools: {
-		contractAddress: string;
-		tokenSymbol: string | undefined;
-		tokenLogo: string | undefined;
-		tokenAddress: string | undefined;
-	}[];
+	pools: Pool[];
 } | null
 
 interface CycleStore {
