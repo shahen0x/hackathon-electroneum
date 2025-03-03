@@ -49,7 +49,7 @@ export const joinPool = action({
             contract: contract,
             method: "getUserRecorded",
             params: [user.walletAddress],
-          });
+        });
 
         if (!isParticipant) throw new ConvexError({ message: "Address not recorded on contract." });
 

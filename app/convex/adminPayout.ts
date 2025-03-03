@@ -8,7 +8,7 @@ import { base64ToBlob } from "./utils/base64toBlob";
 import { asyncMap } from "convex-helpers";
 import { parseISO } from "date-fns";
 import { poolContract } from "./web3";
-import { prepareContractCall, sendTransaction } from "thirdweb";
+import { prepareContractCall, readContract, sendTransaction } from "thirdweb";
 import { adminAccount } from "./authWallet";
 
 export const generatePayouts = internalAction({
@@ -43,16 +43,10 @@ export const generatePoolPayoutInstructions = internalAction({
         const pool = await ctx.runQuery(api.pools.getPool, { poolId });
         if(!pool) throw new ConvexError({ message: "Pool not found." });
 
-        // 🛑🛑🛑 TODO: // Use contract address to fetch price, totalParticipants and commission 🛑🛑🛑
-        // 🛑🛑🛑 TODO?: // Handle the case where less scorecards than paid places 🛑🛑🛑
+        const { poolPrice, totalParticipants, prizePoolShare } = await GetPoolDataFromContract(pool.contractAddress);
         
-        const price = 100000000000000000; // in wei
-        const totalParticipants = 17;
-        const commission = 30;
-        const prizePoolShare = (100 - commission) / 100;
-
-        const paytable = await generatePaytable(price, totalParticipants, prizePoolShare);
-        // console.log(paytable);
+        // 🛑🛑🛑 TODO LATER: Try catch paytable then handle according 🛑🛑🛑
+        const paytable = await generatePaytable(poolPrice, totalParticipants, prizePoolShare);
 
         // Get scorecards for this pool
         const scorecards = await ctx.runQuery(api.scorecards.getNonZeroScorecards, {
@@ -60,7 +54,6 @@ export const generatePoolPayoutInstructions = internalAction({
             amount : paytable.length
         });
 
-        // console.log(scorecards);
         if (scorecards.length === 0) throw new ConvexError({ message: "No scorecards found for this pool." });
 
         // Form merkle entries
@@ -71,10 +64,8 @@ export const generatePoolPayoutInstructions = internalAction({
             merkleEntries[i] = [scorecards[i].walletAddress, paytable[i].toString()];
         }
 
-        // console.log(merkleEntries);
 
         const merkleTree = createStandardMerkleTree(merkleEntries);
-        // console.log('Merkle Root:', merkleTree.root);
 
         // Save tree to storage
         if (pool.storageId) throw new ConvexError("Merkle tree already stored for this pool.");
@@ -91,12 +82,38 @@ export const generatePoolPayoutInstructions = internalAction({
         
         // Update rewards in scorecards
         const scorecardIds = scorecards.map(scorecard => scorecard._id);
-        await ctx.scheduler.runAfter(0, internal.adminPayout.updateScorecardsReward, {
+        await ctx.scheduler.runAfter(0, internal.scorecards.updateScorecardsReward, {
             scorecardIds,
             rewards: paytable
         });
     }
 });
+
+export async function GetPoolDataFromContract(contractAddress: string) {
+    const contract = poolContract(contractAddress);
+    
+    // Form promises
+    const promises = [
+        readContract({ contract, method: "getPoolPrice" }),
+        readContract({ contract, method: "getUniqueParticipants" }),
+        readContract({ contract, method: "getCommissionPercentage" })
+    ];
+
+    const results = await Promise.allSettled(promises);
+    const failures = results.filter(result => result.status === 'rejected');
+    if (failures.length > 0) {
+        throw new ConvexError({ message: "Failed to fetch pool data from contract." });
+    }
+
+    // Extract values
+    const poolPrice = Number((results[0] as PromiseFulfilledResult<bigint>).value);
+    const totalParticipants = (results[1] as PromiseFulfilledResult<number>).value;
+    const commissionPercentage = (results[2] as PromiseFulfilledResult<number>).value;
+
+    const prizePoolShare = (100 - commissionPercentage) / 100;
+
+    return { poolPrice, totalParticipants, prizePoolShare };
+}
 
 export const storeMerkleTree = internalAction({
     args: {
@@ -160,21 +177,6 @@ export const setMerkleRootOnContract = internalAction({
     }
 });
 
-export const updateScorecardsReward = internalMutation({
-    args: {
-        scorecardIds: v.array(v.id("scorecards")),
-        rewards: v.array(v.number()),
-    },
-    handler: async (ctx, args) => {
-        const {scorecardIds, rewards } = args;
-
-        for (let i = 0; i < scorecardIds.length; i++) {
-            await ctx.db.patch(scorecardIds[i], {
-                reward: rewards[i]
-            });
-        }
-    }
-});
 
 function createStandardMerkleTree(entries: string[][]) {
     return StandardMerkleTree.of(entries, ['address', 'uint'], { sortLeaves: true });
