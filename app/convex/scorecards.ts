@@ -6,6 +6,7 @@ import { ballsortGameData } from "./levelsBallsort";
 import { matchtwoGameData } from "./levelsMatchtwo";
 import { Doc } from "./_generated/dataModel";
 import { asyncMap } from "convex-helpers";
+import { paginationOptsValidator } from "convex/server";
 
 export const createScorecard = internalMutation({
     args: {
@@ -69,8 +70,7 @@ export const getNonZeroScorecards = query({
         const {poolId, amount} = args;
 
         const scorecards = await ctx.db.query("scorecards")
-			.withIndex("byTotalPoints")
-			.filter(q => q.eq(q.field('poolId'), poolId))
+			.withIndex("byPoolIdAndTotalPoints", (q) => q.eq("poolId", poolId))
             .filter(q => q.gt(q.field('totalPoints'), 0))
 			.order("desc")
             .take(amount);
@@ -128,4 +128,22 @@ export const updateScorecardsReward = internalMutation({
             });
         }
     }
+});
+
+export const getPaginatedScorecards = query({
+	args: {
+		poolId: v.id("pools"),
+		paginationOpts: paginationOptsValidator,
+	},
+	handler: async (ctx, args) => {
+        const {poolId, paginationOpts} = args;
+		
+		const scorecards = await ctx.db.query("scorecards")
+            .withIndex("byPoolIdAndTotalPoints", (q) => q.eq("poolId", poolId))
+            .filter(q => q.gt(q.field('totalPoints'), 0))
+			.order("desc")
+			.paginate(paginationOpts);
+
+		return scorecards
+	}
 });

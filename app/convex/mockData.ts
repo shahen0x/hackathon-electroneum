@@ -1,3 +1,4 @@
+import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
 import { internalMutation, mutation } from "./_generated/server";
 
@@ -103,4 +104,29 @@ export const createMockPools = internalMutation({
 			});
 		}
 	},
+});
+
+export const createMockScorecards = internalMutation({
+    args: {
+		poolId: v.id("pools"),
+        amount: v.number(),
+    },
+    handler: async (ctx, args) => {
+        const {poolId, amount} = args;
+
+		const randomUser = await ctx.db.query("users").take(1);
+
+		if (!randomUser) throw new Error("Add a user first so we can use their id");
+
+        for (let i = 1; i <= amount; i++) {
+            await ctx.db.insert("scorecards", {
+                userId: randomUser[0]._id,
+                poolId,
+                walletAddress: "0x0000000000000000000000000000000000000000",
+                gamertag: "tester" + i,
+                totalPoints: i * 50,
+                gameData: {},
+            });
+        }
+    }
 });
