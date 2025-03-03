@@ -11,7 +11,10 @@ import { formatEth } from "~/lib/format.eth";
 import PoolModal from "./pool.modal";
 import { chain } from "~/config/chain";
 import { useActiveAccount } from "thirdweb/react";
-import { ActivePool } from "~/types/types.cycle";
+import { ActivePool, CyclePhase } from "~/types/types.cycle";
+import { isBefore } from "date-fns";
+import useCyclePhase from "~/hooks/hook.cycle.phase";
+import { Button } from "../ui/button";
 
 interface PoolCardActiveProps {
 	activePool: ActivePool;
@@ -29,6 +32,8 @@ export type PoolType = {
 } | undefined;
 
 const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
+
+	const { currentPhase } = useCyclePhase();
 
 	// Thirdweb
 	const account = useActiveAccount();
@@ -121,6 +126,9 @@ const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 
 			<CardFooter className="p-3 pt-0 flex-col">
 				{poolIsLoading && <Skeleton className="w-full h-[32px] rounded-md" />}
+				{!poolIsLoading && currentPhase === CyclePhase.NotOpenYet && <Button size={"sm"} className="w-full" disabled={true}>Opening Soon</Button>}
+				{/* {!poolIsLoading && (currentPhase !== CyclePhase)} */}
+
 				{/* {!isLoading && <PoolModal data={data} userJoinedPool={userJoinedPool} refetchData={refetchData} refetchJoinedPool={refetchJoinedPool} />} */}
 			</CardFooter>
 

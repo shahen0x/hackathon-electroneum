@@ -39,7 +39,7 @@ const PoolCardUpcoming: FC<PoolCardUpcomingProps> = ({ pool }) => {
 				<Button
 					size={"sm"}
 					className="w-full"
-					variant={"secondary"}
+					variant={"outline"}
 					disabled={true}
 				>
 					Coming Soon

@@ -23,6 +23,9 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 	const { cycle } = useCycleStore();
 	const { currentPhase } = useCyclePhase();
 
+	console.log(currentPhase);
+
+
 	return cycle ? (
 		<Card className={cn(className, "flex flex-col relative overflow-hidden")}>
 
@@ -40,15 +43,11 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 				<div className="mb-3 w-full flex items-center justify-between">
 					<div className="text-xs text-muted-foreground">
 						{
-							currentPhase === CyclePhase.NotOpenYet
-								? "Pools opening in:"
-								: currentPhase === CyclePhase.Enroll
-									? "Playtime starting in:"
-									: currentPhase === CyclePhase.Playtime
-										? "Playtime ending in:"
-										: currentPhase === CyclePhase.Ended
-											? "Pools closed for the week"
-											: null
+							currentPhase === CyclePhase.CycleNotStarted ? "Pools opening in:" :
+								currentPhase === CyclePhase.CycleStarted ? "Playtime starting in:" :
+									currentPhase === CyclePhase.PlaytimeStarted ? "Playtime ending in:" :
+										currentPhase === CyclePhase.PlaytimeEnded ? "Game week closing in:" :
+											currentPhase === CyclePhase.CycleEnded ? "Game week closed." : "~"
 						}
 					</div>
 
@@ -88,9 +87,10 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 						className="w-full justify-around"
 						layout="cards-sm"
 						date={
-							currentPhase === CyclePhase.NotOpenYet ? cycle?.activeCycle.schedule.cycleStart :
-								currentPhase === CyclePhase.Enroll ? cycle?.activeCycle.schedule.playtimeStart :
-									cycle?.activeCycle.schedule.playtimeEnd
+							currentPhase === CyclePhase.CycleNotStarted ? cycle?.activeCycle.schedule.cycleStart :
+								currentPhase === CyclePhase.CycleStarted ? cycle?.activeCycle.schedule.playtimeStart :
+									currentPhase === CyclePhase.PlaytimeStarted ? cycle.activeCycle.schedule.playtimeEnd :
+										cycle?.activeCycle.schedule.cycleEnd
 						}
 					/>
 				}

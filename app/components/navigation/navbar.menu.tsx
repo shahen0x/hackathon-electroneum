@@ -97,14 +97,14 @@ const NavbarMenu: FC<NavbarMenuProps> = () => {
 						</NavigationMenuItem >
 					))}
 
-					<NavigationMenuItem>
+					{/* <NavigationMenuItem>
 						<button className={`
 								px-3 py-2 flex items-center gap-2 rounded-lg text-xs transition-colors
 								bg-transparent text-orange-400 hover:bg-accent/50 hover:text-white
 							`}>
 							<FaSkullCrossbones size={16} /> <span className="">ROYALE</span>
 						</button>
-					</NavigationMenuItem >
+					</NavigationMenuItem > */}
 				</NavigationMenuList>
 			</NavigationMenu>
 		</>
