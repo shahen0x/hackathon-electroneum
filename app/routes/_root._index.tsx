@@ -1,6 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import CycleActive from "~/components/cycle/cycle.active";
-import Leaderboard from "~/components/leaderboard/leaderboard";
+import Leaderboard from "~/components/leaderboard/board";
 import Pools from "~/components/pools/pools";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";

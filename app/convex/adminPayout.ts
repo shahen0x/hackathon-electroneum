@@ -12,53 +12,53 @@ import { prepareContractCall, readContract, sendTransaction } from "thirdweb";
 import { adminAccount } from "./authWallet";
 
 export const generatePayouts = internalAction({
-	handler: async (ctx) => {
-		// Get active cycle
-		const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
-		if (!activeCycle) throw new ConvexError({ message: "Active cycle not found." });
+    handler: async (ctx) => {
+        // Get active cycle
+        const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
+        if (!activeCycle) throw new ConvexError({ message: "Active cycle not found." });
 
-		// Check if pool is in active cycle
-		if (!activeCycle.pools || activeCycle.pools.length === 0) throw new ConvexError({ message: "No pools found in active cycle." });
+        // Check if pool is in active cycle
+        if (!activeCycle.pools || activeCycle.pools.length === 0) throw new ConvexError({ message: "No pools found in active cycle." });
 
-		// Check playtime is over
-		const now = new Date();
-		const playtimeEndDate = parseISO(activeCycle.schedule.playtimeEnd);
-		if (now < playtimeEndDate) throw new ConvexError({ message: "Playtime is not over yet." });
+        // Check playtime is over
+        const now = new Date();
+        const playtimeEndDate = parseISO(activeCycle.schedule.playtimeEnd);
+        if (now < playtimeEndDate) throw new ConvexError({ message: "Playtime is not over yet." });
 
-		// Create payouts for each pool
-		await asyncMap(activeCycle.pools, async (poolId) => {
-			await ctx.scheduler.runAfter(0, internal.adminPayout.generatePoolPayoutInstructions, { poolId });
-		});
-	}
+        // Create payouts for each pool
+        await asyncMap(activeCycle.pools, async (poolId) => {
+            await ctx.scheduler.runAfter(0, internal.adminPayout.generatePoolPayoutInstructions, { poolId });
+        });
+    }
 })
 
 export const generatePoolPayoutInstructions = internalAction({
     args: {
-		poolId: v.id("pools")
-	},
+        poolId: v.id("pools")
+    },
     handler: async (ctx, args) => {
-        const {poolId } = args;
+        const { poolId } = args;
 
         // Fetch pool
         const pool = await ctx.runQuery(api.pools.getPool, { poolId });
-        if(!pool) throw new ConvexError({ message: "Pool not found." });
+        if (!pool) throw new ConvexError({ message: "Pool not found." });
 
         const { poolPrice, totalParticipants, prizePoolShare } = await GetPoolDataFromContract(pool.contractAddress);
-        
+
         // 🛑🛑🛑 TODO LATER: Try catch paytable then handle according 🛑🛑🛑
         const paytable = await generatePaytable(poolPrice, totalParticipants, prizePoolShare);
         console.log(paytable);
 
         // Get scorecards for this pool
         const scorecards = await ctx.runQuery(api.scorecards.getNonZeroScorecards, {
-            poolId, 
-            amount : paytable.length
+            poolId,
+            amount: paytable.length
         });
 
         if (scorecards.length === 0) throw new ConvexError({ message: "No scorecards found for this pool." });
 
         // Form merkle entries
-        const merkleEntries : string[][] = [];
+        const merkleEntries: string[][] = [];
 
         // Using scorecards length since there may be less scorecards than paid places
         for (let i = 0; i < scorecards.length; i++) {
@@ -79,7 +79,7 @@ export const generatePoolPayoutInstructions = internalAction({
             contractAddress: pool.contractAddress,
             merkleRoot: merkleTree.root
         });
-        
+
         // Update rewards in scorecards
         const scorecardIds = scorecards.map(scorecard => scorecard._id);
         await ctx.scheduler.runAfter(0, internal.scorecards.updateScorecardsReward, {
@@ -91,7 +91,7 @@ export const generatePoolPayoutInstructions = internalAction({
 
 export async function GetPoolDataFromContract(contractAddress: string) {
     const contract = poolContract(contractAddress);
-    
+
     // Form promises
     const promises = [
         readContract({ contract, method: "getPoolPrice" }),
@@ -137,11 +137,11 @@ export const storeMerkleTree = internalAction({
 
 export const storeMerkleTreeId = internalMutation({
     args: {
-        poolId : v.id('pools'),
+        poolId: v.id('pools'),
         storageId: v.id('_storage')
     },
     handler: async (ctx, args) => {
-        const {poolId, storageId } = args;
+        const { poolId, storageId } = args;
 
         return await ctx.db.patch(poolId, {
             storageId
@@ -155,8 +155,8 @@ export const setMerkleRootOnContract = internalAction({
         merkleRoot: v.string(),
     },
     handler: async (ctx, args) => {
-        const {contractAddress, merkleRoot } = args;
-        
+        const { contractAddress, merkleRoot } = args;
+
         // Get contract
         const contract = poolContract(contractAddress);
 

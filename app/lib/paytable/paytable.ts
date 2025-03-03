@@ -13,7 +13,8 @@ export async function generatePaytable(poolPrice: number, totalParticipants: num
     const decimalPlacesUsed = getDecimalPlaces(poolPrice) + 3;
 
     // Minimum participants check
-    if (totalParticipants < 2) throw new ConvexError({ message: "Total participants must be at least 2" });
+    if (totalParticipants < 2) throw new ConvexError({ message: "Total participants must be at least 2", code: "MIN_PARTICIPANTS" });
+    // if (totalParticipants < 2) throw new Error("Total participants must be at least 2");
 
     // Check price
     if (poolPrice < 0) throw new ConvexError({ message: "Price cannot be negative" });
@@ -36,7 +37,7 @@ export async function generatePaytable(poolPrice: number, totalParticipants: num
         // For low participants, we decrease the amount of shares for the top
         let sharesOnTopPercentage = 0.1;
 
-        if (totalParticipants < 10 ) {
+        if (totalParticipants < 10) {
             totalPlacesPaid = Math.round(totalPaidPercentage * totalParticipants); // rounding instead of flooring so we get 1 more paid places in some cases
             sharesOnTopPercentage = 0; // Cancel the shares on top
         }
@@ -54,10 +55,10 @@ export async function generatePaytable(poolPrice: number, totalParticipants: num
     /** FOR HIGHER PARTICIPATION NUMBER, THOSE WITH MORE PAID PLACES THAN MENTIONED ABOVE**/
 
     // Initialize paytable
-    const payTable : number[] = new Array(totalPlacesPaid).fill(0);
+    const payTable: number[] = new Array(totalPlacesPaid).fill(0);
 
     // 2/3 of the bottom paytable get their money back
-    const moneyBackTotalPlayers = Math.round((2/3) * payTable.length);
+    const moneyBackTotalPlayers = Math.round((2 / 3) * payTable.length);
     const moneyBackTotal = moneyBackTotalPlayers * poolPrice;
 
     for (let i = totalPlacesPaid - moneyBackTotalPlayers; i < totalPlacesPaid; i++) {
@@ -72,11 +73,11 @@ export async function generatePaytable(poolPrice: number, totalParticipants: num
 
     // Calculate amount of toppers so that the last topper receives more than an inbetweeners 
     const { toppersAmount, toppersPrizePool } = calculateOptimalToppers(
-        totalPrizePool, 
-        poolPrice, 
-        top10PercentPlaces, 
-        moneyBackTotal, 
-        inbetweenersMultiplier, 
+        totalPrizePool,
+        poolPrice,
+        top10PercentPlaces,
+        moneyBackTotal,
+        inbetweenersMultiplier,
         decimalPlacesUsed
     );
 

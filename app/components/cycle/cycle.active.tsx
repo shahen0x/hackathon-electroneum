@@ -23,8 +23,6 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 	const { cycle } = useCycleStore();
 	const { currentPhase } = useCyclePhase();
 
-	console.log(currentPhase);
-
 
 	return cycle ? (
 		<Card className={cn(className, "flex flex-col relative overflow-hidden")}>
