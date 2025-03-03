@@ -83,7 +83,8 @@ export default defineSchema({
 		reward: v.optional(v.number())
 	})
 		.index("byUserAndPoolId", ["userId", "poolId"])
-		.index("byTotalPoints", ["totalPoints"]),
+		.index("byTotalPoints", ["totalPoints"])
+		.index("byPoolIdAndTotalPoints", ["poolId", "totalPoints"]),
 
 	levelsBallsort: defineTable({
 		cycleId: v.id("cycles"),

@@ -15,7 +15,19 @@ export const getAllPools = query({
 	},
 });
 
-export const getPoolsByCycleAndOwner = query({
+export const getPoolsByCycle = query({
+	args: {
+		cycleId: v.id("cycles")
+	},
+	handler: async (ctx, args) => {
+		const { cycleId } = args;
+		return await ctx.db.query("pools")
+		.withIndex("byCycleId", (q) => q.eq("cycleId", cycleId))
+		.collect();
+	},
+});
+
+export const getPoolByCycleAndOwner = query({
 	args: {
 		cycleId: v.id("cycles"),
 		poolOwnerId: v.id("poolOwners")
@@ -53,7 +65,7 @@ export const deployPoolContracts = internalAction({
 
 		await asyncMap(activePoolOwners, async (poolOwner) => {
 			// Check if their pool already exist in this cycle
-			const pool = await ctx.runQuery(api.pools.getPoolsByCycleAndOwner, { cycleId, poolOwnerId: poolOwner._id });
+			const pool = await ctx.runQuery(api.pools.getPoolByCycleAndOwner, { cycleId, poolOwnerId: poolOwner._id });
 			
 			if (pool) {
 				console.log(`Pool for ${poolOwner.tokenSymbol} already exists in cycle ${cycleId}`);
@@ -67,8 +79,6 @@ export const deployPoolContracts = internalAction({
 					withdrawAddress_: poolOwner.payoutAddress,
 					enrollStartTime_: schedule.cycleStart,
 					playEndTime_: schedule.playtimeEnd,
-					// enrollStartTime_: 1740919142,
-					// playEndTime_: 1741005542,
 			}
 
 			// If not ETN, deploy erc20
@@ -76,46 +86,53 @@ export const deployPoolContracts = internalAction({
 				contractParams.erc20TokenAddress_ = poolOwner.tokenAddress;
 			}
 
-			try {
-				// Deploy contract
-				const contractAddress = await deployPublishedContract({
-					client: thirdwebClient,
-					chain,
-					account: adminAccount,
-					contractId: poolOwner.tokenSymbol === "ETN" ? "GamePoolNative" : "GamePoolERC20",
-					contractParams,
-					version: "1.0.1",
-					publisher: adminAccount.address
-				});
+			// try {
+			// 	// Deploy contract
+			// 	const contractAddress = await deployPublishedContract({
+			// 		client: thirdwebClient,
+			// 		chain,
+			// 		account: adminAccount,
+			// 		contractId: poolOwner.tokenSymbol === "ETN" ? "GamePoolNative" : "GamePoolERC20",
+			// 		contractParams,
+			// 		version: "1.0.1",
+			// 		publisher: adminAccount.address
+			// 	});
 				
 				// Create pool
 				await ctx.scheduler.runAfter(0, internal.pools.createPool, {
-					cycleId, 
 					poolOwnerId: poolOwner._id, 
-					contractAddress
+					contractAddress : ""
 				});
-			} 
-			catch (error) {
-				console.log(error);	
-			}
+			// } 
+			// catch (error) {
+			// 	console.log(error);	
+			// }
 		});
 	}
 });
 
 export const createPool = internalMutation({
 	args: {
-		cycleId: v.id("cycles"),
 		poolOwnerId: v.id("poolOwners"),
 		contractAddress: v.string()
 	},
 	handler: async (ctx, args) => {
+		const { poolOwnerId, contractAddress } = args;
 
-		const { cycleId, poolOwnerId, contractAddress } = args;
+		// Get active cycle
+		const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
+		if (!activeCycle) throw new ConvexError({ message: "No active cycle found." });
 
-		return await ctx.db.insert("pools", {
-			cycleId,
+		// Create pool
+		const poolId = await ctx.db.insert("pools", {
+			cycleId: activeCycle._id,
 			poolOwner: poolOwnerId,
 			contractAddress
+		});
+
+		// Add pool to current cycle
+		await ctx.db.patch(activeCycle._id, {
+			pools : activeCycle.pools ? [...activeCycle.pools, poolId] : [poolId]
 		});
 	},
 });

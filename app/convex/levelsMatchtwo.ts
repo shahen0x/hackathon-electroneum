@@ -1,5 +1,5 @@
 import { shuffleString } from "./utils/shuffleString";
-import { internalMutation, internalQuery, MutationCtx } from "./_generated/server";
+import { internalMutation, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 
