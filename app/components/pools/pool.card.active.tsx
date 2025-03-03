@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
 import { getContract, readContract, toEther } from "thirdweb";
@@ -22,18 +22,19 @@ interface PoolCardActiveProps {
 
 export type PoolType = {
 	isNative: boolean;
-	tokenSymbol: string;
-	tokenLogo: string;
+	tokenSymbol: string | undefined;
+	tokenLogo: string | undefined;
 	contractAddress: string;
-	tokenAddress: string;
+	tokenAddress: string | undefined;
 	participants: number;
 	poolPrice: number;
-	commissionPercentage: number;
-} | undefined;
+	prizePool: bigint;
+} | undefined
 
 const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 
-	const { currentPhase } = useCyclePhase();
+	// const { currentPhase } = useCyclePhase();
+	const [currentPhase, setCurrentPhase] = useState<CyclePhase>(CyclePhase.CycleStarted);
 
 	// Thirdweb
 	const account = useActiveAccount();
@@ -84,12 +85,12 @@ const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 	}
 
 	const { data: pool, isLoading: poolIsLoading, refetch: refetchPool, } = useQuery({
-		queryKey: [`pool-${activePool.tokenSymbol}`],
+		queryKey: [`pool-${activePool.contractAddress}`],
 		queryFn: retrieveOnchainData
 	});
 
 	const { data: userJoinedPool, refetch: refetchJoinedPool } = useQuery({
-		queryKey: [`pool-${activePool.tokenSymbol}-${account?.address}`],
+		queryKey: [`pool-${activePool.contractAddress}-${account?.address}`],
 		queryFn: retriveUserJoinedPool,
 		enabled: !!account,
 	});
@@ -126,10 +127,15 @@ const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 
 			<CardFooter className="p-3 pt-0 flex-col">
 				{poolIsLoading && <Skeleton className="w-full h-[32px] rounded-md" />}
-				{!poolIsLoading && currentPhase === CyclePhase.NotOpenYet && <Button size={"sm"} className="w-full" disabled={true}>Opening Soon</Button>}
-				{/* {!poolIsLoading && (currentPhase !== CyclePhase)} */}
-
-				{/* {!isLoading && <PoolModal data={data} userJoinedPool={userJoinedPool} refetchData={refetchData} refetchJoinedPool={refetchJoinedPool} />} */}
+				{!poolIsLoading && currentPhase === CyclePhase.CycleNotStarted && <Button size={"sm"} className="w-full" disabled={true}>Opening Soon</Button>}
+				{!poolIsLoading &&
+					(currentPhase === CyclePhase.CycleStarted || currentPhase === CyclePhase.PlaytimeStarted) &&
+					<PoolModal data={pool} userJoinedPool={userJoinedPool} refetchData={refetchPool} refetchJoinedPool={refetchJoinedPool} />
+				}
+				{!poolIsLoading &&
+					(currentPhase === CyclePhase.PlaytimeEnded || currentPhase === CyclePhase.CycleEnded) &&
+					<Button size={"sm"} className="w-full" disabled={true}>Pool Closed</Button>
+				}
 			</CardFooter>
 
 		</Card>

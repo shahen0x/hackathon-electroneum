@@ -9,8 +9,8 @@ import { useActiveAccount, useWalletBalance } from "thirdweb/react";
 import { clientThirdweb } from "~/thirdweb/client";
 import { Separator } from "../ui/separator";
 import { chain } from "~/config/chain";
-import { PoolType } from "./pools";
-import PoolJoin from "./pool.join";
+import PoolModalJoin from "./pool.modal.join";
+import { PoolType } from "./pool.card.active";
 
 interface PoolModalProps {
 	data: PoolType;
@@ -123,7 +123,7 @@ const PoolModal: FC<PoolModalProps> = ({ data, userJoinedPool, refetchData, refe
 						Close
 					</Button>
 
-					<PoolJoin
+					<PoolModalJoin
 						data={data}
 						userJoinedPool={userJoinedPool}
 						setOpen={setOpen}
