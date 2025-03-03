@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { Button } from "../ui/button";
 import { useActiveAccount } from "thirdweb/react";
-import { PoolType } from "./pools.active";
 import { PiWallet } from "react-icons/pi";
 import { getContract, prepareContractCall, sendTransaction, toWei, waitForReceipt } from "thirdweb";
 import { clientThirdweb as client } from "~/thirdweb/client";
@@ -11,8 +10,9 @@ import { useMutation } from "@tanstack/react-query";
 import { abiPoolERC20 } from "~/thirdweb/abi/abi.pool.erc20";
 import { handleOnChainError } from "~/lib/onchain.errors";
 import toast from "react-hot-toast";
+import { PoolType } from "./pool.card.active";
 
-interface PoolJoinProps {
+interface PoolModalJoinProps {
 	data: PoolType;
 	userJoinedPool: boolean | undefined;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,7 +22,7 @@ interface PoolJoinProps {
 	refetchJoinedPool: () => void;
 }
 
-const PoolJoin: FC<PoolJoinProps> = ({ data, userJoinedPool, setOpen, processing, setProcessing, refetchData, refetchJoinedPool }) => {
+const PoolModalJoin: FC<PoolModalJoinProps> = ({ data, userJoinedPool, setOpen, processing, setProcessing, refetchData, refetchJoinedPool }) => {
 
 	// Thirdweb
 	const account = useActiveAccount();
@@ -74,7 +74,7 @@ const PoolJoin: FC<PoolJoinProps> = ({ data, userJoinedPool, setOpen, processing
 
 	// Join ERC20 Pool
 	const handleERC20Join = async () => {
-		if (!data) throw new Error("Pool data not found");
+		if (!data || !data.tokenAddress) throw new Error("Pool data not found");
 		if (userJoinedPool) throw new Error("You are already in the pool!");
 
 		const tokenContract = getContractInstance(data.tokenAddress);
@@ -166,4 +166,4 @@ const PoolJoin: FC<PoolJoinProps> = ({ data, userJoinedPool, setOpen, processing
 	)
 }
 
-export default PoolJoin;
+export default PoolModalJoin;

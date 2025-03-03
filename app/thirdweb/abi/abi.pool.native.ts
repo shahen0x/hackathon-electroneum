@@ -620,6 +620,19 @@ export const abiPoolNative = [
 	},
 	{
 		"inputs": [],
+		"name": "getPrizePool",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "getRefundClaimCount",
 		"outputs": [
 			{

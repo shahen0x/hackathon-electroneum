@@ -1,8 +1,9 @@
 export type ActiveCycle = {
 	schedule: {
-		enroll: string;
-		playtime: string;
-		end: string;
+		cycleStart: string;
+		playtimeStart: string;
+		playtimeEnd: string;
+		cycleEnd: string;
 	};
 	gameLineup: {
 		ballsort?: boolean | undefined;
@@ -32,9 +33,17 @@ export type Cycle = {
 } | null
 
 
+// export enum CyclePhase {
+// 	NotOpenYet = 'Not open yet',
+// 	Enroll = 'Enroll',
+// 	Playtime = 'Playtime',
+// 	Ended = 'Ended',
+// }
+
 export enum CyclePhase {
-	NotOpenYet = 'Not open yet',
-	Enroll = 'Enroll',
-	Playtime = 'Playtime',
-	Ended = 'Ended',
+	CycleNotStarted = "Cycle not started",
+	CycleStarted = "Cycle started",
+	PlaytimeStarted = "Playtime started",
+	PlaytimeEnded = "Playtime ended",
+	CycleEnded = "Cycle ended",
 }
