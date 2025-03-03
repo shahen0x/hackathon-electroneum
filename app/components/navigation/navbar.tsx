@@ -47,7 +47,7 @@ const Navbar: FC<NavbarProps> = () => {
 			${isScrolled ? "shadow-2xl backdrop-blur-md bg-neutral-950/30" : "shadow-none bg-transparent"}
 		`}>
 			<Link to={"/"} className="absolute left-1/2 -translate-x-1/2">
-				<img src="/logo.svg" alt="ElectroPlay" className="w-8 h-auto" />
+				<img src="https://cdn.electroplay.fun/logo.svg" alt="ElectroPlay" className="w-8 h-auto" />
 			</Link>
 
 			<NavbarMenu />
