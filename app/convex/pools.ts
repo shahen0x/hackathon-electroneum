@@ -79,8 +79,6 @@ export const deployPoolContracts = internalAction({
 					withdrawAddress_: poolOwner.payoutAddress,
 					enrollStartTime_: schedule.cycleStart,
 					playEndTime_: schedule.playtimeEnd,
-					// enrollStartTime_: 1740919142,
-					// playEndTime_: 1741005542,
 			}
 
 			// If not ETN, deploy erc20

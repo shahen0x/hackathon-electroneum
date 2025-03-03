@@ -47,6 +47,7 @@ export const generatePoolPayoutInstructions = internalAction({
         
         // 🛑🛑🛑 TODO LATER: Try catch paytable then handle according 🛑🛑🛑
         const paytable = await generatePaytable(poolPrice, totalParticipants, prizePoolShare);
+        console.log(paytable);
 
         // Get scorecards for this pool
         const scorecards = await ctx.runQuery(api.scorecards.getNonZeroScorecards, {
@@ -63,7 +64,6 @@ export const generatePoolPayoutInstructions = internalAction({
         for (let i = 0; i < scorecards.length; i++) {
             merkleEntries[i] = [scorecards[i].walletAddress, paytable[i].toString()];
         }
-
 
         const merkleTree = createStandardMerkleTree(merkleEntries);
 
