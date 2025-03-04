@@ -121,22 +121,6 @@ export const getUserScorecards = internalQuery({
     }
 });
 
-export const updateScorecardsReward = internalMutation({
-    args: {
-        scorecardIds: v.array(v.id("scorecards")),
-        rewards: v.array(v.number()),
-    },
-    handler: async (ctx, args) => {
-        const { scorecardIds, rewards } = args;
-
-        for (let i = 0; i < scorecardIds.length; i++) {
-            await ctx.db.patch(scorecardIds[i], {
-                reward: rewards[i]
-            });
-        }
-    }
-});
-
 export const getPaginatedScorecards = query({
     args: {
         poolId: v.id("pools"),

@@ -20,12 +20,12 @@ export const poolStatus = v.union(
 	v.literal("upcoming")
 );
 
-// export const claim = v.object({
-// 	amount: v.number(),
-// 	poolId: v.id("pools"),
-// 	contractAddress: v.string(),
-// 	poolOwnerId: v.id("poolOwners")
-// });
+export const claimInfo = v.object({
+	amount: v.number(),
+	poolId: v.id("pools"),
+	contractAddress: v.string(),
+	poolOwnerId: v.id("poolOwners")
+});
 
 export default defineSchema({
 
@@ -85,8 +85,7 @@ export default defineSchema({
 		walletAddress: v.string(),
 		gamertag: v.optional(v.string()),
 		totalPoints: v.number(),
-		gameData: v.any(),
-		reward: v.optional(v.number())
+		gameData: v.any()
 	})
 		.index("byUserAndPoolId", ["userId", "poolId"])
 		.index("byTotalPoints", ["totalPoints"])
@@ -95,14 +94,9 @@ export default defineSchema({
 	claims: defineTable({
 		cycleId: v.id("cycles"),
 		userId: v.id("users"),
-		poolRewards: v.array(v.object({
-			amount: v.number(),
-			poolId: v.id("pools"),
-			contractAddress: v.string(),
-			poolOwnerId: v.id("poolOwners")
-		})),
+		poolRewards: v.array(claimInfo),
 	})
-		.index("byCycleId", ["cycleId"]),
+		.index("byCycleAndUserId", ["cycleId", "userId"]),
 
 	levelsBallsort: defineTable({
 		cycleId: v.id("cycles"),
