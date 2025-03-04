@@ -27,21 +27,23 @@ export const generatePayouts = internalAction({
 
         // Create payouts for each pool
         await asyncMap(activeCycle.pools, async (poolId) => {
-            await ctx.scheduler.runAfter(0, internal.adminPayout.generatePoolPayoutInstructions, { poolId });
+            await ctx.scheduler.runAfter(0, internal.adminPayout.generatePoolPayoutInstructions, { cycleId: activeCycle._id, poolId });
         });
     }
 })
 
 export const generatePoolPayoutInstructions = internalAction({
     args: {
+        cycleId: v.id("cycles"),
         poolId: v.id("pools")
     },
     handler: async (ctx, args) => {
-        const { poolId } = args;
+        const { cycleId, poolId } = args;
 
         // Fetch pool
         const pool = await ctx.runQuery(api.pools.getPool, { poolId });
         if (!pool) throw new ConvexError({ message: "Pool not found." });
+        if (pool.storageId) throw new ConvexError("Merkle tree already stored for this pool.");
 
         const { poolPrice, totalParticipants, prizePoolShare } = await GetPoolDataFromContract(pool.contractAddress);
 
@@ -59,16 +61,34 @@ export const generatePoolPayoutInstructions = internalAction({
 
         // Form merkle entries
         const merkleEntries: string[][] = [];
+        const claimPromises: Promise<any>[] = [];
 
         // Using scorecards length since there may be less scorecards than paid places
         for (let i = 0; i < scorecards.length; i++) {
             merkleEntries[i] = [scorecards[i].walletAddress, paytable[i].toString()];
-        }
 
+            // Create claim promises
+            const promise = ctx.scheduler.runAfter(0, internal.claims.createClaim, {
+                cycleId,
+                userId: scorecards[i].userId,
+                claimInfo: {
+                    amount: paytable[i],
+                    contractAddress: pool.contractAddress,
+                    poolOwnerId: pool.poolOwner,
+                    poolId,
+                },
+            });
+
+            claimPromises.push(promise);
+        };
+
+        // Create all claims
+        await Promise.all(claimPromises);
+
+        // Create merkle tree
         const merkleTree = createStandardMerkleTree(merkleEntries);
 
         // Save tree to storage
-        if (pool.storageId) throw new ConvexError("Merkle tree already stored for this pool.");
         await ctx.scheduler.runAfter(0, internal.adminPayout.storeMerkleTree, {
             poolId,
             merkleTreeString: JSON.stringify(merkleTree.dump()),
@@ -78,13 +98,6 @@ export const generatePoolPayoutInstructions = internalAction({
         await ctx.scheduler.runAfter(0, internal.adminPayout.setMerkleRootOnContract, {
             contractAddress: pool.contractAddress,
             merkleRoot: merkleTree.root
-        });
-
-        // Update rewards in scorecards
-        const scorecardIds = scorecards.map(scorecard => scorecard._id);
-        await ctx.scheduler.runAfter(0, internal.scorecards.updateScorecardsReward, {
-            scorecardIds,
-            rewards: paytable
         });
     }
 });
