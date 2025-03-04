@@ -5,15 +5,7 @@ import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { paginationOptsValidator } from "convex/server";
 import { claimInfo } from "./schema";
 
-export const getPaginatedClaims = query({
-    args: { paginationOpts: paginationOptsValidator },
-    handler: async (ctx, args) => {
-        return await ctx.db
-            .query("claims")
-            .order("desc")
-            .paginate(args.paginationOpts);
-    },
-});
+
 
 export const createClaim = internalMutation({
     args: {

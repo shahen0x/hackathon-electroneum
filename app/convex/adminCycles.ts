@@ -35,7 +35,7 @@ export const createCycleWithPools = internalMutation({
 		if (cycleStartDate >= cycleEndDate) throw new ConvexError({ message: "Cycle end cannot be before cycle start." });
 		if (cycleStartDate > playtimeStartDate) throw new ConvexError({ message: "Cycle start cannot be after playtime start." });
 		if (playtimeStartDate >= playtimeEndDate) throw new ConvexError({ message: "Playtime start must be before playtime end." });
-		
+
 		// Check for active cycle
 		const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
 		if (activeCycle) throw new ConvexError({ message: "There is already an active cycle." });
@@ -67,7 +67,7 @@ export const createCycleWithPools = internalMutation({
 			cycleId,
 			schedule
 		});
-		
+
 		// Schedule payout generation
 		const fiveMinutesAfterPlaytime = new Date(playtimeEndDate.getTime() + 5 * 60 * 1000);
 		await ctx.scheduler.runAt(fiveMinutesAfterPlaytime, internal.adminPayout.generatePayouts);
@@ -77,7 +77,7 @@ export const createCycleWithPools = internalMutation({
 		const nextCycleEnd = new Date(cycleEndDate.getTime() + cycleDuration);
 		const nextPlaytimeStart = new Date(playtimeStartDate.getTime() + cycleDuration);
 		const nextPlaytimeEnd = new Date(playtimeEndDate.getTime() + cycleDuration);
-		
+
 		const nextCycleSchedule: typeof schedule = {
 			cycleStart: schedule.cycleEnd,
 			playtimeStart: formatISO(nextPlaytimeStart),
@@ -88,7 +88,7 @@ export const createCycleWithPools = internalMutation({
 		await ctx.scheduler.runAt(cycleEndDate, internal.adminCycles.autoStartNextCycle, {
 			schedule: nextCycleSchedule,
 			gameLineup
-		  });
+		});
 
 		return cycleId;
 	}
@@ -107,7 +107,7 @@ export const autoStartNextCycle = internalMutation({
 
 		// Close cycle if active
 		if (activeCycle) await ctx.db.patch(activeCycle._id, { active: false });
-		
+
 		// Create new cycle
 		await ctx.runMutation(internal.adminCycles.createCycleWithPools, {
 			week: activeCycle ? activeCycle.week + 1 : 1,

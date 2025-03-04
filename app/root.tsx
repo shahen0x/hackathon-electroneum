@@ -11,6 +11,7 @@ import { ThirdwebProvider } from "thirdweb/react";
 import Background from "./components/background";
 import Navbar from "./components/navigation/navbar";
 import { Toaster } from "react-hot-toast";
+import WalletAuth from "./thirdweb/wallet/wallet.auth";
 
 // Load ENV variables from the server
 export const loader: LoaderFunction = async () => {
@@ -65,6 +66,7 @@ export default function App() {
 					<ConvexAuthProvider client={convex}>
 						<ThirdwebProvider>
 							<DataCycle />
+							<WalletAuth />
 							<Navbar />
 							<Outlet />
 						</ThirdwebProvider>
