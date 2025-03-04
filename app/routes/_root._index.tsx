@@ -21,7 +21,7 @@ export default function Index() {
 
 
 	return (
-		<div className="container space-y-4 lg:space-y-8">
+		<div className="container space-y-8 lg:space-y-8">
 
 
 			{/* BANNER */}
@@ -38,7 +38,7 @@ export default function Index() {
 			{/* <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-8">
 				{!isLoading && <LoadingCycle />}
 			</div> */}
-			<div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-[19rem_1fr] xl:grid-cols-[22rem_1fr] lg:gap-8">
+			<div className="space-y-8 lg:space-y-0 lg:grid lg:grid-cols-[19rem_1fr] xl:grid-cols-[22rem_1fr] lg:gap-8">
 				{isLoading ? <LoadingCycle /> : <CycleActive />}
 				<Pools />
 			</div>
