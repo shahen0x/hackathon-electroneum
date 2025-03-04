@@ -4,11 +4,12 @@ interface MenuItem {
 	icon: React.ReactNode;
 }
 
-import { PiGameControllerDuotone, PiHouseDuotone, PiRankingDuotone } from "react-icons/pi";
+import { PiCoinsDuotone, PiGameControllerDuotone, PiHouseDuotone, PiRankingDuotone } from "react-icons/pi";
 
-const menuIconSize = 18;
+const menuIconSize = 20;
 export const navbarMenuItems: MenuItem[] = [
 	{ name: "Dashboard", href: "/", icon: <PiHouseDuotone size={menuIconSize} /> },
 	{ name: "Games", href: "/games", icon: <PiGameControllerDuotone size={menuIconSize} /> },
+	{ name: "Rewards", href: "/rewards", icon: <PiCoinsDuotone size={menuIconSize} /> },
 	// { name: "Rankings", href: "/rankings", icon: <PiRankingDuotone size={menuIconSize} /> },
 ]
