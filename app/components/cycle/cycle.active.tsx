@@ -10,11 +10,7 @@ import { CyclePhase } from "~/types/types.cycle";
 import { Badge } from "../ui/badge";
 import { CgArrowLongRight } from "react-icons/cg";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "../ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 interface CycleActiveProps extends HTMLAttributes<HTMLDivElement> { }
 
