@@ -94,7 +94,7 @@ export default function LayoutGames() {
 								</Badge>
 							}
 							<img
-								src={`/games/${game.slug}/media/poster.jpg`}
+								src={`https://cdn.electroplay.fun/games/${game.slug}/media/poster.jpg`}
 								alt={game.name}
 								className={`
 									w-full h-auto
@@ -142,7 +142,7 @@ export default function LayoutGames() {
 									</Badge>
 								}
 								<img
-									src={`/games/${game.slug}/media/poster.jpg`}
+									src={`https://cdn.electroplay.fun/games/${game.slug}/media/poster.jpg`}
 									alt={game.name}
 									className={`
 										w-full h-auto transition-all

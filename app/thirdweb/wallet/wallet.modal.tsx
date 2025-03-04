@@ -19,14 +19,16 @@ const WalletModal: FC<WalletModalProps> = () => {
 			<ConnectButton
 				client={clientThirdweb}
 				autoConnect={true}
+				// supportedNFTs={ }
 				detailsModal={{
 					hideSwitchWallet: true,
 					hideBuyFunds: true,
+					// networkSelector: {}
 					// networkSelector: {
 					// 	renderChain: ({ chain }) => {
 					// 		return (
 					// 			<div className="flex items-center gap-2">
-					// 				<Image src={"/symbols/2137.png"} alt={"Electroneum"} width={40} height={40} className="w-6 h-6" />
+					// 				{/* <Image src={"/symbols/2137.png"} alt={"Electroneum"} width={40} height={40} className="w-6 h-6" /> */}
 					// 				<span>Electroneum</span>
 					// 			</div>
 					// 		);

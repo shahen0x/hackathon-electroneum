@@ -10,11 +10,7 @@ import { CyclePhase } from "~/types/types.cycle";
 import { Badge } from "../ui/badge";
 import { CgArrowLongRight } from "react-icons/cg";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "../ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 interface CycleActiveProps extends HTMLAttributes<HTMLDivElement> { }
 
@@ -22,8 +18,6 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 
 	const { cycle } = useCycleStore();
 	const { currentPhase } = useCyclePhase();
-
-	console.log(currentPhase);
 
 
 	return cycle ? (
@@ -104,8 +98,9 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 						<PopoverTrigger>
 							<Badge variant={"secondary"} className="h-5">?</Badge>
 						</PopoverTrigger>
-						<PopoverContent side="top" className="bg-neutral-900 text-sm">
-							The game lineup consists of games selected for the current cycle, meaning that competition mode will be enabled only for these games.
+						<PopoverContent side="top" className="bg-neutral-900 text-xs space-y-2">
+							<p>The game lineup consists of games selected for the current gaming week.</p>
+							<p>You must play competition mode and submit scores from both games to earn leaderboard points.</p>
 						</PopoverContent>
 					</Popover>
 				</div>
@@ -116,7 +111,7 @@ const CycleActive: FC<CycleActiveProps> = ({ className }) => {
 						.map(([game]) => (
 							<Link to={`/games/${game}`} key={game}>
 								<img
-									src={`/games/${game}/media/poster.jpg`}
+									src={`https://cdn.electroplay.fun/games/${game}/media/poster.jpg`}
 									alt={game}
 									className="border rounded-lg aspect-video"
 								/>

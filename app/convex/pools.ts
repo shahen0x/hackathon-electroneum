@@ -22,8 +22,8 @@ export const getPoolsByCycle = query({
 	handler: async (ctx, args) => {
 		const { cycleId } = args;
 		return await ctx.db.query("pools")
-		.withIndex("byCycleId", (q) => q.eq("cycleId", cycleId))
-		.collect();
+			.withIndex("byCycleId", (q) => q.eq("cycleId", cycleId))
+			.collect();
 	},
 });
 
@@ -35,9 +35,9 @@ export const getPoolByCycleAndOwner = query({
 	handler: async (ctx, args) => {
 		const { cycleId, poolOwnerId } = args;
 		return await ctx.db.query("pools")
-		.withIndex("byCycleId", (q) => q.eq("cycleId", cycleId))
-		.filter(q => q.eq(q.field('poolOwner'), poolOwnerId))
-		.unique();
+			.withIndex("byCycleId", (q) => q.eq("cycleId", cycleId))
+			.filter(q => q.eq(q.field('poolOwner'), poolOwnerId))
+			.unique();
 	},
 });
 
@@ -53,11 +53,11 @@ export const getPool = query({
 
 
 export const deployPoolContracts = internalAction({
-    args: {
+	args: {
 		cycleId: v.id("cycles"),
 		schedule
 	},
-    handler: async (ctx, args) => {
+	handler: async (ctx, args) => {
 		const { cycleId, schedule } = args;
 
 		const activePoolOwners = await ctx.runQuery(api.poolOwners.getActivePoolOwners);
@@ -66,19 +66,19 @@ export const deployPoolContracts = internalAction({
 		await asyncMap(activePoolOwners, async (poolOwner) => {
 			// Check if their pool already exist in this cycle
 			const pool = await ctx.runQuery(api.pools.getPoolByCycleAndOwner, { cycleId, poolOwnerId: poolOwner._id });
-			
+
 			if (pool) {
 				console.log(`Pool for ${poolOwner.tokenSymbol} already exists in cycle ${cycleId}`);
 				return;
 			}
 
-			const contractParams : any = {
-					canJoinPool_: true,
-					poolPrice_: toWei(poolOwner.poolPrice.toString()),
-					commissionPercentage_: 30,
-					withdrawAddress_: poolOwner.payoutAddress,
-					enrollStartTime_: schedule.cycleStart,
-					playEndTime_: schedule.playtimeEnd,
+			const contractParams: any = {
+				canJoinPool_: true,
+				poolPrice_: toWei(poolOwner.poolPrice.toString()),
+				commissionPercentage_: 30,
+				withdrawAddress_: poolOwner.payoutAddress,
+				enrollStartTime_: schedule.cycleStart,
+				playEndTime_: schedule.playtimeEnd,
 			}
 
 			// If not ETN, deploy erc20
@@ -97,12 +97,12 @@ export const deployPoolContracts = internalAction({
 			// 		version: "1.0.1",
 			// 		publisher: adminAccount.address
 			// 	});
-				
-				// Create pool
-				await ctx.scheduler.runAfter(0, internal.pools.createPool, {
-					poolOwnerId: poolOwner._id, 
-					contractAddress : ""
-				});
+
+			// Create pool
+			await ctx.scheduler.runAfter(0, internal.pools.createPool, {
+				poolOwnerId: poolOwner._id,
+				contractAddress: ""
+			});
 			// } 
 			// catch (error) {
 			// 	console.log(error);	
@@ -132,7 +132,7 @@ export const createPool = internalMutation({
 
 		// Add pool to current cycle
 		await ctx.db.patch(activeCycle._id, {
-			pools : activeCycle.pools ? [...activeCycle.pools, poolId] : [poolId]
+			pools: activeCycle.pools ? [...activeCycle.pools, poolId] : [poolId]
 		});
 	},
 });
@@ -177,6 +177,7 @@ export const getActiveCycleWithPools = query({
 			.map(pool => {
 				const poolOwner = activePoolOwnersMap.get(pool.poolOwner);
 				return {
+					id: pool._id,
 					contractAddress: pool.contractAddress,
 					tokenAddress: poolOwner?.tokenAddress,
 					tokenLogo: poolOwner?.tokenLogo,

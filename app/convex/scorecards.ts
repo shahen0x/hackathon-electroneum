@@ -7,6 +7,7 @@ import { matchtwoGameData } from "./levelsMatchtwo";
 import { Doc } from "./_generated/dataModel";
 import { asyncMap } from "convex-helpers";
 import { paginationOptsValidator } from "convex/server";
+import { shortenAddress } from "thirdweb/utils";
 
 export const createScorecard = internalMutation({
     args: {
@@ -64,18 +65,24 @@ function emptyScorecard(game: string) {
 export const getNonZeroScorecards = query({
     args: {
         poolId: v.id("pools"),
-        amount: v.number()
+        amount: v.optional(v.number())
     },
     handler: async (ctx, args) => {
-        const {poolId, amount} = args;
+        const { poolId, amount } = args;
 
-        const scorecards = await ctx.db.query("scorecards")
-			.withIndex("byPoolIdAndTotalPoints", (q) => q.eq("poolId", poolId))
-            .filter(q => q.gt(q.field('totalPoints'), 0))
-			.order("desc")
-            .take(amount);
-
-        return scorecards;
+        if (amount) {
+            return await ctx.db.query("scorecards")
+                .withIndex("byPoolIdAndTotalPoints", (q) => q.eq("poolId", poolId))
+                .filter(q => q.gt(q.field('totalPoints'), 0))
+                .order("desc")
+                .take(amount);
+        } else {
+            return await ctx.db.query("scorecards")
+                .withIndex("byPoolIdAndTotalPoints", (q) => q.eq("poolId", poolId))
+                .filter(q => q.gt(q.field('totalPoints'), 0))
+                .order("desc")
+                .collect()
+        }
     },
 });
 
@@ -85,24 +92,24 @@ export const getScorecard = query({
         userId: v.id("users")
     },
     handler: async (ctx, args) => {
-        const {poolId, userId} = args;
+        const { poolId, userId } = args;
         return await ctx.db.query("scorecards")
-        .withIndex("byUserAndPoolId", (q) => q.eq("userId", userId).eq("poolId", poolId))
-        .unique();
+            .withIndex("byUserAndPoolId", (q) => q.eq("userId", userId).eq("poolId", poolId))
+            .unique();
     },
 });
 
 export const getUserScorecards = internalQuery({
-	args: {
-		userId: v.id("users"),
+    args: {
+        userId: v.id("users"),
         pools: v.array(v.id("pools"))
-	},
-	handler: async (ctx, args) => {
-        const {userId, pools} = args;
+    },
+    handler: async (ctx, args) => {
+        const { userId, pools } = args;
 
-        const scorecards : Doc<"scorecards">[] = [];
+        const scorecards: Doc<"scorecards">[] = [];
 
-		await asyncMap(pools, async (pool) => {
+        await asyncMap(pools, async (pool) => {
             const scorecard = await ctx.db.query("scorecards")
                 .withIndex("byUserAndPoolId", (q) => q.eq("userId", userId).eq("poolId", pool))
                 .unique();
@@ -111,7 +118,7 @@ export const getUserScorecards = internalQuery({
         });
 
         return scorecards;
-	}
+    }
 });
 
 export const updateScorecardsReward = internalMutation({
@@ -120,7 +127,7 @@ export const updateScorecardsReward = internalMutation({
         rewards: v.array(v.number()),
     },
     handler: async (ctx, args) => {
-        const {scorecardIds, rewards } = args;
+        const { scorecardIds, rewards } = args;
 
         for (let i = 0; i < scorecardIds.length; i++) {
             await ctx.db.patch(scorecardIds[i], {
@@ -131,19 +138,28 @@ export const updateScorecardsReward = internalMutation({
 });
 
 export const getPaginatedScorecards = query({
-	args: {
-		poolId: v.id("pools"),
-		paginationOpts: paginationOptsValidator,
-	},
-	handler: async (ctx, args) => {
-        const {poolId, paginationOpts} = args;
-		
-		const scorecards = await ctx.db.query("scorecards")
+    args: {
+        poolId: v.id("pools"),
+        paginationOpts: paginationOptsValidator,
+    },
+    handler: async (ctx, args) => {
+        const { poolId, paginationOpts } = args;
+
+        const scorecards = await ctx.db.query("scorecards")
             .withIndex("byPoolIdAndTotalPoints", (q) => q.eq("poolId", poolId))
             .filter(q => q.gt(q.field('totalPoints'), 0))
-			.order("desc")
-			.paginate(paginationOpts);
+            .order("desc")
+            .paginate(paginationOpts);
 
-		return scorecards
-	}
+        return {
+            ...scorecards,
+            page: scorecards.page.map((score) => ({
+                id: score._id,
+                gamertag: score.gamertag,
+                totalPoints: score.totalPoints,
+                walletAddress: shortenAddress(score.walletAddress, 4),
+                // gameData: score.gameData,
+            })),
+        };
+    }
 });

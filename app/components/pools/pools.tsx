@@ -20,9 +20,8 @@ const Pools: FC<PoolsProps> = ({ className }) => {
 			{cycle?.upcomingPools.map((pool) => (
 				<PoolCardUpcoming key={pool?.tokenSymbol} pool={pool} />
 			))}
-			<Card className="min-h-[160px] opacity-30" />
-			<Card className="min-h-[160px] opacity-30" />
-			<Card className="min-h-[160px] opacity-30" />
+			<Card className="hidden lg:block min-h-[160px] opacity-30" />
+			<Card className="hidden lg:block min-h-[160px] opacity-30" />
 		</div>
 	)
 }

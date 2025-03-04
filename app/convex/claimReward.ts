@@ -1,13 +1,24 @@
 import { ConvexError, v } from "convex/values";
-import { action } from "./_generated/server";
+import { action, query } from "./_generated/server";
 import { api } from "./_generated/api";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
+import { paginationOptsValidator } from "convex/server";
+
+export const getPaginatedClaims = query({
+    args: { paginationOpts: paginationOptsValidator },
+    handler: async (ctx, args) => {
+        return await ctx.db
+            .query("claims")
+            .order("desc")
+            .paginate(args.paginationOpts);
+    },
+});
 
 export const getRewardClaim = action({
     args: {
         poolId: v.id("pools")
     },
-    handler: async (ctx, args) : Promise<{proof: string[], amount: number}> => {
+    handler: async (ctx, args): Promise<{ proof: string[], amount: number, contractAddress: string, poolOwnerId: string }> => {
         const { poolId } = args;
         // Get the authenticated user
         const user = await ctx.runQuery(api.users.getCurrentUser);
@@ -41,8 +52,10 @@ export const getRewardClaim = action({
             const proof = merkleTree.getProof(merkleEntry);
 
             return {
-                proof, 
-                amount: scorecard.reward
+                proof,
+                amount: scorecard.reward,
+                contractAddress: pool.contractAddress,
+                poolOwnerId: pool.poolOwner
             }
         } catch (error) {
             throw new ConvexError({ message: "Proof not found." });

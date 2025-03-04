@@ -1,6 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import CycleActive from "~/components/cycle/cycle.active";
-import Leaderboard from "~/components/leaderboard/leaderboard";
+import Leaderboard from "~/components/leaderboard/board";
 import Pools from "~/components/pools/pools";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -21,12 +21,12 @@ export default function Index() {
 
 
 	return (
-		<div className="container space-y-4 lg:space-y-8">
+		<div className="container space-y-8 lg:space-y-8">
 
 
 			{/* BANNER */}
 			<Card>
-				<CardContent className="pt-4 md:p-6 lg:flex items-center gap-12 lg:gap-24 bg-[url(/home/home-banner-mobile.png)] bg-no-repeat bg-right bg-contain xl:bg-[url(/home/home-banner.png)]">
+				<CardContent className="pt-4 md:p-6 lg:flex items-center gap-12 lg:gap-24 bg-[url(https://cdn.electroplay.fun/home/home-banner-mobile.png)] bg-no-repeat bg-right bg-contain xl:bg-[url(https://cdn.electroplay.fun/home/home-banner.png)]">
 					<h1 className="mb-4 lg:mb-0 text-etn text-2xl sm:text-3xl font-bold font-pixel">Compete,<br />Climb,<br />Conquer</h1>
 					<div className="max-w-72 sm:max-w-lg md:max-w-xl lg:max-w-2xl">
 						<h2 className="mb-2 sm:mb-1 text-[0.59rem] sm:text-lg font-semibold font-pixel">Weekly Token Rewards Await!</h2>
@@ -38,7 +38,7 @@ export default function Index() {
 			{/* <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-8">
 				{!isLoading && <LoadingCycle />}
 			</div> */}
-			<div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-[19rem_1fr] xl:grid-cols-[22rem_1fr] lg:gap-8">
+			<div className="space-y-8 lg:space-y-0 lg:grid lg:grid-cols-[19rem_1fr] xl:grid-cols-[22rem_1fr] lg:gap-8">
 				{isLoading ? <LoadingCycle /> : <CycleActive />}
 				<Pools />
 			</div>

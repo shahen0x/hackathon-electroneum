@@ -1,3 +1,5 @@
+import { Id } from "~/convex/_generated/dataModel";
+
 export type ActiveCycle = {
 	schedule: {
 		cycleStart: string;
@@ -13,6 +15,7 @@ export type ActiveCycle = {
 }
 
 export type ActivePool = {
+	id: Id<"pools">;
 	contractAddress: string;
 	tokenAddress: string | undefined;
 	tokenLogo: string | undefined;
