@@ -109,8 +109,4 @@ export default defineSchema({
 		levels: v.string()
 	})
 		.index("byCycleId", ["cycleId"]),
-
-	test: defineTable({
-		test: v.string()
-	})
 });

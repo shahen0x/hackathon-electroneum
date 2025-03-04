@@ -43,7 +43,7 @@ export const joinPool = action({
 
         // Get contract
         const contract = poolContract(pool.contractAddress);
-        
+
         // Check if user is a participant
         const isParticipant = await readContract({
             contract: contract,
