@@ -71,6 +71,15 @@ export const createMockPoolOwners = mutation({
 				tokenLogo: "https://cdn.electroplay.fun/token-logos/mega.png",
 				tokenAddress: "0x00",
 				payoutAddress: "0x00"
+			},
+			{
+				status: "upcoming",
+				disabled: false,
+				poolPrice: 0,
+				tokenSymbol: "FUGAZI",
+				tokenLogo: "https://cdn.electroplay.fun/token-logos/fugazi.png",
+				tokenAddress: "0x075533AB8EeC6A6999F07C8bc2f1900eB8312e25",
+				payoutAddress: "0x00"
 			}
 		] as Doc<"poolOwners">[];
 

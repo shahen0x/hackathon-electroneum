@@ -22,7 +22,6 @@ const Pools: FC<PoolsProps> = ({ className }) => {
 			))}
 			<Card className="min-h-[160px] opacity-30" />
 			<Card className="min-h-[160px] opacity-30" />
-			<Card className="min-h-[160px] opacity-30" />
 		</div>
 	)
 }
