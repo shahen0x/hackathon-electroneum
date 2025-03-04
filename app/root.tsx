@@ -1,8 +1,8 @@
 import "./tailwind.css";
 
 import { useState } from "react";
-import { json, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
+import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import DataCycle from "./data/data.cycle";
 import { ConvexReactClient } from "convex/react";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
@@ -10,7 +10,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThirdwebProvider } from "thirdweb/react";
 import Background from "./components/background";
 import Navbar from "./components/navigation/navbar";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
+
+// Load ENV variables from the server
+export const loader: LoaderFunction = async () => {
+	const convexUrl = import.meta.env.VITE_CONVEX_URL;
+	if (!convexUrl) {
+		throw new Error("VITE_CONVEX_URL environment variable is not defined");
+	}
+	return new Response(
+		JSON.stringify({ ENV: { CONVEX_URL: convexUrl } }),
+		{
+			headers: { "Content-Type": "application/json" },
+		}
+	);
+};
 
 export const links: LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -29,18 +43,10 @@ export const links: LinksFunction = () => [
 	},
 ];
 
-export async function loader() {
-	const CONVEX_URL = process.env["CONVEX_URL"]!;
-	return json({ ENV: { CONVEX_URL } });
-}
-
-export function Layout({ children }: { children: React.ReactNode }) {
-
-	// Init convex client
+export default function App() {
 	const { ENV } = useLoaderData<typeof loader>();
-	const [convex] = useState(() => new ConvexReactClient(ENV.CONVEX_URL));
 
-	// Init query client
+	const [convex] = useState(() => new ConvexReactClient(ENV.CONVEX_URL));
 	const queryClient = new QueryClient();
 
 	return (
@@ -58,11 +64,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<QueryClientProvider client={queryClient}>
 					<ConvexAuthProvider client={convex}>
 						<ThirdwebProvider>
-
 							<DataCycle />
 							<Navbar />
-							{children}
-
+							<Outlet />
 						</ThirdwebProvider>
 					</ConvexAuthProvider>
 				</QueryClientProvider>
@@ -72,8 +76,4 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			</body>
 		</html>
 	);
-}
-
-export default function App() {
-	return <Outlet />;
 }
