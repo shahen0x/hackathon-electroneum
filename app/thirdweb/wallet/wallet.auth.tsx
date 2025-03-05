@@ -8,6 +8,8 @@ import { shortenAddress } from "thirdweb/utils";
 import { PiCircleNotch } from "react-icons/pi";
 import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "~/components/ui/dialog";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 
 const WalletAuth = () => {
@@ -26,36 +28,40 @@ const WalletAuth = () => {
 	const generatePayload = useAction(api.authWallet.generatePayload);
 
 	// Authenticate wallet
-	const handleAuthentication = async (): Promise<void> => {
-		try {
-			setIsLoading(true);
+	const authenticateUser = async (): Promise<void> => {
+		// Check if a wallet is connected
+		if (!wallet) throw new Error("Wallet not connected.");
 
-			// Check if a wallet is connected
-			if (!wallet) throw new Error("Wallet not connected.");
+		// Generate web3 login payload
+		const payload = await generatePayload({ address: wallet.address });
+		if (!payload) throw new Error("Failed to generate login payload.");
 
-			// Generate web3 login payload
-			const payload = await generatePayload({ address: wallet.address });
-			if (!payload) throw new Error("Failed to generate login payload.");
+		// Sign the payload
+		const signedPayload = await signLoginPayload({ account: wallet, payload });
+		if (!signedPayload) throw new Error("Signature failed.");
 
-			// Sign the payload
-			const signedPayload = await signLoginPayload({ account: wallet, payload });
-			if (!signedPayload) throw new Error("Signature failed.");
-
-			// Authenticate the wallet
-			const backendResponse = await signIn("siwe", { signedPayload });
-			if (!backendResponse.signingIn) throw new Error("Verification process failed.");
-
-			setErrorMessage(null);
-
-		} catch (error: any) {
-			setErrorMessage(error.message);
-		} finally {
-			if (isAuthenticated) {
-				setIsLoading(false)
-				setDialogOpen(false)
-			}
-		}
+		// Authenticate the wallet
+		const backendResponse = await signIn("siwe", { signedPayload });
+		if (!backendResponse.signingIn) throw new Error("Verification process failed.");
 	}
+
+	const { mutate: handleAuthenticateUser } = useMutation({
+		mutationFn: authenticateUser,
+		onMutate() {
+			setIsLoading(true)
+		},
+		onError(error) {
+			setErrorMessage(error.message);
+			console.log(error);
+			toast.error("An error occured.");
+			setIsLoading(false);
+		},
+		onSuccess() {
+			setIsLoading(false);
+			toast.success("Successfully claimed!");
+			setDialogOpen(false);
+		},
+	});
 
 	// Open dialog if wallet is connected but not authenticated
 	useEffect(() => {
@@ -104,7 +110,7 @@ const WalletAuth = () => {
 						tabIndex={-1}
 						className="w-full"
 						disabled={isLoading || isAuthenticated}
-						onClick={handleAuthentication}
+						onClick={() => handleAuthenticateUser()}
 					>
 						{!isLoading && "Sign To Access"}
 						{isLoading && <PiCircleNotch size={20} className="animate-spin" />}
