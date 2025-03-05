@@ -7,6 +7,8 @@ import { chain } from "~/config/chain";
 import { api, internal } from "./_generated/api";
 import { toWei } from "thirdweb";
 import { asyncMap } from "convex-helpers";
+import { getTime, parseISO } from "date-fns";
+import { ConvexClient } from "convex/browser";
 
 export const getAllPools = query({
 	args: {},
@@ -52,7 +54,7 @@ export const getPool = query({
 });
 
 
-export const deployPoolContracts = internalAction({
+export const scheduleContractDeployments = internalAction({
 	args: {
 		cycleId: v.id("cycles"),
 		schedule
@@ -72,42 +74,74 @@ export const deployPoolContracts = internalAction({
 				return;
 			}
 
-			const contractParams: any = {
-				canJoinPool_: true,
-				poolPrice_: toWei(poolOwner.poolPrice.toString()),
-				commissionPercentage_: 30,
-				withdrawAddress_: poolOwner.payoutAddress,
-				enrollStartTime_: schedule.cycleStart,
-				playEndTime_: schedule.playtimeEnd,
-			}
+			// Schedule contract deployment
+			await ctx.scheduler.runAfter(0, internal.pools.deployPoolContract, {
+				poolOwnerId: poolOwner._id,
+				schedule
+			});
 
-			// If not ETN, deploy erc20
-			if (poolOwner.tokenSymbol !== "ETN") {
-				contractParams.erc20TokenAddress_ = poolOwner.tokenAddress;
-			}
+		});
+	}
+});
 
-			// try {
-			// 	// Deploy contract
-			// 	const contractAddress = await deployPublishedContract({
-			// 		client: thirdwebClient,
-			// 		chain,
-			// 		account: adminAccount,
-			// 		contractId: poolOwner.tokenSymbol === "ETN" ? "GamePoolNative" : "GamePoolERC20",
-			// 		contractParams,
-			// 		version: "1.0.1",
-			// 		publisher: adminAccount.address
-			// 	});
+export const deployPoolContract = internalAction({
+	args: {
+		poolOwnerId: v.id("poolOwners"),
+		schedule
+	},
+	handler: async (ctx, args) => {
+		const { poolOwnerId, schedule } = args
+
+		const poolOwner = await ctx.runQuery(api.poolOwners.getPoolOwnerById, { poolOwnerId })
+		if (!poolOwner) throw new ConvexError({ message: "Pool owner not found." });
+
+		const enrollTimestamp = Math.floor(getTime(parseISO(schedule.cycleStart)) / 1000);
+		const playtimeEndTimestamp = Math.floor(getTime(parseISO(schedule.playtimeEnd)) / 1000);
+
+		const contractParams: any = {
+			canJoinPool_: true,
+			poolPrice_: toWei(poolOwner.poolPrice.toString()),
+			commissionPercentage_: 30,
+			withdrawAddress_: poolOwner.payoutAddress,
+			enrollStartTime_: enrollTimestamp,
+			playEndTime_: playtimeEndTimestamp,
+		}
+
+		// If not ETN, deploy erc20
+		if (poolOwner.tokenSymbol !== "ETN") {
+			contractParams.erc20TokenAddress_ = poolOwner.tokenAddress;
+		}
+
+		const client = thirdwebClient;
+		const account = adminAccount;
+
+		try {
+			// Deploy contract
+			const contractAddress = await deployPublishedContract({
+				client,
+				chain,
+				account,
+				contractId: poolOwner.tokenSymbol === "ETN" ? "GamePoolNative" : "GamePoolERC20",
+				contractParams,
+				version: "1.0.1",
+				publisher: adminAccount.address,
+			});
 
 			// Create pool
 			await ctx.scheduler.runAfter(0, internal.pools.createPool, {
 				poolOwnerId: poolOwner._id,
-				contractAddress: ""
+				contractAddress
 			});
-			// } 
-			// catch (error) {
-			// 	console.log(error);	
-			// }
-		});
+		}
+		catch (error) {
+			console.log(error);
+
+			// Reschedule contract deployment in case of failure
+			await ctx.scheduler.runAfter(10000, internal.pools.deployPoolContract, {
+				poolOwnerId: poolOwner._id,
+				schedule
+			});
+		}
 	}
 });
 

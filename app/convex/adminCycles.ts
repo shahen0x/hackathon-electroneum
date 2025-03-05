@@ -63,7 +63,7 @@ export const createCycleWithPools = internalMutation({
 		}
 
 		// Create pools with contracts
-		await ctx.scheduler.runAfter(0, internal.pools.deployPoolContracts, {
+		await ctx.scheduler.runAfter(0, internal.pools.scheduleContractDeployments, {
 			cycleId,
 			schedule
 		});

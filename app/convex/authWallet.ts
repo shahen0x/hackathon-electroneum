@@ -26,8 +26,8 @@ export const thirdwebAuth = createAuth({
 });
 
 export const adminAccount = privateKeyToAccount({
-    client: thirdwebClient,
-    privateKey: process.env.THIRDWEB_ADMIN_WALLET as string,
+	client: thirdwebClient,
+	privateKey: process.env.THIRDWEB_ADMIN_WALLET as string,
 });
 
 
