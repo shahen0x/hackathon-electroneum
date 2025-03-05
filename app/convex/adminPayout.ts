@@ -48,8 +48,7 @@ export const generatePoolPayoutInstructions = internalAction({
         const { poolPrice, totalParticipants, prizePoolShare } = await GetPoolDataFromContract(pool.contractAddress);
 
         // 🛑🛑🛑 TODO LATER: Try catch paytable then handle according 🛑🛑🛑
-        // const paytable = await generatePaytable(poolPrice, totalParticipants, prizePoolShare);
-        const paytable = await generatePaytable(poolPrice, 2, prizePoolShare);
+        const paytable = await generatePaytable(poolPrice, totalParticipants, prizePoolShare);
         console.log(paytable);
 
         // Get scorecards for this pool

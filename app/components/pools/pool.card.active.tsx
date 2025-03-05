@@ -15,12 +15,14 @@ import { ActivePool, CyclePhase } from "~/types/types.cycle";
 import { isBefore } from "date-fns";
 import useCyclePhase from "~/hooks/hook.cycle.phase";
 import { Button } from "../ui/button";
+import { Id } from "~/convex/_generated/dataModel";
 
 interface PoolCardActiveProps {
 	activePool: ActivePool;
 }
 
 export type PoolType = {
+	poolId: Id<"pools">;
 	isNative: boolean;
 	tokenSymbol: string | undefined;
 	tokenLogo: string | undefined;
@@ -61,6 +63,7 @@ const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 		]);
 
 		return {
+			poolId: activePool.id,
 			isNative: isNative,
 			tokenSymbol: activePool.tokenSymbol,
 			tokenLogo: activePool.tokenLogo,
@@ -68,7 +71,7 @@ const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 			tokenAddress: activePool.tokenAddress,
 			participants,
 			poolPrice: Number(toEther(poolPrice)),
-			prizePool
+			prizePool,
 		}
 	}
 

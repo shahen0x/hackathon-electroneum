@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useAction, useConvexAuth } from "convex/react";
 import { api } from "~/convex/_generated/api";

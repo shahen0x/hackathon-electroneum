@@ -96,6 +96,7 @@ export default defineSchema({
 		userId: v.id("users"),
 		poolRewards: v.array(claimInfo),
 	})
+		.index("byUserId", ["userId"])
 		.index("byCycleAndUserId", ["cycleId", "userId"]),
 
 	levelsBallsort: defineTable({

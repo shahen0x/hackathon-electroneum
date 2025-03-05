@@ -11,6 +11,8 @@ import { abiPoolERC20 } from "~/thirdweb/abi/abi.pool.erc20";
 import { handleOnChainError } from "~/lib/onchain.errors";
 import toast from "react-hot-toast";
 import { PoolType } from "./pool.card.active";
+import { useAction } from "convex/react";
+import { api } from "~/convex/_generated/api";
 
 interface PoolModalJoinProps {
 	data: PoolType;
@@ -26,6 +28,9 @@ const PoolModalJoin: FC<PoolModalJoinProps> = ({ data, userJoinedPool, setOpen, 
 
 	// Thirdweb
 	const account = useActiveAccount();
+
+	// Convex
+	const joinInBackend = useAction(api.poolsJoin.joinPool)
 
 
 	// Reusable contract instance
@@ -64,11 +69,15 @@ const PoolModalJoin: FC<PoolModalJoinProps> = ({ data, userJoinedPool, setOpen, 
 
 		const joinHash = await initTransaction(transaction);
 
-		return await waitForReceipt({
+		await waitForReceipt({
 			client,
 			chain,
 			transactionHash: joinHash
 		});
+
+		await joinInBackend({
+			poolId: data.poolId
+		})
 	};
 
 
@@ -105,11 +114,15 @@ const PoolModalJoin: FC<PoolModalJoinProps> = ({ data, userJoinedPool, setOpen, 
 
 		const joinHash = await initTransaction(joinTx);
 
-		return await waitForReceipt({
+		await waitForReceipt({
 			client,
 			chain,
 			transactionHash: joinHash
 		});
+
+		await joinInBackend({
+			poolId: data.poolId
+		})
 	}
 
 
