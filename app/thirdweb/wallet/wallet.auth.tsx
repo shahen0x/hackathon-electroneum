@@ -1,28 +1,19 @@
+import { FC, useEffect, useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useAction, useConvexAuth } from "convex/react";
-import { FC, useState } from "react";
-import { PiCircleNotch } from "react-icons/pi";
+import { api } from "~/convex/_generated/api";
 import { signLoginPayload } from "thirdweb/auth";
 import { useActiveAccount } from "thirdweb/react";
 import { shortenAddress } from "thirdweb/utils";
+import { PiCircleNotch } from "react-icons/pi";
 import { Button } from "~/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "~/components/ui/dialog";
-import { api } from "~/convex/_generated/api";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "~/components/ui/dialog";
 
-interface WalletAuthProps {
 
-}
-
-const WalletAuth: FC<WalletAuthProps> = () => {
+const WalletAuth = () => {
 
 	// States
+	const [dialogOpen, setDialogOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -59,21 +50,39 @@ const WalletAuth: FC<WalletAuthProps> = () => {
 		} catch (error: any) {
 			setErrorMessage(error.message);
 		} finally {
-			if (isAuthenticated) setIsLoading(false);
+			if (isAuthenticated) {
+				setIsLoading(false)
+				setDialogOpen(false)
+			}
 		}
 	}
 
-	// If wallet is connected do not render modal
-	if (!wallet) return null;
-	if (isLoadingAuth) return null;
+	// Open dialog if wallet is connected but not authenticated
+	useEffect(() => {
+		if (wallet && !isAuthenticated && !isLoadingAuth) {
+			setDialogOpen(true);
+		}
+	}, [wallet, isAuthenticated, isLoadingAuth]);
 
-	return !isAuthenticated ? (
-		<Dialog open={true} onOpenChange={() => isAuthenticated ? false : true}>
+	// If wallet is not connected or already authenticated, don't render
+	if (!wallet || isLoadingAuth || isAuthenticated) return null;
+
+	return (
+		<Dialog
+			open={dialogOpen}
+			onOpenChange={(open) => {
+				if (!open) return;
+				setDialogOpen(open);
+			}}
+		>
 			<DialogContent hideClose className="max-w-sm rounded-2xl">
 
 				<DialogHeader className="text-center space-y-6">
 					<DialogTitle className="text-md">
-						Wallet signing required <br /> <span className="text-etn">{wallet ? shortenAddress(wallet.address) : "0x0000...0000"}</span>
+						Wallet signing required <br />
+						<span className="text-etn">
+							{wallet ? shortenAddress(wallet.address) : "0x0000...0000"}
+						</span>
 					</DialogTitle>
 
 					<div className="w-fit mx-auto border-2 border-b-0 rounded-2xl p-4 pb-10 space-y-2">
@@ -106,7 +115,7 @@ const WalletAuth: FC<WalletAuthProps> = () => {
 			</DialogContent>
 		</Dialog >
 
-	) : null;
+	);
 }
 
 export default WalletAuth;
