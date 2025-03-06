@@ -12,6 +12,8 @@ import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "~/convex/_generated/api";
 import toast from "react-hot-toast";
 import { useAuthActions } from "@convex-dev/auth/react";
+import { Button } from "~/components/ui/button";
+import { PiWallet } from "react-icons/pi";
 
 
 const WalletModal = () => {
@@ -43,16 +45,40 @@ const WalletModal = () => {
 
 
 	return wallet ? (
-		<ConnectButton
-			client={clientThirdweb}
-			appMetadata={appMetaData}
-			autoConnect={true}
-			detailsModal={{
-				hideBuyFunds: true,
-			}}
-			chain={chain}
-			supportedTokens={supportedTokens}
-		/>
+		<>
+			<ConnectButton
+				client={clientThirdweb}
+				appMetadata={appMetaData}
+				autoConnect={true}
+				detailsModal={{
+					hideBuyFunds: true,
+				}}
+				chain={chain}
+				supportedTokens={supportedTokens}
+				detailsButton={{
+					render() {
+						return (
+							<Button variant={"outline"} size={"icon"} className="md:hidden text-etn">
+								<PiWallet size={20} />
+							</Button>
+						)
+					},
+				}}
+			/>
+
+			<div className="hidden md:block">
+				<ConnectButton
+					client={clientThirdweb}
+					appMetadata={appMetaData}
+					autoConnect={true}
+					detailsModal={{
+						hideBuyFunds: true,
+					}}
+					chain={chain}
+					supportedTokens={supportedTokens}
+				/>
+			</div>
+		</>
 	) : null;
 }
 
