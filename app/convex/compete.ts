@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, MutationCtx} from "./_generated/server";
+import { mutation, MutationCtx } from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import { getActiveGameLineup } from "./utils/getActiveGameLineup";
 import { parseISO } from "date-fns";
@@ -10,21 +10,21 @@ import { getBallsortDataForCycle, isGameDataBallsort } from "./levelsBallsort";
 type GameName = "ballsort" | "matchtwo";
 
 export const verifyCompetitionAccess = mutation({
-	args: {
-		gameName: v.union(
-			v.literal("ballsort"),
-			v.literal("matchtwo")
-		)
-	},
-	handler: async (ctx, args) => {
-	    const { gameName } = args;
+    args: {
+        gameName: v.union(
+            v.literal("ballsort"),
+            v.literal("matchtwo")
+        )
+    },
+    handler: async (ctx, args) => {
+        const { gameName } = args;
 
         // Check prerequisites
         const { activeCycle } = await checkCompetitionPrerequisites(ctx, gameName);
-                
+
         // Respond with game levels        
-        let gameLevels : string | undefined = undefined;
-        
+        let gameLevels: string | undefined = undefined;
+
         switch (gameName) {
             case "ballsort":
                 const ballsortData = await getBallsortDataForCycle(ctx, activeCycle._id);
@@ -39,21 +39,21 @@ export const verifyCompetitionAccess = mutation({
         if (gameLevels === undefined) throw new ConvexError({ message: "Competition levels not found" });
 
         return gameLevels;
-	}
+    }
 });
 
 export const submitScore = mutation({
-	args: {
-		gameName: v.union(
-			v.literal("ballsort"),
-			v.literal("matchtwo")
-		),
-		gameData: v.string(),
-	},
-	handler: async (ctx, args) => {
-        const {gameName, gameData} = args;
+    args: {
+        gameName: v.union(
+            v.literal("ballsort"),
+            v.literal("matchtwo")
+        ),
+        gameData: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const { gameName, gameData } = args;
 
-		// Check prerequisites
+        // Check prerequisites
         const { activeCycle, scorecards } = await checkCompetitionPrerequisites(ctx, gameName);
 
         const parsedGameData = JSON.parse(gameData);
@@ -75,7 +75,7 @@ export const submitScore = mutation({
         }
 
         // Update leaderboard scorecards
-		await asyncMap(scorecards, async (scorecard) => {
+        await asyncMap(scorecards, async (scorecard) => {
             // In case of score-based games, check if score is greater
             if (isScoreBased) {
                 const isScoreLess = parsedGameData.finalScore < scorecard.gameData[gameName].finalScore;
@@ -104,7 +104,7 @@ export const submitScore = mutation({
         });
 
         return { message: "Score submitted!" }
-	}
+    }
 });
 
 export async function checkCompetitionPrerequisites(ctx: MutationCtx, gameName: GameName) {
@@ -115,7 +115,7 @@ export async function checkCompetitionPrerequisites(ctx: MutationCtx, gameName: 
     // Get cycle
     const activeCycle = await ctx.runQuery(api.adminCycles.getActiveCycle);
     if (!activeCycle) throw new ConvexError({ message: "Active cycle not found." });
-    
+
     // Check if game is in lineup
     const activeGames = getActiveGameLineup(activeCycle.gameLineup);
     if (!activeGames.includes(gameName)) throw new ConvexError({ message: "Game is not in lineup." });
@@ -139,36 +139,36 @@ export async function checkCompetitionPrerequisites(ctx: MutationCtx, gameName: 
 
     if (scorecards.length === 0) throw new ConvexError({ message: "You have not joined any pools." });
 
-    return {user, activeCycle, scorecards};
+    return { user, activeCycle, scorecards };
 
 }
 
 
 export async function calculateTotalPoints(gameLineup: string[], newGameData: any) {
-	let allScores = 0;
-	let allTimes = 0;
-	let stopPointsCalculation = false;
+    let allScores = 0;
+    let allTimes = 0;
+    let stopPointsCalculation = false;
 
-	for (let i = 0; i < gameLineup.length; i++) {
-		switch (gameLineup[i]) {
-			case "ballsort":
-				if (newGameData.ballsort.finalTime === -1) stopPointsCalculation = true;
-				allTimes += newGameData.ballsort.finalTime;
-				continue;
+    for (let i = 0; i < gameLineup.length; i++) {
+        switch (gameLineup[i]) {
+            case "ballsort":
+                if (newGameData.ballsort.finalTime === -1) stopPointsCalculation = true;
+                allTimes += newGameData.ballsort.finalTime;
+                continue;
             case "matchtwo":
                 if (newGameData.matchtwo.finalTime === -1) stopPointsCalculation = true;
                 allTimes += newGameData.matchtwo.finalTime;
                 continue;
-		}
-		if (stopPointsCalculation) break;
-	}
+        }
+        if (stopPointsCalculation) break;
+    }
 
-	allScores = !stopPointsCalculation && allScores === 0 ? 100000 : allScores;
-	allTimes = !stopPointsCalculation && allTimes === 0 ? 1 : allTimes;
+    allScores = !stopPointsCalculation && allScores === 0 ? 10000000 : allScores;
+    allTimes = !stopPointsCalculation && allTimes === 0 ? 1 : allTimes;
 
-	const totalPoints = stopPointsCalculation ? 0 : allScores / allTimes;
+    const totalPoints = stopPointsCalculation ? 0 : allScores / allTimes;
 
-	return totalPoints;
+    return totalPoints;
 }
 
 

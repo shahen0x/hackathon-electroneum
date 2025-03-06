@@ -69,9 +69,9 @@ const Leaderboard: FC<LeaderboardProps> = () => {
 
 		// 🛑🛑🛑 TODO: handle case where there is less than 2 participants 🛑🛑🛑
 
-		// const paytable = await generatePaytable(Number(poolPrice), participants, prizePoolShare);
+		const paytable = await generatePaytable(Number(poolPrice), participants, prizePoolShare);
 		// 🛑🛑🛑 TODO: uncomment above line, comment line below 🛑🛑🛑
-		const paytable = await generatePaytable(Number(poolPrice), scorecards.length, prizePoolShare);
+		// const paytable = await generatePaytable(Number(poolPrice), scorecards.length, prizePoolShare);
 		console.log(paytable);
 
 		const leaderboard: LeaderboardEntry[] = [];

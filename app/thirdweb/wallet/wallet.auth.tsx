@@ -58,7 +58,7 @@ const WalletAuth = () => {
 		},
 		onSuccess() {
 			setIsLoading(false);
-			toast.success("Successfully claimed!");
+			toast.success("Wallet authentication successful!");
 			setDialogOpen(false);
 		},
 	});
