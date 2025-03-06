@@ -13,7 +13,8 @@ import Navbar from "./components/navigation/navbar";
 import { Toaster } from "react-hot-toast";
 import WalletAuth from "./thirdweb/wallet/wallet.auth";
 
-// Load ENV variables from the server
+
+// Get backend env variables
 export const loader: LoaderFunction = async () => {
 	const convexUrl = import.meta.env.VITE_CONVEX_URL;
 	if (!convexUrl) {
@@ -47,7 +48,10 @@ export const links: LinksFunction = () => [
 export default function App() {
 	const { ENV } = useLoaderData<typeof loader>();
 
+	// Init backend
 	const [convex] = useState(() => new ConvexReactClient(ENV.CONVEX_URL));
+
+	// Init query client
 	const queryClient = new QueryClient();
 
 	return (

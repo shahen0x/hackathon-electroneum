@@ -1,30 +1,35 @@
-"use client";
-
-import { FC } from "react";
-import { useActiveAccount, useAutoConnect, useConnectModal } from "thirdweb/react";
-import { createWallet, inAppWallet } from "thirdweb/wallets";
+/**
+ * WALLET CONNECTION BUTTON
+ * A button that allow users to connect any evm compatible wallets as well 
+ * as use generated wallets via email or socials
+ * 
+ */
+import { appMetaData, chain } from "~/config/chain";
 import { PiSpinnerGap, PiWallet } from "react-icons/pi";
 import { clientThirdweb } from "../client";
+import { useActiveAccount, useAutoConnect, useConnectModal } from "thirdweb/react";
+import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { Button } from "~/components/ui/button";
-import { chain } from "~/config/chain";
-
-interface WalletConnectButtonProps { }
 
 
+const WalletConnectButton = () => {
 
-const WalletConnectButton: FC<WalletConnectButtonProps> = () => {
-
-	const activeAccount = useActiveAccount();
+	// Thirdweb
 	const { connect } = useConnectModal();
+	const activeAccount = useActiveAccount();
 	const { isLoading: connecting } = useAutoConnect({ client: clientThirdweb });
 
-	const handleLogin = async () => {
+
+	// Handle wallet connection
+	//
+	const handleWalletConnection = async () => {
 		try {
 			await connect({
 				client: clientThirdweb,
+				appMetadata: appMetaData,
 				showThirdwebBranding: false,
-				size: "compact",
-				title: "Sign In",
+				size: "wide",
+				title: "Connect options",
 				chain,
 				wallets: [
 					inAppWallet({
@@ -42,14 +47,9 @@ const WalletConnectButton: FC<WalletConnectButtonProps> = () => {
 					createWallet("io.metamask"),
 					createWallet("walletConnect"),
 				],
-				appMetadata: {
-					name: "Cryptark Games",
-					url: "https://cryptark.io",
-					description: "Cryptark is a multi-chain competitive gaming platform revolutionizing the way you play games, compete and get rewarded for your skills."
-				},
 			});
 		} catch (error) {
-			console.log("User rejected wallet connection.")
+			console.log("User rejected wallet connection.");
 		}
 	};
 
@@ -70,11 +70,11 @@ const WalletConnectButton: FC<WalletConnectButtonProps> = () => {
 
 			{!activeAccount && !connecting &&
 				<>
-					<Button onClick={handleLogin} variant={"outline"} size={"icon"} className="md:hidden">
+					<Button onClick={handleWalletConnection} variant={"outline"} size={"icon"} className="md:hidden">
 						<PiWallet size={20} />
 					</Button>
 
-					<Button onClick={handleLogin} className="hidden md:flex">
+					<Button onClick={handleWalletConnection} className="hidden md:flex">
 						<PiWallet size={20} />
 						<span>Sign In</span>
 					</Button>

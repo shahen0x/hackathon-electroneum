@@ -1,3 +1,8 @@
+/**
+ * WALLET AUTHENTICATION
+ * Using SIWE/EIP-4361 to securely authenticate users to our backend
+ * 
+ */
 import { useEffect, useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useAction, useConvexAuth } from "convex/react";
@@ -27,7 +32,9 @@ const WalletAuth = () => {
 	const { isAuthenticated, isLoading: isLoadingAuth } = useConvexAuth();
 	const generatePayload = useAction(api.authWallet.generatePayload);
 
+
 	// Authenticate wallet
+	//
 	const authenticateUser = async (): Promise<void> => {
 		// Check if a wallet is connected
 		if (!wallet) throw new Error("Wallet not connected.");
@@ -63,15 +70,20 @@ const WalletAuth = () => {
 		},
 	});
 
+
 	// Open dialog if wallet is connected but not authenticated
+	//
 	useEffect(() => {
 		if (wallet && !isAuthenticated && !isLoadingAuth) {
 			setDialogOpen(true);
 		}
 	}, [wallet, isAuthenticated, isLoadingAuth]);
 
+
 	// If wallet is not connected or already authenticated, don't render
+	//
 	if (!wallet || isLoadingAuth || isAuthenticated) return null;
+
 
 	return (
 		<Dialog

@@ -21,7 +21,7 @@ export const thirdwebClient = createThirdwebClient({
 
 // Init thirdweb auth client
 export const thirdwebAuth = createAuth({
-	domain: "electroplay.fun",
+	domain: "hackathon.electroplay.fun",
 	adminAccount: privateKeyToAccount({ client: thirdwebClient, privateKey })
 });
 
