@@ -123,7 +123,7 @@ export const deployPoolContract = internalAction({
 				account,
 				contractId: poolOwner.tokenSymbol === "ETN" ? "GamePoolNative" : "GamePoolERC20",
 				contractParams,
-				version: "1.0.1",
+				version: "1.0.2",
 				publisher: adminAccount.address,
 			});
 
