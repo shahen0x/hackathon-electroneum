@@ -36,17 +36,16 @@ function getRandomBuildString(number: number): string {
 
 const matchtwoPlaylistGenerator = (setAmount: number) => {
     const playlistSpec = [
-        MatchtwoGridSize.FourByFour, 
-        MatchtwoGridSize.FourBySix, 
+        MatchtwoGridSize.FourByFour,
         MatchtwoGridSize.FiveByEight
     ];
-    
-    let playlist: string[][] = [];
+
+    const playlist: string[][] = [];
 
     for (let i = 0; i < setAmount; i++) {
         // Initialize the inner array
         playlist[i] = [];
-        
+
         // we want each playlist to have a 4x4, a 4x6, and a 5x8 grid
         for (let j = 0; j < playlistSpec.length; j++) {
             playlist[i][j] = getRandomBuildString(playlistSpec[j]);
@@ -59,7 +58,7 @@ const matchtwoPlaylistGenerator = (setAmount: number) => {
 
 export const generateMatchtwoLevels = internalMutation({
     args: {
-      cycleId: v.id("cycles"),
+        cycleId: v.id("cycles"),
     },
     handler: async (ctx, args) => {
         const { cycleId } = args;
@@ -81,9 +80,9 @@ export const generateMatchtwoLevels = internalMutation({
 
         return levelsId;
     },
-  });
+});
 
-export async function getMatchtwoDataForCycle(ctx: MutationCtx, cycleId: Id<"cycles">){
+export async function getMatchtwoDataForCycle(ctx: MutationCtx, cycleId: Id<"cycles">) {
     const levels = await ctx.db
         .query("levelsMatchtwo")
         .withIndex("byCycleId", (q) =>

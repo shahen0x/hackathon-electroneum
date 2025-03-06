@@ -38,11 +38,13 @@ function findColorAmount(tubeAmount: number) {
 const ballSortPlaylistGenerator = (setAmount: number) => {
     const ballsAvailable = "123456789abcdef";
 
-    let specs: SpecsBallsort[] = [];
+    const specs: SpecsBallsort[] = [];
+    const playlistSpec = [4, 9, 11, 12, 15];
 
     for (let i = 0; i < setAmount; i++) {
         specs[i] = { levels: [] }
-        for (let j = 8; j < 16; j++) {
+        for (let j = 3; j < 16; j++) {
+            if (!playlistSpec.includes(j)) continue;
             specs[i].levels.push(generateLevel(j));
         }
     }
@@ -70,14 +72,14 @@ const ballSortPlaylistGenerator = (setAmount: number) => {
 
 export const generateBallsortLevels = internalMutation({
     args: {
-      cycleId: v.id("cycles"),
+        cycleId: v.id("cycles"),
     },
     handler: async (ctx, args) => {
         const { cycleId } = args;
 
         // Check if levels already exist for this cycle
         const levels = await getBallsortDataForCycle(ctx, cycleId);
-        
+
         if (levels) throw new Error("Ball Sort levels already exist for this cycle.");
 
         // Generate levels
@@ -94,7 +96,7 @@ export const generateBallsortLevels = internalMutation({
     },
 });
 
-export async function getBallsortDataForCycle(ctx: MutationCtx, cycleId: Id<"cycles">){
+export async function getBallsortDataForCycle(ctx: MutationCtx, cycleId: Id<"cycles">) {
     const levels = await ctx.db
         .query("levelsBallsort")
         .withIndex("byCycleId", (q) =>
