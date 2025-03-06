@@ -27,7 +27,7 @@ export default function MatchTwo() {
 
 
 	// GAME
-	const baseUrl = "/games";
+	const baseUrl = "https://cdn.electroplay.fun/games";
 	const gameName = "matchtwo";
 
 	const {

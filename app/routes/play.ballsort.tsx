@@ -27,7 +27,7 @@ export default function Ballsort() {
 
 
 	// GAME
-	const baseUrl = "/games";
+	const baseUrl = "https://cdn.electroplay.fun/games";
 	const gameName = "ballsort";
 
 	const {
