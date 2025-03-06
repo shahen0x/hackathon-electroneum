@@ -1,5 +1,10 @@
+/**
+ * POOL MODAL
+ * This component displays the modal for the pool where users
+ * can initiate a join transaction
+ * 
+ */
 import { FC, useState } from "react";
-
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { formatEth } from "~/lib/format.eth";
@@ -11,6 +16,7 @@ import { Separator } from "../ui/separator";
 import { chain } from "~/config/chain";
 import PoolModalJoin from "./pool.modal.join";
 import { PoolType } from "./pool.card.active";
+
 
 interface PoolModalProps {
 	data: PoolType;
@@ -28,7 +34,9 @@ const PoolModal: FC<PoolModalProps> = ({ data, userJoinedPool, refetchData, refe
 	// Thirdweb
 	const account = useActiveAccount();
 
+
 	// Get balance for related native or erc20 token
+	//
 	const { data: balance } = useWalletBalance({
 		chain,
 		address: account?.address,
@@ -55,13 +63,6 @@ const PoolModal: FC<PoolModalProps> = ({ data, userJoinedPool, refetchData, refe
 						</>
 					}
 				</Button>
-				{/* 
-				<Button
-					size={"sm"}
-					className="w-full"
-				>
-					Join - {formatEth(data?.poolPrice, data?.tokenSymbol)}
-				</Button> */}
 			</DialogTrigger>
 
 			<DialogContent className="max-sm:h-full max-sm:border-none sm:max-w-80 [&>button]:hidden">
@@ -97,7 +98,7 @@ const PoolModal: FC<PoolModalProps> = ({ data, userJoinedPool, refetchData, refe
 				</DialogHeader>
 
 				<div className="relative w-16 h-16 mx-auto my-6">
-					{processing && <div className="w-full h-full bg-etn rounded-full animate-ping" />}
+					{processing && <div className="w-full h-full rounded-full animate-ping" style={{ backgroundColor: data?.brandColor }} />}
 					<img src={data?.tokenLogo} alt={data?.tokenSymbol} className="absolute top-0 left-0 w-full h-full rounded-full" />
 				</div>
 

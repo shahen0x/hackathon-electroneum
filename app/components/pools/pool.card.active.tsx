@@ -1,4 +1,10 @@
-import { FC, useState } from "react";
+/**
+ * ACTIVE POOL CARD
+ * This component displays the active pool information as well
+ * as fetches on chain data
+ * 
+ */
+import { FC } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Separator } from "../ui/separator";
 import { getContract, readContract, toEther } from "thirdweb";
@@ -12,10 +18,9 @@ import PoolModal from "./pool.modal";
 import { chain } from "~/config/chain";
 import { useActiveAccount } from "thirdweb/react";
 import { ActivePool, CyclePhase } from "~/types/types.cycle";
-import { isBefore } from "date-fns";
-import useCyclePhase from "~/hooks/hook.cycle.phase";
 import { Button } from "../ui/button";
 import { Id } from "~/convex/_generated/dataModel";
+import useCyclePhase from "~/hooks/hook.cycle.phase";
 
 interface PoolCardActiveProps {
 	activePool: ActivePool;
@@ -25,6 +30,7 @@ export type PoolType = {
 	poolId: Id<"pools">;
 	isNative: boolean;
 	tokenSymbol: string | undefined;
+	brandColor: string | undefined;
 	tokenLogo: string | undefined;
 	contractAddress: string;
 	tokenAddress: string | undefined;
@@ -35,8 +41,8 @@ export type PoolType = {
 
 const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 
-	// const { currentPhase } = useCyclePhase();
-	const [currentPhase, setCurrentPhase] = useState<CyclePhase>(CyclePhase.CycleStarted);
+	// Store
+	const { currentPhase } = useCyclePhase();
 
 	// Thirdweb
 	const account = useActiveAccount();
@@ -44,7 +50,9 @@ const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 	// If the pool token is ETN
 	const isNative = activePool.tokenSymbol === "ETN";
 
+
 	// Initiate smart contract
+	//
 	const contract = getContract({
 		client: clientThirdweb,
 		chain,
@@ -52,7 +60,9 @@ const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 		abi: isNative ? abiPoolNative : abiPoolERC20
 	});
 
+
 	// Retrieve data from smart contract
+	//
 	const retrieveOnchainData = async () => {
 		console.log("🔃 Fetching on-chain data...");
 
@@ -66,6 +76,7 @@ const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 			poolId: activePool.id,
 			isNative: isNative,
 			tokenSymbol: activePool.tokenSymbol,
+			brandColor: activePool.brandColor,
 			tokenLogo: activePool.tokenLogo,
 			contractAddress: activePool.contractAddress,
 			tokenAddress: activePool.tokenAddress,
@@ -75,6 +86,9 @@ const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 		}
 	}
 
+
+	// Check if user already joined the pool
+	//
 	const retriveUserJoinedPool = async () => {
 		if (!account) throw new Error("Wallet not connected.");
 
@@ -87,11 +101,17 @@ const PoolCardActive: FC<PoolCardActiveProps> = ({ activePool }) => {
 		return userRecorded;
 	}
 
+
+	// Fetch pool data
+	//
 	const { data: pool, isLoading: poolIsLoading, refetch: refetchPool, } = useQuery({
 		queryKey: [`pool-${activePool.contractAddress}`],
 		queryFn: retrieveOnchainData
 	});
 
+
+	// Fetch user joined pool data
+	//
 	const { data: userJoinedPool, refetch: refetchJoinedPool } = useQuery({
 		queryKey: [`pool-${activePool.contractAddress}-${account?.address}`],
 		queryFn: retriveUserJoinedPool,

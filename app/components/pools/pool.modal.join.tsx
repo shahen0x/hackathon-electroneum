@@ -1,3 +1,9 @@
+/**
+ * POOL MODAL JOIN
+ * This component displays the join button for the pool where users
+ * can initiate a join transaction
+ * 
+ */
 import { FC } from "react";
 import { Button } from "../ui/button";
 import { useActiveAccount } from "thirdweb/react";
@@ -13,6 +19,7 @@ import toast from "react-hot-toast";
 import { PoolType } from "./pool.card.active";
 import { useAction } from "convex/react";
 import { api } from "~/convex/_generated/api";
+
 
 interface PoolModalJoinProps {
 	data: PoolType;
@@ -34,6 +41,7 @@ const PoolModalJoin: FC<PoolModalJoinProps> = ({ data, userJoinedPool, setOpen, 
 
 
 	// Reusable contract instance
+	//
 	const getContractInstance = (address: string, abi?: any) => {
 		setProcessing(true);
 		return getContract({ client, chain, address, abi });
@@ -41,6 +49,7 @@ const PoolModalJoin: FC<PoolModalJoinProps> = ({ data, userJoinedPool, setOpen, 
 
 
 	// Reusable send transaction
+	//
 	const initTransaction = async (transaction: any) => {
 		if (!account) throw new Error("No account found");
 
@@ -53,6 +62,7 @@ const PoolModalJoin: FC<PoolModalJoinProps> = ({ data, userJoinedPool, setOpen, 
 
 
 	// Join ETN Pool
+	//
 	const handleNativeJoin = async () => {
 		if (!data) throw new Error("Pool data not found");
 
@@ -126,6 +136,8 @@ const PoolModalJoin: FC<PoolModalJoinProps> = ({ data, userJoinedPool, setOpen, 
 	}
 
 
+	// Handle join native pool
+	//
 	const { mutate: joinPoolNative } = useMutation({
 		mutationFn: handleNativeJoin,
 		onError(error) {
@@ -142,7 +154,8 @@ const PoolModalJoin: FC<PoolModalJoinProps> = ({ data, userJoinedPool, setOpen, 
 	});
 
 
-
+	// Handle join erc20 pool
+	//
 	const { mutate: joinPoolErc20 } = useMutation({
 		mutationFn: handleERC20Join,
 		onError(error) {
@@ -157,6 +170,7 @@ const PoolModalJoin: FC<PoolModalJoinProps> = ({ data, userJoinedPool, setOpen, 
 			refetchJoinedPool();
 		},
 	});
+
 
 	return (
 		<Button

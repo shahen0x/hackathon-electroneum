@@ -1,8 +1,14 @@
+/**
+ * UPCOMING POOL CARD
+ * This component displays the upcoming pool information
+ * 
+ */
 import { FC } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { UpcomingPool } from "~/types/types.cycle";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
+
 
 interface PoolCardUpcomingProps {
 	pool: UpcomingPool;

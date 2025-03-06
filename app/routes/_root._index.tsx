@@ -50,7 +50,7 @@ export default function Index() {
 			</div>
 
 			{/* LEADERBOARD */}
-			<Leaderboard />
+			{/* <Leaderboard /> */}
 
 		</div>
 	);
@@ -60,7 +60,7 @@ export default function Index() {
 const LoadingCycle = () => {
 	return (
 		<>
-			<Skeleton className="col-span-1 min-h-[345px] w-full">
+			<Skeleton className="col-span-1 min-h-[361px] w-full">
 
 				<div className="p-4 h-[76px] space-y-3 border-b border-white/5">
 					<div className="h-[16px] w-52 rounded-md bg-white/5" />
