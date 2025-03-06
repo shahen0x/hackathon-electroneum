@@ -185,8 +185,6 @@ export const setMerkleRootOnContract = internalAction({
             transaction,
             account: adminAccount,
         });
-
-        console.log(transactionResult);
     }
 });
 

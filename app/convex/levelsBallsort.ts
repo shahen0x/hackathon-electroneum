@@ -39,7 +39,7 @@ const ballSortPlaylistGenerator = (setAmount: number) => {
     const ballsAvailable = "123456789abcdef";
 
     const specs: SpecsBallsort[] = [];
-    const playlistSpec = [4, 9, 11, 12, 15];
+    const playlistSpec = [12, 15];
 
     for (let i = 0; i < setAmount; i++) {
         specs[i] = { levels: [] }
