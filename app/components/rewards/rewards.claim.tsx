@@ -63,11 +63,7 @@ const RewardsClaim: FC<RewardsClaimProps> = ({ pool }) => {
 		const claim = await claimReward({
 			amount: pool.amount,
 			poolId: pool.poolId,
-		})
-
-		console.log(claim)
-
-		// const formattedClaim = claim.map((c) => `0x${c.replace(/^0x/, "")}`) as `0x${string}`[];
+		});
 
 		const transaction = await prepareContractCall({
 			contract,
@@ -96,9 +92,7 @@ const RewardsClaim: FC<RewardsClaimProps> = ({ pool }) => {
 		onError(error) {
 			setIsClaiming(false);
 			console.log(error);
-			toast.error("An error occured.")
-			// setProcessing(false);
-			// handleOnChainError(error);
+			toast.error("An error occured.");
 		},
 		onSuccess() {
 			refetchHasClaimed();

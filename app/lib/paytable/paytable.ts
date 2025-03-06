@@ -47,8 +47,8 @@ export async function generatePaytable(poolPrice: number, totalParticipants: num
         totalInPaytable = sumPayTable(payTable, decimalPlacesUsed);
 
         // logEntireArray(payTable);
-        console.log("Total in Paytable:", totalInPaytable);
-        console.log("Prize Pool:", totalPrizePool);
+        // console.log("Total in Paytable:", totalInPaytable);
+        // console.log("Prize Pool:", totalPrizePool);
         return payTable;
     }
 
@@ -100,8 +100,8 @@ export async function generatePaytable(poolPrice: number, totalParticipants: num
     // logEntireArray(payTable);
     // Find total
     totalInPaytable = sumPayTable(payTable, decimalPlacesUsed);
-    console.log("Total in Paytable:", totalInPaytable);
-    console.log("Prize Pool:", totalPrizePool);
+    // console.log("Total in Paytable:", totalInPaytable);
+    // console.log("Prize Pool:", totalPrizePool);
     return payTable;
 }
 
