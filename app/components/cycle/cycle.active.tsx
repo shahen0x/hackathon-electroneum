@@ -1,6 +1,9 @@
-import { FC, HTMLAttributes } from "react";
+/**
+ * ACTIVE CYCLE INFORMATION
+ * This component displays the current active cycle information with
+ * timings, game lineup, and countdown etc
+ */
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { cn } from "~/lib/utils";
 import { useCycleStore } from "~/store/store.cycle";
 import { formatDate } from "~/lib/format.date";
 import { Link } from "@remix-run/react";
@@ -9,19 +12,20 @@ import { CountdownRenderer } from "../countdown-renderer";
 import { CyclePhase } from "~/types/types.cycle";
 import { Badge } from "../ui/badge";
 import { CgArrowLongRight } from "react-icons/cg";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-interface CycleActiveProps extends HTMLAttributes<HTMLDivElement> { }
 
-const CycleActive: FC<CycleActiveProps> = ({ className }) => {
+const CycleActive = () => {
 
+	// Store
 	const { cycle } = useCycleStore();
+
+	// Hooks
 	const { currentPhase } = useCyclePhase();
 
 
 	return cycle ? (
-		<Card className={cn(className, "flex flex-col relative overflow-hidden")}>
+		<Card className="flex flex-col relative overflow-hidden">
 
 			<CardHeader className="relative z-10 space-y-1 border-b">
 				<CardTitle className="flex items-center gap-3 font-pixel text-md">

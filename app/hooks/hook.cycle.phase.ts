@@ -1,3 +1,8 @@
+/**
+ * CURRENT PHASE HOOK
+ * This hook calculates the current phase of the active cycle
+ * 
+ */
 import { parseISO, isBefore, differenceInMilliseconds } from "date-fns";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useCycleStore } from "~/store/store.cycle";
