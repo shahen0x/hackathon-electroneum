@@ -1,3 +1,7 @@
+/**
+ * DASHBOARD PAGE
+ * 
+ */
 import type { MetaFunction } from "@remix-run/node";
 import CycleActive from "~/components/cycle/cycle.active";
 import Leaderboard from "~/components/leaderboard/board";
@@ -11,18 +15,18 @@ import { useCycleStore } from "~/store/store.cycle";
 export const meta: MetaFunction = () => {
 	return [
 		{ title: `Dashboard - ${appConfig.name}` },
-		{ name: "description", content: "Welcome to Remix!" },
+		{ name: "description", content: appConfig.description },
 	];
 };
 
 export default function Index() {
 
+	// Store
 	const { isLoading } = useCycleStore();
 
 
 	return (
 		<div className="container space-y-8 lg:space-y-8">
-
 
 			{/* BANNER */}
 			<Card>
@@ -35,16 +39,18 @@ export default function Index() {
 				</CardContent>
 			</Card>
 
-			{/* <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-8">
-				{!isLoading && <LoadingCycle />}
-			</div> */}
 			<div className="space-y-8 lg:space-y-0 lg:grid lg:grid-cols-[19rem_1fr] xl:grid-cols-[22rem_1fr] lg:gap-8">
+
+				{/* ACTIVE CYCLE */}
 				{isLoading ? <LoadingCycle /> : <CycleActive />}
-				<Pools />
+
+				{/* POOLS */}
+				{isLoading ? <LoadingPools /> : <Pools />}
+
 			</div>
 
+			{/* LEADERBOARD */}
 			<Leaderboard />
-
 
 		</div>
 	);
@@ -81,5 +87,45 @@ const LoadingCycle = () => {
 				</div>
 			</Skeleton>
 		</>
+	)
+}
+
+
+const LoadingPools = () => {
+
+	const PoolLoadingCard = () => {
+		return (
+			<Skeleton className="flex flex-col">
+				<div className="border-b border-white/5 p-2 flex items-center gap-2">
+					<div className="w-10 h-10 rounded-full bg-white/5" />
+					<div className="space-y-3">
+						<div className="h-[10px] w-28 rounded-md bg-white/5" />
+						<div className="h-[8px] w-20 rounded-md bg-white/5" />
+					</div>
+				</div>
+
+				<div className="h-full p-3 pt-4 space-y-2 flex flex-col justify-center">
+					<div className="h-[8px] w-20 rounded-md bg-white/5" />
+					<div className="h-[20px] w-32 rounded-md bg-white/5" />
+				</div>
+
+				<div className="p-3">
+					<div className="h-8 rounded-md bg-white/5" />
+				</div>
+			</Skeleton>
+		)
+	}
+
+	return (
+		<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-2">
+			<PoolLoadingCard />
+			<PoolLoadingCard />
+			<PoolLoadingCard />
+			<PoolLoadingCard />
+			<PoolLoadingCard />
+			<PoolLoadingCard />
+			<PoolLoadingCard />
+			<PoolLoadingCard />
+		</div>
 	)
 }

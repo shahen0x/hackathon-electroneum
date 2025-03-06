@@ -5,5 +5,5 @@ export const appSocials = {
 
 export const appConfig = {
 	name: "ElectroPlay",
-	description: "A web3 gaming platform on Electroneum."
+	description: "ElectroPlay is a gaming platform on the Electroneum blockchain. Play games, join competitive pools & climb leaderboards for weekly rewards!"
 };

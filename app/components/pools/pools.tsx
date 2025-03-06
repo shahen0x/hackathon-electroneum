@@ -5,12 +5,13 @@ import { cn } from "~/lib/utils";
 import { useCycleStore } from "~/store/store.cycle";
 import { Separator } from "../ui/separator";
 import PoolCardUpcoming from "./pool.card.upcoming";
+import { Skeleton } from "../ui/skeleton";
 
 interface PoolsProps extends HTMLAttributes<HTMLDivElement> { }
 
 const Pools: FC<PoolsProps> = ({ className }) => {
 
-	const { cycle } = useCycleStore();
+	const { cycle, isLoading } = useCycleStore();
 
 	return (
 		<div className={cn(className, "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-2")}>
@@ -20,8 +21,12 @@ const Pools: FC<PoolsProps> = ({ className }) => {
 			{cycle?.upcomingPools.map((pool) => (
 				<PoolCardUpcoming key={pool?.tokenSymbol} pool={pool} />
 			))}
-			<Card className="hidden lg:block min-h-[160px] opacity-30" />
-			<Card className="hidden lg:block min-h-[160px] opacity-30" />
+			{!isLoading &&
+				<>
+					<Card className="hidden lg:block min-h-[160px] opacity-30" />
+					<Card className="hidden lg:block min-h-[160px] opacity-30" />
+				</>
+			}
 		</div>
 	)
 }
