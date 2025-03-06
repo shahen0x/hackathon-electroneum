@@ -1,12 +1,13 @@
-"use client";
-
-import { FC, useEffect, useState } from "react";
-import { Card, CardHeader, CardContent } from "../ui/card";
-import { useConvex, usePaginatedQuery } from "convex/react";
+/**
+ * LEADERBOARD
+ * 
+ */
+import { useEffect } from "react";
+import { Card } from "../ui/card";
+import { useConvex } from "convex/react";
 import { api } from "~/convex/_generated/api";
 import { Id } from "~/convex/_generated/dataModel";
 import { useCycleStore } from "~/store/store.cycle";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { getContract, readContract, toEther } from "thirdweb";
 import { clientThirdweb } from "~/thirdweb/client";
@@ -17,36 +18,37 @@ import { LeaderboardEntry } from "~/types/types.leaderboard";
 import { formatEth } from "~/lib/format.eth";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { shortenAddress } from "thirdweb/utils";
-import { MediaRenderer, NFTDescription, NFTMedia, NFTName, NFTProvider } from "thirdweb/react";
 import { Skeleton } from "../ui/skeleton";
 import { Separator } from "../ui/separator";
+import { ConvexError } from "convex/values";
+import { useLeaderboardStore } from "~/store/store.leaderboard";
 
-interface LeaderboardProps {
 
-}
+const Leaderboard = () => {
 
-const Leaderboard: FC<LeaderboardProps> = () => {
-
+	// Store
 	const { cycle, isLoading: cycleIsLoading } = useCycleStore();
+	const { activeTab, setActiveTab } = useLeaderboardStore();
+
+	// Backend
 	const convex = useConvex();
 
-	const [activeTab, setActiveTab] = useState<Id<"pools">>();
-
+	// Set active tab
+	//
 	useEffect(() => {
-		if (cycle) {
+		if (cycle && activeTab === null) {
 			setActiveTab(cycle?.activePools[0].id);
 		}
-	}, [cycle]);
+	}, [cycle, activeTab]);
 
 
-
+	// Fetch leaderboard
+	//
 	const fetchLeaderboard = async () => {
 		if (!activeTab) throw new Error("Pool not found.");
-		const scorecards = await convex.query(api.scorecards.getNonZeroScorecards, { poolId: activeTab });
 
-		// 🛑🛑🛑 TODO: handle case where nobody has played yet 🛑🛑🛑
-		// maybe return null or empty array
-		if (scorecards.length === 0) throw new Error("No scorecards found for this pool.");
+		const scorecards = await convex.query(api.scorecards.getNonZeroScorecards, { poolId: activeTab });
+		if (scorecards.length === 0) throw new Error("Players haven't joined or submitted scores yet.");
 
 		// find pool contract address from activePools based on poolId
 		const activePool = cycle?.activePools.find(pool => pool.id === activeTab);
@@ -66,13 +68,7 @@ const Leaderboard: FC<LeaderboardProps> = () => {
 		]);
 
 		const prizePoolShare = (100 - commission) / 100;
-
-		// 🛑🛑🛑 TODO: handle case where there is less than 2 participants 🛑🛑🛑
-
 		const paytable = await generatePaytable(Number(poolPrice), participants, prizePoolShare);
-		// 🛑🛑🛑 TODO: uncomment above line, comment line below 🛑🛑🛑
-		// const paytable = await generatePaytable(Number(poolPrice), scorecards.length, prizePoolShare);
-		console.log(paytable);
 
 		const leaderboard: LeaderboardEntry[] = [];
 		for (let i = 0; i < scorecards.length; i++) {
@@ -89,18 +85,21 @@ const Leaderboard: FC<LeaderboardProps> = () => {
 		return leaderboard
 	}
 
+
 	const { data, isLoading, isError, error } = useQuery({
-		queryKey: [`leaderboard`, activeTab],
+		queryKey: [`leaderboard-${activeTab}`],
 		queryFn: fetchLeaderboard,
 		enabled: !!activeTab,
 		refetchInterval: 1000 * 60 * 5,
 		refetchOnMount: false,
 		refetchOnWindowFocus: false,
 		staleTime: 1000 * 60 * 5,
+		gcTime: 1000 * 60 * 5,
 	})
 
+	const errorMessage = error instanceof ConvexError ? (error.data as { message: string }).message : error?.message;
 	if (isError) {
-		console.log("errrrorr", error);
+		console.log(errorMessage);
 	}
 
 	return (
@@ -109,21 +108,24 @@ const Leaderboard: FC<LeaderboardProps> = () => {
 			<div className="flex items-center justify-between lg:justify-normal gap-6 py-4 lg:py-6 pl-4 pr-2">
 				<h2 className="text-md">Leaderboards</h2>
 
-				<Select value={activeTab} onValueChange={(value) => setActiveTab(value as Id<"pools">)}>
-					<SelectTrigger className="w-[130px] lg:hidden">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						{cycle?.activePools.map((pool, index) => (
-							<SelectItem key={pool.id} value={pool.id}>
-								<div className="w-full flex items-center">
-									<img src={pool.tokenLogo} alt={pool.tokenSymbol} className="w-5 h-5 rounded-full" />
-									<span className="ml-2">{pool.tokenSymbol}</span>
-								</div>
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
+				{activeTab &&
+					<Select value={activeTab} onValueChange={(value) => setActiveTab(value as Id<"pools">)}>
+						<SelectTrigger className="w-[130px] lg:hidden">
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							{cycle?.activePools.map((pool, index) => (
+								<SelectItem key={pool.id} value={pool.id}>
+									<div className="w-full flex items-center">
+										<img src={pool.tokenLogo} alt={pool.tokenSymbol} className="w-5 h-5 rounded-full" />
+										<span className="ml-2">{pool.tokenSymbol}</span>
+									</div>
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				}
+
 
 				<div className="hidden lg:flex items-center gap-2">
 					{cycle?.activePools.map((pool, index) => (
@@ -178,6 +180,14 @@ const Leaderboard: FC<LeaderboardProps> = () => {
 					</>
 				}
 			</div>
+
+			{isError && errorMessage === "Total participants must be at least 2" &&
+				<div className="border-t p-6 text-muted-foreground text-xs">Leaderboard will be available as soon as 2 players submit their scores.</div>
+			}
+
+			{isError && errorMessage !== "Total participants must be at least 2" &&
+				<div className="border-t p-6 text-muted-foreground text-xs">{errorMessage}</div>
+			}
 		</Card>
 	)
 }

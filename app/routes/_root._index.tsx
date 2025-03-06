@@ -50,7 +50,7 @@ export default function Index() {
 			</div>
 
 			{/* LEADERBOARD */}
-			{/* <Leaderboard /> */}
+			<Leaderboard />
 
 		</div>
 	);
