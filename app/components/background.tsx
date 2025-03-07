@@ -1,10 +1,4 @@
-import { FC } from "react";
-
-interface BackgroundProps {
-
-}
-
-const Background: FC<BackgroundProps> = () => {
+const Background = () => {
 	return (
 		<div className="fixed top-0 left-0 -z-10 w-full h-full bg-[#121214] overflow-hidden">
 			{/* GRID */}
