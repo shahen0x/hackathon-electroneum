@@ -66,7 +66,7 @@ export default function Litepaper() {
 					<a href="https://blockexplorer.electroneum.com/address/0x477Ae4E9810ba5F78BB3D3a098EDa5BBF5a599CD" target="_blank" rel="noreferrer" className="border border-border/40 rounded-lg shadow-lg p-4 flex items-center gap-4 overflow-hidden">
 						<PiScroll size={26} className="shrink-0" />
 						<div>
-							<p className="text-sm font-bold text-left">TokenPoolERC20</p>
+							<p className="text-sm font-bold text-left">GamePoolERC20</p>
 							<div className="text-xs w-full text-ellipsis">blockexplorer.electroneum.com</div>
 						</div>
 					</a>
