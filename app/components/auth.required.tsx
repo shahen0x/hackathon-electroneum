@@ -1,7 +1,6 @@
 import { PiWarningDiamondLight } from "react-icons/pi"
 import { Card } from "./ui/card"
 
-
 const AuthRequired = () => {
 	return (
 		<div className="container min-h-[calc(100vh_-_18rem)] flex flex-col">

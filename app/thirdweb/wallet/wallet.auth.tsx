@@ -40,7 +40,7 @@ const WalletAuth = () => {
 		if (!wallet) throw new Error("Wallet not connected.");
 
 		// Generate web3 login payload
-		const payload = await generatePayload({ address: wallet.address });
+		const payload = await generatePayload({ address: wallet.address.toLowerCase() });
 		if (!payload) throw new Error("Failed to generate login payload.");
 
 		// Sign the payload

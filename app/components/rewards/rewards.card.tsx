@@ -1,3 +1,7 @@
+/**
+ * REWARDS CARD
+ * 
+ */
 import { FC, useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { formatDate } from "~/lib/format.date";
@@ -8,7 +12,7 @@ import { clientThirdweb } from "~/thirdweb/client";
 import { chain } from "~/config/chain";
 import { abiPoolNative } from "~/thirdweb/abi/abi.pool.native";
 import RewardsClaim from "./rewards.claim";
-import { PiChecksBold, PiCoinsDuotone, PiMedalLight } from "react-icons/pi";
+import { PiMedalLight } from "react-icons/pi";
 
 interface RewardsCardProps {
 	claim: {

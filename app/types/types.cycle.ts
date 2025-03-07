@@ -36,13 +36,6 @@ export type Cycle = {
 } | null
 
 
-// export enum CyclePhase {
-// 	NotOpenYet = 'Not open yet',
-// 	Enroll = 'Enroll',
-// 	Playtime = 'Playtime',
-// 	Ended = 'Ended',
-// }
-
 export enum CyclePhase {
 	CycleNotStarted = "Cycle not started",
 	CycleStarted = "Cycle started",

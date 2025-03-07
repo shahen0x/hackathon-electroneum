@@ -24,7 +24,6 @@ export default function GamesPage() {
 		<iframe
 			title={gameSlug}
 			src={`/play/${gameSlug}`}
-			// src="/play/ballsort"
 			className="w-full max-w-7xl aspect-video rounded-2xl bg-[#231F20] border border-neutral-800"
 		/>
 	)

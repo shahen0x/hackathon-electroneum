@@ -14,13 +14,6 @@ export const UnityLoader: FC<UnityLoaderProps> = ({ isLoaded, loadingProgression
 					{Math.round(loadingProgression * 100)}%
 				</div>
 
-				{/* <Progress
-					aria-label="Loading..."
-					color="secondary"
-					value={loadingProgression * 100}
-					className="max-w-md"
-				/> */}
-
 			</div>
 		</div>
 	) : null;
