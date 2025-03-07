@@ -1,11 +1,14 @@
+/**
+ * REWARDS LIST
+ * 
+ */
 import { useQuery } from "@tanstack/react-query";
 import { useConvex, usePaginatedQuery } from "convex/react";
 import { api } from "~/convex/_generated/api";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { formatDate } from "~/lib/format.date";
-import { toEther } from "thirdweb/utils";
+import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import RewardsCard from "./rewards.card";
+import { PiCoinsDuotone } from "react-icons/pi";
 
 
 const RewardsList = () => {
@@ -55,7 +58,24 @@ const RewardsList = () => {
 		};
 	});
 
-
+	// If no rewards are found,
+	if (claims.length === 0) {
+		return (
+			<div className="container min-h-[calc(100vh_-_18rem)] flex flex-col">
+				<div className="w-full max-w-md mx-auto flex-1 flex items-center justify-center">
+					<Card className="w-full flex item-center gap-4 p-4">
+						<div className="shrink-0 w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center">
+							<PiCoinsDuotone size={24} className="text-rose-500 animate-pulse" />
+						</div>
+						<div>
+							<h2 className="font-bold">No Rewards Available</h2>
+							<p className="text-xs text-muted-foreground">We did not find any rewards for you.</p>
+						</div>
+					</Card>
+				</div>
+			</div>
+		)
+	}
 
 	return (
 		<div className="container">
@@ -113,22 +133,3 @@ export default RewardsList;
 // 	)
 // }
 
-
-// If no rewards are found,
-// if (!isLoadingClaims && claims.length === 0) {
-// 	return (
-// 		<div className="container min-h-[calc(100vh_-_18rem)] flex flex-col">
-// 			<div className="w-full max-w-md mx-auto flex-1 flex items-center justify-center">
-// 				<Card className="w-full flex item-center gap-4 p-4">
-// 					<div className="shrink-0 w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center">
-// 						<PiCoinsDuotone size={24} className="text-rose-500 animate-pulse" />
-// 					</div>
-// 					<div>
-// 						<h2 className="font-bold">No Rewards Available</h2>
-// 						<p className="text-xs text-muted-foreground">We did not find any rewards for you.</p>
-// 					</div>
-// 				</Card>
-// 			</div>
-// 		</div>
-// 	)
-// }

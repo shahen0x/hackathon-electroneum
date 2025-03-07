@@ -1,12 +1,16 @@
+/**
+ * REWARDS CLAIM
+ * 
+ */
 import { FC, useState } from "react";
 import { Button } from "../ui/button";
 import { Id } from "~/convex/_generated/dataModel";
-import { getContract, prepareContractCall, readContract, sendTransaction, toWei, waitForReceipt } from "thirdweb";
+import { getContract, prepareContractCall, readContract, sendTransaction, waitForReceipt } from "thirdweb";
 import { clientThirdweb } from "~/thirdweb/client";
 import { chain } from "~/config/chain";
 import { abiPoolNative } from "~/thirdweb/abi/abi.pool.native";
 import { abiPoolERC20 } from "~/thirdweb/abi/abi.pool.erc20";
-import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { useActiveAccount } from "thirdweb/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { PiCircleNotch } from "react-icons/pi";
 import { useAction } from "convex/react";
